@@ -2,9 +2,15 @@
 import { apiRequest } from './api.js';
 
 export const auth = {
+    /**
+     * Authenticates a user by sending credentials to the backend.
+     * On success, it stores the received token and user data.
+     * @param {string} email - The user's email.
+     * @param {string} password - The user's plain text password.
+     */
     login: async (email, password) => {
         try {
-            // We call the login endpoint of the backend
+            // Call the login endpoint of the backend
             const response = await apiRequest('/auth/login', 'POST', {
                 email,
                 password,
@@ -22,17 +28,29 @@ export const auth = {
             throw new Error(error.message || 'Invalid credentials');
         }
     },
+
+    /**
+     * Logs the user out by clearing their authentication state from localStorage.
+     * It does NOT handle navigation.
+     */
     logout: () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        location.hash = '#/login';
-        // Important: reload the page to clear the state
-        location.reload();
     },
+
+    /**
+     * Checks if a user is currently authenticated.
+     * @returns {boolean} True if a token exists, false otherwise.
+     */
     isAuthenticated: () => {
         // Authenticated if there's a token in localStorage
         return !!localStorage.getItem('token');
     },
+
+    /**
+     * Retrieves the stored user object.
+     * @returns {Object|null} The user object or null if not found.
+     */
     getUser: () => {
         const user = localStorage.getItem('user');
         return user ? JSON.parse(user) : null;

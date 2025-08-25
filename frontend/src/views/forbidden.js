@@ -1,31 +1,40 @@
-// // frontend/src/views/forbidden.js
-// import { auth } from '../auth.js';
+// frontend/src/views/forbidden.js
 
-// /**
-//  * Displays a styled 'access denied' message that adapts based on authentication status.
-//  */
-// export function renderForbidden() {
-//     const isAuthenticated = auth.isAuthenticated();
-//     const targetEl = isAuthenticated ? document.getElementById('app-content') : document.getElementById('app');
+import { auth } from '../services/auth.js';
+import { router } from '../router/router.js';
 
-//     // If the element is not found, do nothing (prevents errors during logout transitions)
-//     if (!targetEl) return;
-    
-//     const buttonText = isAuthenticated ? 'Back to Dashboard' : 'Back to Login';
-//     const targetHash = isAuthenticated ? '#/dashboard' : '#/login';
-    
-//     targetEl.innerHTML = `
-//     <div class="status-page-container">
-//         <div class="status-content">
-//             <i class="fa-solid fa-lock status-icon"></i>
-//             <h2>403 - Access Denied</h2>
-//             <p>You do not have permission to view this page.</p>
-//             <button id="status-back-btn" class="btn-primary">${buttonText}</button>
-//         </div>
-//     </div>
-//   `;
+/**
+ * Creates and returns a DOM element for the 403 "Access Denied" view.
+ * The "Go Back" button intelligently points to the Dashboard or Login page
+ * based on the user's authentication status.
+ */
+export function renderForbiddenPage() {
+    // Create the main container for this component.
+    const container = document.createElement('div');
+    container.className = 'status-page-container';
 
-//     document.getElementById('status-back-btn').onclick = () => {
-//         location.hash = targetHash;
-//     };
-// }
+    // Determine the button text and navigation target based on auth state.
+    const isAuthenticated = auth.isAuthenticated();
+    const buttonText = isAuthenticated ? 'Back to Dashboard' : 'Back to Login';
+    const targetRoute = isAuthenticated ? '/dashboard' : '/login';
+
+    // Set the inner HTML for the self-contained component.
+    container.innerHTML = `
+        <div class="status-content">
+            <i class="fa-solid fa-lock status-icon"></i>
+            <h2>403 - Access Denied</h2>
+            <p>You do not have permission to view this page.</p>
+            <button id="forbidden-back-btn" class="btn-primary">${buttonText}</button>
+        </div>
+    `;
+
+    // Attach the event listener to the button WITHIN this component.
+    const backButton = container.querySelector('#forbidden-back-btn');
+    backButton.addEventListener('click', () => {
+        // Use the router for clean, centralized navigation.
+        router.navigate(targetRoute);
+    });
+
+    // Return the complete, functional DOM element.
+    return container;
+}

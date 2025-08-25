@@ -9,16 +9,16 @@ import { router } from '../router/router.js';
  * based on the user's authentication status.
  */
 export function renderNotFoundPage() {
-    // 1. Create the main container for the component.
+    // Create the main container for the component.
     const container = document.createElement('div');
     container.className = 'status-page-container';
 
-    // 2. Determine button text and navigation target based on auth state.
+    // Determine button text and navigation target based on auth state.
     const isAuthenticated = auth.isAuthenticated();
     const buttonText = isAuthenticated ? 'Back to Dashboard' : 'Back to Login';
     const targetRoute = isAuthenticated ? '/dashboard' : '/login';
 
-    // 3. Set the inner HTML of our self-contained component.
+    // Set the inner HTML of the self-contained component.
     container.innerHTML = `
         <div class="status-content">
             <i class="fa-solid fa-compass status-icon"></i>
@@ -28,13 +28,13 @@ export function renderNotFoundPage() {
         </div>
     `;
 
-    // 4. Attach the event listener to the button WITHIN our container.
+    // Attach the event listener to the button WITHIN the container.
     const backButton = container.querySelector('#status-back-btn');
     backButton.addEventListener('click', () => {
-        // Use the router for navigation, not location.hash
+        // Use the router for navigation
         router.navigate(targetRoute);
     });
 
-    // 5. Return the complete, functional DOM element.
+    // Return the complete, functional DOM element.
     return container;
 }

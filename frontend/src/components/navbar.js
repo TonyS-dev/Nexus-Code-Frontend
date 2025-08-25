@@ -1,14 +1,31 @@
 // frontend/src/components/navbar.js
+import { auth } from '../services/auth.js';
+import { router } from '../router/router.js';
+
 export function Navbar() {
-    const navElement = document.createElement('nav');
-    navElement.className = 'navbar';
-    navElement.innerHTML = `
-        <h1>Nexus Code</h1>
-        <button id="logout-btn">Logout</button>
+    const navbarElement = document.createElement('header');
+    navbarElement.className = 'navbar';
+
+    navbarElement.innerHTML = `
+        <div class="navbar-left">
+            <h1 id="view-title">Dashboard</h1>
+        </div>
+        <div class="navbar-right">
+            <div class="notification-bell">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notification-count">3</span>
+            </div>
+            <button id="navbar-logout-btn" class="btn-logout">Log out</button>
+        </div>
     `;
-    // Event delegation for logout
-    navElement.querySelector('#logout-btn').onclick = () => {
-        /* Logout logic */
-    };
-    return navElement;
+
+    // --- Event Handling ---
+    navbarElement
+        .querySelector('#navbar-logout-btn')
+        .addEventListener('click', () => {
+            auth.logout();
+            router.navigate('/login');
+        });
+
+    return navbarElement;
 }

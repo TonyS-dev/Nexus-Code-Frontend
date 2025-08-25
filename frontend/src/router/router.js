@@ -2,16 +2,21 @@
 import Navigo from 'navigo';
 import { auth } from '../services/auth.js';
 import { AppLayout } from '../components/layout.js';
-import { renderNotFoundPage } from '../views/notFound.js'; // Make sure to import the refactored function
 
-// Import all your page components
+// Import all page components
 import { showLoginPage } from '../views/login.js';
 import { showDashboardPage } from '../views/dashboard.js';
-// import { showMyRequestsPage } from '../views/myRequests.js'; // You will create this file
+import { renderNotFoundPage } from '../views/notFound.js';
+import { renderForbiddenPage } from '../views/forbidden.js';
+// import { showMyRequestsPage } from '../views/myRequests.js'; // !TODO: Create this file
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
 
+/**
+ * A helper function to render a page component inside the main AppLayout.
+ * @param {Function} pageComponent - The function that returns the page's DOM element.
+ */
 function renderInLayout(pageComponent) {
     appContainer.innerHTML = '';
     const layout = AppLayout();
@@ -20,11 +25,13 @@ function renderInLayout(pageComponent) {
     appContainer.append(layout);
 }
 
+/**
+ * Sets up and initializes the client-side router with all routes and hooks.
+ */
 export function setupRouter() {
     router.on({
-        // THIS IS THE NEW, CRITICAL ROUTE
         '/': () => {
-            // This is the gatekeeper route
+            // This is the gatekeeper route, redirecting based on auth status
             if (auth.isAuthenticated()) {
                 router.navigate('/dashboard');
             } else {
@@ -32,13 +39,22 @@ export function setupRouter() {
             }
         },
         '/login': () => {
+            // The login page is rendered standalone, without the AppLayout
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
         },
         '/dashboard': () => renderInLayout(showDashboardPage),
-        // '/my-requests': () => renderInLayout(showMyRequestsPage), // Add this back when you create the page
+        // '/my-requests': () => renderInLayout(showMyRequestsPage), // !TODO: Create this file
+
+        // --- Route for the access denied page ---
+        '/forbidden': () => {
+            appContainer.innerHTML = '';
+            appContainer.append(renderForbiddenPage());
+        },
     });
 
+    // --- Route Protection Hook ---
+    // This runs before every route is resolved
     router.hooks({
         before: (done, match) => {
             const protectedRoutes = ['/dashboard', '/my-requests'];
@@ -47,29 +63,27 @@ export function setupRouter() {
             );
 
             if (isProtectedRoute && !auth.isAuthenticated()) {
+                // If trying to access a protected route without being logged in, redirect to login
                 router.navigate('/login');
-                done(false);
+                done(false); // Stop the current navigation
             } else if (match.url === 'login' && auth.isAuthenticated()) {
+                // If logged in and trying to access login, redirect to dashboard
                 router.navigate('/dashboard');
                 done(false);
             } else {
+                // Otherwise, allow navigation to proceed
                 done();
             }
         },
     });
 
-    router.notFound(() => {
-        // Now this will only be called for truly non-existent routes
-        appContainer.innerHTML = '';
-        appContainer.append(renderNotFound()); // Assuming renderNotFound returns a DOM element
-    });
-
     // --- Not Found Handler ---
+    // This handler is called if no other route matches
     router.notFound(() => {
-        const appContainer = document.getElementById('app');
-        appContainer.innerHTML = ''; // Clear the container
-        appContainer.append(renderNotFoundPage()); // Append the new component
+        appContainer.innerHTML = '';
+        appContainer.append(renderNotFoundPage());
     });
 
+    // Start listening for route changes
     router.resolve();
 }
