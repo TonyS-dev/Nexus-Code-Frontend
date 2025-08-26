@@ -1,58 +1,41 @@
-// frontend/src/services/auth.js
-import { apiRequest } from './api.js';
+const MOCK_USER = {
+
+    id: 'mock-001',
+    first_name: 'Roberto',
+    last_name: 'Gómez',
+    email: 'roberto@empresa.com',
+    role: 'employee',        
+    role_name: 'Empleado'    
+};
+
+const USE_MOCK = true;
 
 export const auth = {
-    /**
-     * Authenticates a user by sending credentials to the backend.
-     * On success, it stores the received token and user data.
-     * @param {string} email - The user's email.
-     * @param {string} password - The user's plain text password.
-     */
-    login: async (email, password) => {
-        try {
-            // Call the login endpoint of the backend
-            const response = await apiRequest('/auth/login', 'POST', {
-                email,
-                password,
-            });
 
-            // The backend responds with the token and the user
-            if (response.token && response.user) {
-                localStorage.setItem('token', response.token); // Store the token
-                localStorage.setItem('user', JSON.stringify(response.user)); // Store the user
-            } else {
-                throw new Error('Invalid response from server');
-            }
-        } catch (error) {
-            // The backend should have sent a clear error message
-            throw new Error(error.message || 'Invalid credentials');
-        }
+    isAuthenticated() {
+        const hasRealUser = !!this.getUser();
+        return USE_MOCK || hasRealUser;
     },
 
-    /**
-     * Logs the user out by clearing their authentication state from localStorage.
-     * It does NOT handle navigation.
-     */
-    logout: () => {
+    getUser() {
+        const saved = localStorage.getItem('user');
+        if (saved) {
+
+        return JSON.parse(saved);
+    }
+
+    if (USE_MOCK) {
+        return MOCK_USER;
+    }
+    return null;
+    },
+
+    login(userData) {
+        localStorage.setItem('user', JSON.stringify(userData));
+    },
+
+    logout() {
+
         localStorage.removeItem('user');
-        localStorage.removeItem('token');
-    },
-
-    /**
-     * Checks if a user is currently authenticated.
-     * @returns {boolean} True if a token exists, false otherwise.
-     */
-    isAuthenticated: () => {
-        // Authenticated if there's a token in localStorage
-        return !!localStorage.getItem('token');
-    },
-
-    /**
-     * Retrieves the stored user object.
-     * @returns {Object|null} The user object or null if not found.
-     */
-    getUser: () => {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
-    },
+    }
 };

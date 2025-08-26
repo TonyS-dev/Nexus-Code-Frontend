@@ -19,13 +19,17 @@ export function Navbar() {
         </div>
     `;
 
-    // --- Event Handling ---
     navbarElement
-        .querySelector('#navbar-logout-btn')
-        .addEventListener('click', () => {
-            auth.logout();
-            router.navigate('/login');
-        });
+    .querySelector('#navbar-logout-btn')
+    .addEventListener('click', () => {
+        auth.logout();
+        router.navigate('/login');
+    });
+
+    navbarElement.setTitle = (title) => {
+        const titleElement = navbarElement.querySelector('#view-title');
+        if (titleElement) titleElement.textContent = title;
+    };
 
     return navbarElement;
 }

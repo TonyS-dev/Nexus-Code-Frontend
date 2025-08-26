@@ -1,8 +1,12 @@
-// frontend/src/main.js (Final Version)
+import './assets/css/main.css';
+import './assets/css/dashboard.css';   // ← Esta línea es clave
+import './assets/css/login.css';
+import './assets/css/navbar.css';
+import './assets/css/sidebar.css';
+
 import { setupRouter } from './router/router.js';
 import { initializeTheme } from './services/theme.js';
 
-// When the DOM is fully loaded, initialize the router.
 document.addEventListener('DOMContentLoaded', () => {
     initializeTheme();
     setupRouter();
