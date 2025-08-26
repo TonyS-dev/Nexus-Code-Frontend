@@ -35,8 +35,7 @@
 .riwi-logo{
     width:180px;
     height:auto;
-    margin-bottom: 1.8rem;
-   
+    margin-bottom: 1.8rem;   
 }
 .form-title{
     font-size:2.2rem;
@@ -117,7 +116,7 @@
 .welcome-text-right{
     position: absolute;
     top: 50px;
-    left: 40%;
+    left: 50%;
     transform: translateX(-50%);
     font-size: 3.5rem;
     font-weight: 700;
@@ -169,13 +168,13 @@
 }
 .sun,
 .moon {
-  font-size: 1.8rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    font-size: 1.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .theme-dark .moon{

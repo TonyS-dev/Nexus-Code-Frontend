@@ -1,51 +1,35 @@
-// frontend/src/components/sidebar.js
+// src/components/sidebar.js
 import { auth } from '../services/auth.js';
 import { router } from '../router/router.js';
 
 export function Sidebar() {
+
     const user = auth.getUser();
-    if (!user) return document.createElement('aside'); // Return empty element if no user
 
-    const sidebarElement = document.createElement('aside');
-    sidebarElement.className = 'sidebar';
+    if (!user) {
+        console.warn('No hay usuario autenticado');
+        return document.createElement('aside');
+    }
 
-    // --- Sidebar Navigation Links ---
-    let navLinks = `
-        <a href="/dashboard" class="nav-btn" data-navigo><i class="fa-solid fa-house"></i> Home</a>
-        <a href="/employees" class="nav-btn" data-navigo><i class="fa-solid fa-users"></i> Employees</a>
-        <a href="/requests" class="nav-btn" data-navigo><i class="fa-solid fa-file-alt"></i> Requests</a>
-        <a href="/settings" class="nav-btn" data-navigo><i class="fa-solid fa-cog"></i> Settings</a>
+    const sidebar = document.createElement('aside');
+    sidebar.classList.add('sidebar');
+
+    sidebar.innerHTML = `
+    <div class="sidebar-header">
+        <img src="https://i.pravatar.cc/60?u=${user.email}" alt="Perfil">
+        <h3>${user.first_name} ${user.last_name}</h3>
+        <p>${user.role_name || 'Empleado'}</p>
+    </div>
+
+    <div class="sidebar-menu">
+        <ul>
+            <li class="active"><a href="/dashboard" data-navigo><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="/requests/new" data-navigo><i class="fa-solid fa-plus-circle"></i> Nueva Solicitud</a></li>
+            <li><a href="/requests/my" data-navigo><i class="fa-solid fa-list"></i> Mis Solicitudes</a></li>
+        </ul>
+    </div>
+
     `;
 
-    // --- Sidebar Structure ---
-    sidebarElement.innerHTML = `
-        <div class="user-profile">
-            <img src="https://i.pravatar.cc/150?u=${
-                user.email
-            }" alt="User Profile" class="profile-img">
-            <div class="user-info">
-                <h3>${user.first_name} ${user.last_name}</h3>
-                <p>${user.role_name || 'Admin'}</p>
-            </div>
-        </div>
-        <nav class="sidebar-nav">${navLinks}</nav>
-        <div class="sidebar-footer">
-            <button id="logout-btn" class="nav-btn-logout">
-                Logout <i class="fa-solid fa-sign-out-alt"></i>
-            </button>
-        </div>
-    `;
-
-    // --- Event Handling ---
-    sidebarElement
-        .querySelector('#logout-btn')
-        .addEventListener('click', () => {
-            auth.logout();
-            router.navigate('/login');
-        });
-
-    // Navigo will automatically handle the links in this component
-    router.updatePageLinks();
-
-    return sidebarElement;
+    return sidebar;
 }

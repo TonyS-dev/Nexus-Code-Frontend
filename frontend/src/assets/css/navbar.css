@@ -1,0 +1,60 @@
+/* src/assets/css/navbar.css */
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.navbar-left h1{
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.notification-bell{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.notification-bell i{
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.notification-count{
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-logout {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
