@@ -1,5 +1,5 @@
 // frontend/src/services/api.js
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.BACKEND_API_URL;
 
 export async function apiRequest(path, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${path}`;
@@ -36,5 +36,5 @@ export async function apiRequest(path, method = 'GET', body = null) {
 }
 
 // --- User API Endpoints ---
-export const fetchAllUsers = () => apiRequest('/users');
-export const fetchUserById = (userId) => apiRequest(`/users/${userId}`);
+export const fetchAllUsers = () => apiRequest('/employees');
+export const fetchUserById = (userId) => apiRequest(`/employees/${userId}`);
