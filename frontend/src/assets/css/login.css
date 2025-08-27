@@ -75,7 +75,7 @@
 .toggle-password-icon{
     position: absolute;
     right: 12px;
-    top:50%;
+    top:30%;
     transform: translateY(-50%);
     width:20px ;
     height:20px ;
@@ -101,18 +101,85 @@
     color: var(--text-light);
     text-decoration: underline;
 }
-.btn-login{
-    background-color: var(--btn-bg);
-    color: rgb(37, 10, 71);
-    border:none;
-    padding: 1rem 0;
-    font-size: 1.3rem;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor:pointer;
-    width:100%;
-    transition: background-color 0.3s ease;
+
+.btn-login {
+
+  background: var(--btn-bg);
+  color: rgb(37, 10, 71);
+  border: none;
+  padding: 1rem 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
 }
+
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(106, 17, 203, 0.6),
+    0 0 40px rgba(141, 0, 249, 0.4);
+  filter: brightness(1.05);
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+}
+
+.btn-login:hover::before {
+  opacity: 1;
+}
+
+/* Efecto de luz que cruza (shine) */
+.btn-login::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.8s ease;
+  z-index: 1;
+}
+
+.btn-login:hover::after {
+  left: 120%;
+}
+
+.btn-login:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-login:focus {
+  outline: none;
+}
+
 .welcome-text-right{
     position: absolute;
     top: 50px;

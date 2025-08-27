@@ -3,87 +3,116 @@ import Navigo from 'navigo';
 import { auth } from '../services/auth.js';
 import { AppLayout } from '../components/layout.js';
 
-// Import all page components
+// Importar vistas
 import { showLoginPage } from '../views/login.js';
-import { showDashboardPage } from '../views/dashboard.js';
+import { showHomePage } from '../views/home.js';
+import { showMyRequestsPage } from '../views/myRequests.js';
+import { showNewRequestPage } from '../views/newRequest.js';
+import { showManageUsersPage } from '../views/manageUsers.js';
+import { showAdminRequestsPage } from '../views/adminRequests.js';
+import { showManagerRequestsPage } from '../views/managerRequests.js';
+import { showEmployeeHistoryPage } from '../views/employeeHistory.js';
 import { renderNotFoundPage } from '../views/notFound.js';
 import { renderForbiddenPage } from '../views/forbidden.js';
-// import { showMyRequestsPage } from '../views/myRequests.js'; // !TODO: Create this file
 
 const appContainer = document.getElementById('app');
-export const router = new Navigo('/');
+export const router = new Navigo('/', { hash: true });
 
-/**
- * A helper function to render a page component inside the main AppLayout.
- * @param {Function} pageComponent - The function that returns the page's DOM element.
- */
-function renderInLayout(pageComponent) {
-    appContainer.innerHTML = '';
-    const layout = AppLayout();
-    const pageContent = pageComponent();
-    layout.querySelector('#app-content').append(pageContent);
-    appContainer.append(layout);
+function renderInLayout(pageComponent, title = 'Dashboard') {
+  appContainer.innerHTML = '';
+  const layout = AppLayout();
+  const pageContent = typeof pageComponent === 'function' ? pageComponent() : pageContent;
+  layout.querySelector('#app-content').appendChild(pageContent);
+
+  const navbar = layout.querySelector('#navbar-container');
+  if (navbar && navbar.setTitle) {
+    navbar.setTitle(title);
+  }
+
+  appContainer.appendChild(layout);
 }
 
-/**
- * Sets up and initializes the client-side router with all routes and hooks.
- */
+const ROUTES = {
+  '/home': { component: showHomePage, title: 'Inicio', requiresAuth: true },
+  '/my-requests': { component: showMyRequestsPage, title: 'Mis Solicitudes', requiresAuth: true },
+  '/requests/new': { component: showNewRequestPage, title: 'Nueva Solicitud', requiresAuth: true },
+  '/manage-users': { component: showManageUsersPage, title: 'Gestionar Usuarios', role: 'hr', requiresAuth: true },
+  '/admin-requests': { component: showAdminRequestsPage, title: 'Panel de Talento Humano', role: 'hr', requiresAuth: true },
+  '/manager-requests': { component: showManagerRequestsPage, title: 'Aprobar Solicitudes', role: 'manager', requiresAuth: true },
+  '/employee/history': { component: showEmployeeHistoryPage, title: 'Historial', requiresAuth: true },
+  '/login': { requiresAuth: false },
+  '/forbidden': { requiresAuth: false },
+  '/not-found': { requiresAuth: false }
+};
+
+router.hooks({
+  before: (done, match) => {
+    const route = match.url;
+    const config = ROUTES[route];
+
+    if (!config) {
+      done();
+      return;
+    }
+
+    if (config.requiresAuth === false) {
+      if (route === '/login' && auth.isAuthenticated()) {
+        router.navigate('/home', { replace: true });
+        done(false);
+      } else {
+        done();
+      }
+      return;
+    }
+
+    if (!auth.isAuthenticated()) {
+      router.navigate('/login', { replace: true });
+      done(false);
+      return;
+    }
+
+    const user = auth.getUser();
+    if (config.role && user.role !== config.role) {
+      router.navigate('/forbidden');
+      done(false);
+      return;
+    }
+
+    done();
+  }
+});
+
 export function setupRouter() {
-    router.on({
-        '/': () => {
-            // This is the gatekeeper route, redirecting based on auth status
-            if (auth.isAuthenticated()) {
-                router.navigate('/dashboard');
-            } else {
-                router.navigate('/login');
-            }
-        },
-        '/login': () => {
-            // The login page is rendered standalone, without the AppLayout
-            appContainer.innerHTML = '';
-            appContainer.append(showLoginPage());
-        },
-        '/dashboard': () => renderInLayout(showDashboardPage),
-        // '/my-requests': () => renderInLayout(showMyRequestsPage), // !TODO: Create this file
-
-        // --- Route for the access denied page ---
-        '/forbidden': () => {
-            appContainer.innerHTML = '';
-            appContainer.append(renderForbiddenPage());
-        },
-    });
-
-    // --- Route Protection Hook ---
-    // This runs before every route is resolved
-    router.hooks({
-        before: (done, match) => {
-            const protectedRoutes = ['/dashboard', '/my-requests'];
-            const isProtectedRoute = protectedRoutes.some((r) =>
-                match.url.startsWith(r.substring(1))
-            );
-
-            if (isProtectedRoute && !auth.isAuthenticated()) {
-                // If trying to access a protected route without being logged in, redirect to login
-                router.navigate('/login');
-                done(false); // Stop the current navigation
-            } else if (match.url === 'login' && auth.isAuthenticated()) {
-                // If logged in and trying to access login, redirect to dashboard
-                router.navigate('/dashboard');
-                done(false);
-            } else {
-                // Otherwise, allow navigation to proceed
-                done();
-            }
-        },
-    });
-
-    // --- Not Found Handler ---
-    // This handler is called if no other route matches
-    router.notFound(() => {
+  router.on({
+    '/': () => {
+      if (auth.isAuthenticated()) {
+        renderInLayout(showHomePage, 'Inicio');
+      } else {
         appContainer.innerHTML = '';
-        appContainer.append(renderNotFoundPage());
-    });
+        appContainer.append(showLoginPage());
+      }
+    },
+    '/login': () => {
+      appContainer.innerHTML = '';
+      appContainer.append(showLoginPage());
+    },
+    '/home': () => renderInLayout(showHomePage, 'Inicio'),
+    '/my-requests': () => renderInLayout(showMyRequestsPage, 'Mis Solicitudes'),
+    '/requests/new': () => renderInLayout(showNewRequestPage, 'Nueva Solicitud'),
+    '/manage-users': () => renderInLayout(showManageUsersPage, 'Gestionar Usuarios'),
+    '/admin-requests': () => renderInLayout(showAdminRequestsPage, 'Panel de Talento Humano'),
+    '/manager-requests': () => renderInLayout(showManagerRequestsPage, 'Aprobar Solicitudes'),
+    '/employee/history': () => renderInLayout(showEmployeeHistoryPage, 'Historial'),
+    '/forbidden': () => {
+      appContainer.innerHTML = '';
+      appContainer.append(renderForbiddenPage());
+    }
+  });
 
-    // Start listening for route changes
-    router.resolve();
+  router.notFound(() => {
+    appContainer.innerHTML = '';
+    appContainer.append(renderNotFoundPage());
+  });
+
+  router.resolve();
 }

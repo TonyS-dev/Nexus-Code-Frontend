@@ -1,5 +1,5 @@
 // frontend/src/services/api.js
-const API_BASE_URL = import.meta.env.BACKEND_API_URL;
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000/api';
 
 export async function apiRequest(path, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${path}`;

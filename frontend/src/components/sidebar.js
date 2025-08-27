@@ -1,35 +1,72 @@
-// src/components/sidebar.js
+// frontend/src/components/sidebar.js
 import { auth } from '../services/auth.js';
 import { router } from '../router/router.js';
 
 export function Sidebar() {
+  const user = auth.getUser();
 
-    const user = auth.getUser();
+  if (!user) {
+    console.warn('No hay usuario autenticado');
+    return document.createElement('aside');
+  }
 
-    if (!user) {
-        console.warn('No hay usuario autenticado');
-        return document.createElement('aside');
-    }
+  const sidebar = document.createElement('aside');
+  sidebar.classList.add('sidebar');
 
-    const sidebar = document.createElement('aside');
-    sidebar.classList.add('sidebar');
+  const menuItems = {
+    employee: [
+      { href: '/home', icon: 'house', label: 'Inicio' },
+      { href: '/my-requests', icon: 'list', label: 'Mis Solicitudes' },
+      { href: '/requests/new', icon: 'plus-circle', label: 'Nueva Solicitud' }
+    ],
+    manager: [
+      { href: '/home', icon: 'house', label: 'Inicio' },
+      { href: '/my-requests', icon: 'list', label: 'Mis Solicitudes' },
+      { href: '/requests/new', icon: 'plus-circle', label: 'Nueva Solicitud' },
+      { href: '/manager-requests', icon: 'check-circle', label: 'Aprobar Solicitudes' }
+    ],
+    hr: [
+      { href: '/home', icon: 'house', label: 'Inicio' },
+      { href: '/my-requests', icon: 'list', label: 'Mis Solicitudes' },
+      { href: '/requests/new', icon: 'plus-circle', label: 'Nueva Solicitud' },
+      { href: '/admin-requests', icon: 'users', label: 'Panel de Talento Humano' },
+      { href: '/manage-users', icon: 'cog', label: 'Gestionar Usuarios' }
+    ]
+  };
 
-    sidebar.innerHTML = `
+  const menu = menuItems[user.role] || menuItems.employee;
+
+  const menuHTML = menu.map(item => `
+    <li><a href="${item.href}" data-navigo><i class="fa-solid fa-${item.icon}"></i> ${item.label}</a></li>
+  `).join('');
+
+  sidebar.innerHTML = `
     <div class="sidebar-header">
-        <img src="https://i.pravatar.cc/60?u=${user.email}" alt="Perfil">
-        <h3>${user.first_name} ${user.last_name}</h3>
-        <p>${user.role_name || 'Empleado'}</p>
+      <img src="https://i.pravatar.cc/60?u=${user.email}" alt="Perfil">
+      <h3>${user.first_name} ${user.last_name}</h3>
+      <p>${user.role_name || 'Empleado'}</p>
     </div>
-
     <div class="sidebar-menu">
-        <ul>
-            <li class="active"><a href="/dashboard" data-navigo><i class="fa-solid fa-house"></i> Dashboard</a></li>
-            <li><a href="/requests/new" data-navigo><i class="fa-solid fa-plus-circle"></i> Nueva Solicitud</a></li>
-            <li><a href="/requests/my" data-navigo><i class="fa-solid fa-list"></i> Mis Solicitudes</a></li>
-        </ul>
+      <ul>
+        ${menuHTML}
+      </ul>
     </div>
+  `;
 
-    `;
+  // ✅ Actualizar activo después de que Navigo lo procese
+  setTimeout(() => {
+    const currentPath = window.location.hash.replace('#', '') || '/';
+    const links = sidebar.querySelectorAll('a[data-navigo]');
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      const parent = link.parentElement;
+      if (href === currentPath) {
+        parent.classList.add('active');
+      } else {
+        parent.classList.remove('active');
+      }
+    });
+  }, 100);
 
-    return sidebar;
+  return sidebar;
 }
