@@ -7,7 +7,9 @@ import { AppLayout } from '../components/layout.js';
 import { showLoginPage } from '../views/login.js';
 import { showDashboardPage } from '../views/dashboard.js';
 import { showMyRequestsPage } from '../views/myRequests.js';
+import { showMyVacationRequestsPage } from '../views/myVacationRequests.js';
 import { showNewRequestPage } from '../views/newRequest.js';
+import { showNewVacationRequestPage } from '../views/newVacationRequest.js';
 import { showManageUsersPage } from '../views/manageUsers.js';
 import { showAdminRequestsPage } from '../views/adminRequests.js';
 import { showManagerRequestsPage } from '../views/managerRequests.js';
@@ -67,11 +69,18 @@ export function setupRouter() {
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
         },
-        '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
+        '/dashboard': () =>
+            renderPage(showDashboardPage, { title: 'Dashboard' }),
         '/my-requests': () =>
             renderPage(showMyRequestsPage, { title: 'My Requests' }),
         '/requests/new': () =>
             renderPage(showNewRequestPage, { title: 'New Request' }),
+        '/my-vacations': () =>
+            renderPage(showMyVacationRequestsPage, { title: 'My Vacations' }),
+        '/vacations/new': () =>
+            renderPage(showNewVacationRequestPage, {
+                title: 'New Vacation Request',
+            }),
 
         // Routes protected by role
         '/manage-users': () =>
