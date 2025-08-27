@@ -32,15 +32,6 @@ export function showDashboardPage() {
       <p>¿Qué deseas hacer hoy?</p>
     </div>
 
-    <div class="quick-actions">
-      ${roleActions.map(action => `
-        <button class="action-btn" onclick="router.navigate('${action.route}')">
-          <i class="fa-solid fa-${action.icon}"></i>
-          <span>${action.label}</span>
-        </button>
-      `).join('')}
-    </div>
-
     <div class="info-cards">
       <div class="info-card">
         <h3>Historial de Solicitudes</h3>
