@@ -3,87 +3,123 @@ import Navigo from 'navigo';
 import { auth } from '../services/auth.js';
 import { AppLayout } from '../components/layout.js';
 
-// Import all page components
+// Imports of all the views
 import { showLoginPage } from '../views/login.js';
 import { showDashboardPage } from '../views/dashboard.js';
+import { showMyRequestsPage } from '../views/myRequests.js';
+import { showNewRequestPage } from '../views/newRequest.js';
+import { showManageUsersPage } from '../views/manageUsers.js';
+import { showAdminRequestsPage } from '../views/adminRequests.js';
+import { showManagerRequestsPage } from '../views/managerRequests.js';
+import { showEmployeeHistoryPage } from '../views/employeeHistory.js';
 import { renderNotFoundPage } from '../views/notFound.js';
 import { renderForbiddenPage } from '../views/forbidden.js';
-// import { showMyRequestsPage } from '../views/myRequests.js'; // !TODO: Create this file
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
 
 /**
- * A helper function to render a page component inside the main AppLayout.
- * @param {Function} pageComponent - The function that returns the page's DOM element.
+ * Renders a page component within the main application layout.
+ * It handles authenticated access and authorization before rendering.
+ * @param {Function} pageComponent - The function that creates the page's DOM element.
+ * @param {Object} [options={}] - Configuration for the route.
+ * @param {string} [options.title] - The title for the navbar.
+ * @param {string} [options.role] - An optional role required to access this page.
  */
-function renderInLayout(pageComponent) {
+function renderPage(pageComponent, options = {}) {
+    if (!auth.isAuthenticated()) {
+        router.navigate('/login');
+        return;
+    }
+
+    const user = auth.getUser();
+    // Role-based authorization check
+    if (options.role && user?.role !== options.role) {
+        // Use role from the API
+        router.navigate('/forbidden');
+        return;
+    }
+
     appContainer.innerHTML = '';
-    const layout = AppLayout();
-    const pageContent = pageComponent();
-    layout.querySelector('#app-content').append(pageContent);
+    const layout = AppLayout(); // Create the main layout (Sidebar + Navbar shell)
+
+    // Pass URL parameters (e.g., :id) to the page component
+    const page = pageComponent(router.lastResolvedMatch?.params);
+
+    // Inject the page content and set the title
+    layout.querySelector('#app-content').append(page);
+    layout.setTitle(options.title || 'Dashboard');
+
     appContainer.append(layout);
 }
 
-/**
- * Sets up and initializes the client-side router with all routes and hooks.
- */
 export function setupRouter() {
-    router.on({
+    const routes = {
         '/': () => {
-            // This is the gatekeeper route, redirecting based on auth status
-            if (auth.isAuthenticated()) {
-                router.navigate('/dashboard');
-            } else {
-                router.navigate('/login');
-            }
+            if (auth.isAuthenticated()) router.navigate('/dashboard');
+            else router.navigate('/login');
         },
         '/login': () => {
-            // The login page is rendered standalone, without the AppLayout
+            if (auth.isAuthenticated()) {
+                router.navigate('/dashboard');
+                return;
+            }
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
         },
-        '/dashboard': () => renderInLayout(showDashboardPage),
-        // '/my-requests': () => renderInLayout(showMyRequestsPage), // !TODO: Create this file
+        '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
+        '/my-requests': () =>
+            renderPage(showMyRequestsPage, { title: 'My Requests' }),
+        '/requests/new': () =>
+            renderPage(showNewRequestPage, { title: 'New Request' }),
 
-        // --- Route for the access denied page ---
+        // Routes protected by role
+        '/manage-users': () =>
+            renderPage(showManageUsersPage, {
+                title: 'Manage Users',
+                role: 'Admin',
+            }), // Example for Admin
+        '/admin-requests': () =>
+            renderPage(showAdminRequestsPage, {
+                title: 'HR Dashboard',
+                role: 'HR',
+            }),
+        '/manager-requests': () =>
+            renderPage(showManagerRequestsPage, {
+                title: 'Approve Requests',
+                role: 'Manager',
+            }),
+
+        // Dynamic route example
+        '/employee/:id/history': (match) =>
+            renderPage(showEmployeeHistoryPage, {
+                title: 'Employee History',
+                params: match.params,
+            }),
+
         '/forbidden': () => {
             appContainer.innerHTML = '';
             appContainer.append(renderForbiddenPage());
         },
-    });
+    };
 
-    // --- Route Protection Hook ---
-    // This runs before every route is resolved
+    router.on(routes);
+
+    // This hook runs AFTER every successful navigation
     router.hooks({
-        before: (done, match) => {
-            const protectedRoutes = ['/dashboard', '/my-requests'];
-            const isProtectedRoute = protectedRoutes.some((r) =>
-                match.url.startsWith(r.substring(1))
-            );
-
-            if (isProtectedRoute && !auth.isAuthenticated()) {
-                // If trying to access a protected route without being logged in, redirect to login
-                router.navigate('/login');
-                done(false); // Stop the current navigation
-            } else if (match.url === 'login' && auth.isAuthenticated()) {
-                // If logged in and trying to access login, redirect to dashboard
-                router.navigate('/dashboard');
-                done(false);
-            } else {
-                // Otherwise, allow navigation to proceed
-                done();
+        after: (match) => {
+            // Update the active state in the sidebar
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar && sidebar.updateActiveLink) {
+                sidebar.updateActiveLink(match.url);
             }
         },
     });
 
-    // --- Not Found Handler ---
-    // This handler is called if no other route matches
     router.notFound(() => {
         appContainer.innerHTML = '';
         appContainer.append(renderNotFoundPage());
     });
 
-    // Start listening for route changes
     router.resolve();
 }

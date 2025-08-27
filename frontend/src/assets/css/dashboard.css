@@ -13,11 +13,6 @@ html, body{
     background: rgb(244, 246, 249);
 
 }
-.dashboard-container{
-    display: flex;
-    width:100vw;
-    height:100vh;
-}
 .sidebar{
     width: 240px;
     background: rgb(249, 249, 249);
