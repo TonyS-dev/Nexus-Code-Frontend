@@ -1,108 +1,83 @@
-// frontend/src/views/login.js
 import { auth } from '../services/auth.js';
 import { router } from '../router/router.js';
 import { toggleTheme } from '../services/theme.js';
 
 /**
- * Activa el cambio de tema (light/dark)
+ * Enables theme switching (light/dark)
  */
 function setupThemeToggle(element) {
-  const themeToggle = element.querySelector('#themeToggle');
-  if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-  }
+    const themeToggle = element.querySelector('#themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
 }
 
 /**
- * Activa el ojo para mostrar/ocultar contraseña
+ * Enables the eye icon to show/hide password
  */
 function setupPasswordToggle(element) {
-  const togglePassword = element.querySelector('#togglePassword');
-  const passwordInput = element.querySelector('#password');
-  if (!togglePassword || !passwordInput) return;
+    const togglePassword = element.querySelector('#togglePassword');
+    const passwordInput = element.querySelector('#password');
+    if (!togglePassword || !passwordInput) return;
 
-  togglePassword.addEventListener('click', () => {
-    const isPassword = passwordInput.type === 'password';
-    passwordInput.type = isPassword ? 'text' : 'password';
-    togglePassword.src = isPassword
-      ? '/images/hidden.png'
-      : '/images/visible.png';
-  });
+    togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePassword.src = isPassword
+            ? '/images/hidden.png'
+            : '/images/visible.png';
+    });
 }
 
 /**
- * Configura el formulario de login y su lógica
+ * Sets up the login form and its logic
  */
 function setupLoginForm(element) {
-  const loginForm = element.querySelector('#loginForm');
-  const errorMessageElement = element.querySelector('#login-error');
-  if (!loginForm) return;
+    const loginForm = element.querySelector('#loginForm');
+    const errorMessageElement = element.querySelector('#login-error');
+    if (!loginForm) return;
 
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorMessageElement.style.display = 'none';
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorMessageElement.style.display = 'none';
 
-    try {
-      const email = element.querySelector('#email').value.trim();
-      const password = element.querySelector('#password').value;
+        try {
+            const email = element.querySelector('#email').value.trim();
+            const password = element.querySelector('#password').value;
 
-      // 🔍 Validación básica
-      if (!email || !password) {
-        throw new Error('Por favor, completa todos los campos');
-      }
+            if (!email || !password) {
+                throw new Error('Please fill in all fields.');
+            }
 
-      // ✅ Simulación de autenticación (en producción: llamada al backend)
-      // Aquí puedes agregar una API real después
-      console.log('Intentando login con:', email);
+            console.log('Attempting login with:', email);
 
-      // 🎯 Determinar rol por el correo
-      let role = 'employee';
-      let roleName = 'Empleado';
+            // Call the function 'login' from the authentication service
+            await auth.login(email, password);
 
-      if (email.includes('hr@') || email.includes('talento@')) {
-        role = 'hr';
-        roleName = 'Talento Humano';
-      } else if (email.includes('manager@') || email.includes('lider@')) {
-        role = 'manager';
-        roleName = 'Líder de equipo';
-      }
-
-      // 📦 Datos del usuario (simulados, en producción vienen del backend)
-      const userData = {
-        id: Date.now().toString(), // temporal
-        first_name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
-        last_name: '',
-        email,
-        role,
-        role_name: roleName
-      };
-
-      // ✅ 1. Guardar usuario y token
-      auth.login(userData);
-
-      // ✅ 2. Navegar al home
-      router.navigate('/home');
-
-    } catch (error) {
-      // Mostrar error en pantalla
-      errorMessageElement.textContent = error.message || 'Error al iniciar sesión';
-      errorMessageElement.style.display = 'block';
-    }
-  });
+            // If the previous line does not throw an error, login was successful.
+            // Navigate to the dashboard.
+            router.navigate('/dashboard');
+        } catch (error) {
+            // Shows the error message from the backend or validation.
+            errorMessageElement.textContent =
+                error.message || 'Login failed. Please try again.';
+            errorMessageElement.style.display = 'block';
+        }
+    });
 }
 
 /**
- * Renderiza la vista de login
+ * Renders the login view
  */
 export function showLoginPage() {
-  const loginContainer = document.createElement('div');
-  const currentTheme = localStorage.getItem('theme') || 'dark';
-  const initialLogoSrc =
-    currentTheme === 'light'
-      ? '/images/logo-light.webp'
-      : '/images/logo-dark.png';
+    const loginContainer = document.createElement('div');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const initialLogoSrc =
+        currentTheme === 'light'
+            ? '/images/logo-light.webp'
+            : '/images/logo-dark.png';
 
-  loginContainer.innerHTML = `
+    loginContainer.innerHTML = `
     <div class="login-container theme-container">
       <button id="themeToggle" class="theme-toggle" aria-label="Switch theme">
         <span class="sun">☀️</span>
@@ -155,10 +130,10 @@ export function showLoginPage() {
     </div>
   `;
 
-  // 🔧 Inicializar funcionalidades
-  setupThemeToggle(loginContainer);
-  setupPasswordToggle(loginContainer);
-  setupLoginForm(loginContainer);
+    // 🔧 Initialize functionalities
+    setupThemeToggle(loginContainer);
+    setupPasswordToggle(loginContainer);
+    setupLoginForm(loginContainer);
 
-  return loginContainer;
+    return loginContainer;
 }

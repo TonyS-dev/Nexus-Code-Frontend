@@ -1,46 +1,43 @@
-// frontend/src/components/layout.js
+// frontend/src/components/Layout.js
+
 import { Sidebar } from './sidebar.js';
 import { Navbar } from './navbar.js';
 
+/**
+ * Creates the main application layout which includes the sidebar and the main content area.
+ * This component acts as the primary container for all authenticated views.
+ */
 export function AppLayout() {
-    console.log('AppLayout: creado');
+    const layoutContainer = document.createElement('div');
+    layoutContainer.className = 'app-container';
 
-    const appContainer = document.createElement('div');
-    appContainer.className = 'app-container';
-    appContainer.style.display = 'flex';
-    appContainer.style.height = '100vh';
-    appContainer.style.width = '100vw';
-    appContainer.style.overflow = 'hidden';
+    // Create the main structural elements
+    const sidebarContainer = document.createElement('div');
+    sidebarContainer.id = 'sidebar-container';
 
-    appContainer.innerHTML = `
-        <div id="sidebar-container"></div>
-        <div class="main-panel">
-            <header id="navbar-container"></header>
-            <main id="app-content" style="flex: 1; overflow-y: auto; padding: 20px; background: #f9f9f9;"></main>
-        </div>
-    `;
-    try {
+    const mainPanel = document.createElement('div');
+    mainPanel.className = 'main-panel';
 
-        const sidebarElement = Sidebar();  // ← Ahora sí está definido
-        const sidebarContainer = appContainer.querySelector('#sidebar-container');
-        sidebarContainer.appendChild(sidebarElement);
-        sidebarElement.style.width = '240px';
-        sidebarElement.style.minWidth = '240px';
-        sidebarElement.style.boxSizing = 'border-box';
-        console.log('Sidebar inyectado correctamente');
-    } catch (error) {
-        console.error('Error al inyectar Sidebar:', error);
-    }
+    const navbarContainer = document.createElement('header');
+    navbarContainer.id = 'navbar-container';
 
-    try {
+    const contentArea = document.createElement('main');
+    contentArea.id = 'app-content'; // This is where the router will inject pages
 
-        const navbarElement = Navbar();  // ← Ahora sí está definido
-        const navbarContainer = appContainer.querySelector('#navbar-container');
-        navbarContainer.appendChild(navbarElement);
-        console.log('Navbar inyectado correctamente');
-    } catch (error) {
-    console.error('Error al inyectar Navbar:', error);
-    }
+    // Assemble the structure
+    mainPanel.append(navbarContainer, contentArea);
+    layoutContainer.append(sidebarContainer, mainPanel);
 
-    return appContainer;
+    // Populate the containers with their respective components
+    sidebarContainer.append(Sidebar());
+
+    const navbarComponent = Navbar();
+    navbarContainer.append(navbarComponent);
+
+    // Expose a method on the layout itself to set the navbar title
+    layoutContainer.setTitle = (title) => {
+        navbarComponent.setTitle(title);
+    };
+
+    return layoutContainer;
 }

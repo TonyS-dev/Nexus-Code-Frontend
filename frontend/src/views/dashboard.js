@@ -1,11 +1,11 @@
-// frontend/src/views/home.js
+// frontend/src/views/dashboard.js
 import { auth } from '../services/auth.js';
 import { router } from '../router/router.js';
 
-export function showHomePage() {
+export function showDashboardPage() {
   const user = auth.getUser();
   const container = document.createElement('div');
-  container.className = 'home-container';
+  container.className = 'dashboard-container';
 
   const actions = {
     employee: [
