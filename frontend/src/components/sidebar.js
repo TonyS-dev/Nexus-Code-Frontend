@@ -77,6 +77,19 @@ export function Sidebar() {
     `;
     sidebarElement.querySelector('.sidebar-menu').appendChild(menuList);
 
+    // Agregar event listeners para manejar clicks en los enlaces del menú
+    sidebarElement.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Remover clase active de todos los li dentro de este sidebar
+            sidebarElement.querySelectorAll('.sidebar-menu li').forEach(li => {
+                li.classList.remove('active');
+            });
+            
+            // Agregar clase active al li padre del enlace clickeado
+            this.parentElement.classList.add('active');
+        });
+    });
+
     /**
      * Exposes a method to update the active link based on the current route.
      * @param {string} currentPath - The current route path (e.g., 'dashboard').
@@ -85,6 +98,9 @@ export function Sidebar() {
         sidebarElement.querySelectorAll('a[data-navigo]').forEach((link) => {
             const linkPath = link.getAttribute('href');
             const parentLi = link.parentElement;
+
+            // Remove active class from all items first
+            parentLi.classList.remove('active');
 
             // Exact match for the dashboard/home page
             if (linkPath === '/' && currentPath === 'dashboard') {
@@ -95,8 +111,6 @@ export function Sidebar() {
             // More precise matching for other links
             if (linkPath !== '/' && `/${currentPath}`.startsWith(linkPath)) {
                 parentLi.classList.add('active');
-            } else {
-                parentLi.classList.remove('active');
             }
         });
     };
