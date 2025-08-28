@@ -13,32 +13,48 @@ export function Sidebar() {
     const sidebarElement = document.createElement('aside');
     sidebarElement.className = 'sidebar';
 
-    // Define menu items based on the 'role_name' from the API
-    const menuItems = {
-        Employee: [
-            { href: '/dashboard', icon: 'house', label: 'Dashboard' },
-            { href: '/my-requests', icon: 'file-alt', label: 'My Requests' },
-            { href: '/requests/new', icon: 'plus-circle', label: 'New Request' },
-            { href: '/employee/history', icon: 'history', label: 'My History' },
-        ],
-        Manager: [
-            { href: '/dashboard', icon: 'house', label: 'Dashboard' },
-            { href: '/my-requests', icon: 'file-alt', label: 'My Requests' },
-            { href: '/manager-requests', icon: 'check-circle', label: 'Approve Requests' },
-        ],
-        Admin: [
-            { href: '/dashboard', icon: 'house', label: 'Dashboard' },
-            { href: '/manage-users', icon: 'users-cog', label: 'Manage Users' },
-            { href: '/admin-requests', icon: 'tachometer-alt', label: 'HR Dashboard' },
-        ],
-        // !TODO: Add hr Role if necessary
-    };
-    
-    // Default to 'Employee' menu if role is not recognized
-    const userMenu = menuItems[user.role_name] || menuItems.Employee;
+    // --- Menu Definition ---
+    // Start with a base menu for all employees
+    let menuItems = [
+        { href: '/dashboard', icon: 'house', label: 'Dashboard' },
+        { href: '/my-requests', icon: 'file-alt', label: 'My Requests' },
+        { href: '/requests/new', icon: 'plus-circle', label: 'New Request' },
+        // Let's use the user's ID for a dynamic history route
+        {
+            href: `/employee/${user.id}/history`,
+            icon: 'history',
+            label: 'My History',
+        },
+    ];
 
+    // Add manager-specific links if the user is a Manager or Admin
+    if (
+        user.role_name === 'Manager' ||
+        user.role_name === 'Admin' ||
+        user.role_name === 'HR'
+    ) {
+        menuItems.push({
+            href: '/manager-requests',
+            icon: 'check-circle',
+            label: 'Approve Requests',
+        });
+    }
+
+    // Add HR/Admin-specific links
+    if (user.role_name === 'Admin' || user.role_name === 'HR') {
+        menuItems.push(
+            {
+                href: '/admin-requests',
+                icon: 'tachometer-alt',
+                label: 'HR Dashboard',
+            },
+            { href: '/manage-users', icon: 'users-cog', label: 'Manage Users' }
+        );
+    }
+
+    // Create the menu list element from the final menuItems array
     const menuList = document.createElement('ul');
-    userMenu.forEach(item => {
+    menuItems.forEach((item) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.href = item.href;
@@ -55,19 +71,29 @@ export function Sidebar() {
             <p>${user.role_name || 'Employee'}</p>
         </div>
         <div class="sidebar-menu"></div>
+        <div class="sidebar-footer">
+             <!-- The logout button is better placed in the Navbar for consistency -->
+        </div>
     `;
     sidebarElement.querySelector('.sidebar-menu').appendChild(menuList);
 
     /**
      * Exposes a method to update the active link based on the current route.
-     * @param {string} path - The current route path (e.g., '/dashboard').
+     * @param {string} currentPath - The current route path (e.g., 'dashboard').
      */
-    sidebarElement.updateActiveLink = (path) => {
-        sidebarElement.querySelectorAll('a[data-navigo]').forEach(link => {
+    sidebarElement.updateActiveLink = (currentPath) => {
+        sidebarElement.querySelectorAll('a[data-navigo]').forEach((link) => {
             const linkPath = link.getAttribute('href');
             const parentLi = link.parentElement;
-            // Add 'active' class if the path matches exactly or is a sub-route
-            if (path === linkPath || (linkPath !== '/' && path.startsWith(linkPath))) {
+
+            // Exact match for the dashboard/home page
+            if (linkPath === '/' && currentPath === 'dashboard') {
+                parentLi.classList.add('active');
+                return;
+            }
+
+            // More precise matching for other links
+            if (linkPath !== '/' && `/${currentPath}`.startsWith(linkPath)) {
                 parentLi.classList.add('active');
             } else {
                 parentLi.classList.remove('active');
@@ -75,7 +101,8 @@ export function Sidebar() {
         });
     };
 
-    router.updatePageLinks(); // Tell Navigo to scan for new data-navigo links
+    // Tell Navigo to scan for the new data-navigo links on creation
+    router.updatePageLinks();
 
     return sidebarElement;
 }

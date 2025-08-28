@@ -1,120 +1,102 @@
-// frontend/src/views/newRequest.js
+// frontend/src/pages/newRequest.js
 import { auth } from '../services/auth.js';
-import { apiRequest } from '../services/api.js';
+import { requestService } from '../services/requestService.js';
 import { router } from '../router/router.js';
 
 export function showNewRequestPage() {
-  const container = document.createElement('div');
-  container.className = 'content-section';
+    const container = document.createElement('div');
+    container.className = 'content-section';
 
-  container.innerHTML = `
-    <div class="main-header">
-      <h1>Nueva Solicitud</h1>
-      <button class="btn btn-secondary" onclick="router.navigate('/my-requests')">Volver</button>
-    </div>
+    // This view is simple and just renders the form directly.
+    renderForm(container);
+    setupEventListeners(container);
 
-    <form id="form-new-request" class="form-grid">
-      <div class="form-group">
-        <label>Tipo de solicitud *</label>
-        <select id="request-type" required>
-          <option value="">Seleccionar...</option>
-          <option value="vacation">Vacaciones</option>
-          <option value="personal">Permiso Personal</option>
-          <option value="medical">Permiso Médico</option>
-          <option value="compensatory">Día Compensatorio</option>
-          <option value="maternity">Licencia de Maternidad</option>
-          <option value="paternity">Licencia de Paternidad</option>
-          <option value="labor-certificate">Certificado Laboral</option>
-          <option value="severance">Constancia de Cesantías</option>
-        </select>
-      </div>
+    return container;
+}
 
-      <div class="form-group">
-        <label>Fecha de inicio *</label>
-        <input type="date" id="start-date" required />
-      </div>
+function renderForm(container) {
+    container.innerHTML = `
+        <div class="main-header">
+            <h1>New Request</h1>
+            <button class="btn btn-secondary" data-action="back">Back to My Requests</button>
+        </div>
 
-      <div class="form-group">
-        <label>Fecha de fin *</label>
-        <input type="date" id="end-date" required />
-      </div>
+        <form id="new-request-form" class="form-grid">
+            <div class="form-group">
+                <label for="request-type">Request Type *</label>
+                <select id="request-type" required>
+                    <option value="">Select...</option>
+                    <option value="vacation">Vacation</option>
+                    <option value="leave">Leave / Permit</option>
+                    <option value="certificate">Certificate</option>
+                </select>
+            </div>
 
-      <div class="form-group full-width">
-        <label>Comentario (opcional)</label>
-        <textarea id="comment" rows="4" placeholder="Detalles adicionales..."></textarea>
-      </div>
+            <div class="form-group">
+                <label for="start-date">Start Date *</label>
+                <input type="date" id="start-date" required>
+            </div>
 
-      <div class="form-group full-width">
-        <label>Adjuntar soporte (PDF, imagen)</label>
-        <input type="file" id="attachment" accept=".pdf,.jpg,.png,.jpeg" />
-      </div>
+            <div class="form-group">
+                <label for="end-date">End Date *</label>
+                <input type="date" id="end-date" required>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="comments">Comments (Optional)</label>
+                <textarea id="comments" rows="4" placeholder="Additional details..."></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </div>
+            <p id="form-error" class="error-message" style="display: none;"></p>
+        </form>
+    `;
+}
 
-      <div class="form-actions">
-        <button type="submit" form="form-new-request" class="btn btn-primary">Enviar Solicitud</button>
-        <button type="button" onclick="router.navigate('/my-requests')" class="btn btn-secondary">Cancelar</button>
-      </div>
-    </form>
-  `;
+function setupEventListeners(container) {
+    container.querySelector('[data-action="back"]').onclick = () =>
+        router.navigate('/my-requests');
 
-  //Se maneja form
-  container.querySelector('#form-new-request').addEventListener('submit', async (e) => {
-    e.preventDefault();
+    const form = container.querySelector('#new-request-form');
+    const errorElement = container.querySelector('#form-error');
 
-    const user = auth.getUser();
-    const type = container.querySelector('#request-type').value;
-    const startDate = container.querySelector('#start-date').value;
-    const endDate = container.querySelector('#end-date').value;
-    const comment = container.querySelector('#comment').value;
-    const file = container.querySelector('#attachment').files[0];
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorElement.style.display = 'none';
 
-    // 🔹 Validación: fechas
-    if (new Date(endDate) < new Date(startDate)) {
-      alert('La fecha de fin no puede ser anterior a la de inicio.');
-      return;
-    }
+        try {
+            const user = auth.getUser();
+            const formData = {
+                employee_id: user.id,
+                request_type: container.querySelector('#request-type').value,
+                start_date: container.querySelector('#start-date').value,
+                end_date: container.querySelector('#end-date').value,
+                comments: container.querySelector('#comments').value,
+                // The backend will set the initial status
+            };
 
-    // 🔹 Validación: vacaciones (solo si es de tipo "vacation")
-    if (type === 'vacation') {
-      try {
-        const balance = await apiRequest(`/vacation-balance/${user.id}`);
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const daysRequested = Math.ceil((end - start) / 86400000) + 1; // +1 porque es inclusivo
+            // Basic validation
+            if (
+                !formData.request_type ||
+                !formData.start_date ||
+                !formData.end_date
+            ) {
+                throw new Error('Please fill all required fields.');
+            }
+            if (new Date(formData.end_date) < new Date(formData.start_date)) {
+                throw new Error('End date cannot be before the start date.');
+            }
 
-        if (daysRequested > balance.available) {
-          alert(`Solo tienes ${balance.available} días de vacaciones disponibles.`);
-          return;
+            // Use the centralized requestService to create the request
+            await requestService.createRequest(formData);
+
+            alert('Request submitted successfully!');
+            router.navigate('/my-requests');
+        } catch (error) {
+            errorElement.textContent = error.message;
+            errorElement.style.display = 'block';
         }
-      } catch (error) {
-        alert('No se pudo verificar tu saldo de vacaciones. Intenta más tarde.');
-        console.error('Error al obtener saldo de vacaciones:', error);
-        return;
-      }
-    }
-
-    // ✅ Preparar datos para enviar
-    const requestData = {
-      type,
-      start_date: startDate,
-      end_date: endDate,
-      comment: comment || null,
-      employee_id: user.id
-    };
-
-    const formData = new FormData();
-    Object.keys(requestData).forEach(key => {
-      if (requestData[key] !== null) formData.append(key, requestData[key]);
     });
-    if (file) formData.append('attachment', file);
-
-    try {
-      await apiRequest('/requests', 'POST', Object.fromEntries(formData));
-      alert('Solicitud enviada correctamente');
-      router.navigate('/my-requests');
-    } catch (error) {
-      alert('Error al enviar la solicitud: ' + (error.message || 'Inténtalo más tarde'));
-    }
-  });
-
-  return container;
 }

@@ -1,55 +1,51 @@
-// src/views/employeeHistory.js
+// frontend/src/views/employeeHistory.js
 import { auth } from '../services/auth.js';
 import { apiRequest } from '../services/api.js';
 
-export async function showEmployeeHistoryPage() {
-  const user = auth.getUser();
-  const container = document.createElement('div');
-  container.className = 'content-section';
+export function showEmployeeHistoryPage(params) {
+    const container = document.createElement('div');
+    container.className = 'content-section';
+    container.innerHTML = `<div class="loading">Loading employee history...</div>`;
 
-  try {
-    // Obtener datos del empleado y sus solicitudes
-    const employee = await apiRequest(`/employees/${user.id}`);
-    const requests = await apiRequest(`/requests/employee/${user.id}`);
+    async function loadHistory() {
+        try {
+            // Use the authenticated user's ID if no parameters are provided
+            const employeeId = params?.id || auth.getUser()?.id;
+            if (!employeeId) throw new Error('Employee ID not found.');
 
-    container.innerHTML = `
-      <div class="main-header">
-        <h1>Historial de ${employee.first_name} ${employee.last_name}</h1>
-      </div>
+            // In the future, we would call a specific history endpoint
+            // For now, reuse the one to get employee data
+            const employee = await apiRequest(`/employees/${employeeId}`);
 
-      <div class="profile-card">
-        <h3>Información Personal</h3>
-        <p><strong>Email:</strong> ${employee.email}</p>
-        <p><strong>Rol:</strong> ${employee.role_name}</p>
-        <p><strong>Área:</strong> ${employee.department || '–'}</p>
-        <p><strong>Fecha de ingreso:</strong> ${new Date(employee.hire_date).toLocaleDateString('es-ES')}</p>
-      </div>
+            if (!employee) {
+                container.innerHTML = `<div class="alert error">Employee not found.</div>`;
+                return;
+            }
 
-      <h3>Solicitudes Realizadas</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Periodo</th>
-            <th>Estado</th>
-            <th>Comentario</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${requests.map(r => `
-            <tr>
-              <td>${r.type}</td>
-              <td>${r.start_date} → ${r.end_date}</td>
-              <td><span class="status ${r.status}">${r.status}</span></td>
-              <td>${r.comment || '–'}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  } catch (error) {
-    container.innerHTML = `<div class="alert error">Error: ${error.message}</div>`;
-  }
+            // Llogic to display the actual history
+            container.innerHTML = `
+                <div class="main-header">
+                    <h1>History for ${employee.first_name} ${
+                employee.last_name
+            }</h1>
+                </div>
+                <div class="profile-card">
+                    <h3>Personal Information</h3>
+                    <p><strong>Email:</strong> ${employee.email}</p>
+                    <p><strong>Role:</strong> ${
+                        employee.roles.map((r) => r.name).join(', ') || 'N/A'
+                    }</p>
+                    <p><strong>Hire Date:</strong> ${new Date(
+                        employee.hire_date
+                    ).toLocaleDateString()}</p>
+                </div>
+                <!-- Here you would show a table or timeline with data from the employee_histories table -->
+            `;
+        } catch (error) {
+            container.innerHTML = `<div class="alert error">Error loading history: ${error.message}</div>`;
+        }
+    }
 
-  return container;
+    loadHistory();
+    return container;
 }

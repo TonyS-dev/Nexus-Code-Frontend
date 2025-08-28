@@ -3,7 +3,7 @@ import Navigo from 'navigo';
 import { auth } from '../services/auth.js';
 import { AppLayout } from '../components/layout.js';
 
-// Imports of all the views
+// Imports of all the views 
 import { showLoginPage } from '../views/login.js';
 import { showDashboardPage } from '../views/dashboard.js';
 import { showMyRequestsPage } from '../views/myRequests.js';
@@ -33,23 +33,19 @@ function renderPage(pageComponent, options = {}) {
     }
 
     const user = auth.getUser();
-    // Role-based authorization check
     if (options.role && user?.role !== options.role) {
-        // Use role from the API
         router.navigate('/forbidden');
         return;
     }
 
     appContainer.innerHTML = '';
-    const layout = AppLayout(); // Create the main layout (Sidebar + Navbar shell)
+    const layout = AppLayout();
 
-    // Pass URL parameters (e.g., :id) to the page component
-    const page = pageComponent(router.lastResolvedMatch?.params);
+    const match = router.lastResolved()?.[0];
+    const page = pageComponent(match?.params); // Pass the params object to the page
 
-    // Inject the page content and set the title
     layout.querySelector('#app-content').append(page);
     layout.setTitle(options.title || 'Dashboard');
-
     appContainer.append(layout);
 }
 
@@ -67,7 +63,8 @@ export function setupRouter() {
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
         },
-        '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
+        '/dashboard': () =>
+            renderPage(showDashboardPage, { title: 'Dashboard' }),
         '/my-requests': () =>
             renderPage(showMyRequestsPage, { title: 'My Requests' }),
         '/requests/new': () =>
@@ -78,7 +75,7 @@ export function setupRouter() {
             renderPage(showManageUsersPage, {
                 title: 'Manage Users',
                 role: 'Admin',
-            }), // Example for Admin
+            }),
         '/admin-requests': () =>
             renderPage(showAdminRequestsPage, {
                 title: 'HR Dashboard',
@@ -90,11 +87,11 @@ export function setupRouter() {
                 role: 'Manager',
             }),
 
-        // Dynamic route example
+        // Dynamic route 
         '/employee/:id/history': (match) =>
             renderPage(showEmployeeHistoryPage, {
                 title: 'Employee History',
-                params: match.params,
+                params: match.data,
             }),
 
         '/forbidden': () => {
@@ -105,20 +102,17 @@ export function setupRouter() {
 
     router.on(routes);
 
-    // This hook runs AFTER every successful navigation
     router.hooks({
         after: (match) => {
-            // Update the active state in the sidebar
             const sidebar = document.querySelector('.sidebar');
             if (sidebar && sidebar.updateActiveLink) {
-                sidebar.updateActiveLink(match.url);
+                sidebar.updateActiveLink(`/${match.url}`);
             }
         },
     });
 
     router.notFound(() => {
-        appContainer.innerHTML = '';
-        appContainer.append(renderNotFoundPage());
+        renderPage(renderNotFoundPage, { title: 'Not Found' });
     });
 
     router.resolve();
