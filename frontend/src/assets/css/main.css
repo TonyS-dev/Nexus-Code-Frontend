@@ -1,6 +1,6 @@
-/* main.css - Variables CSS actualizadas con nueva paleta */
+/* main.css - CSS variables updated with new palette */
 :root {
-    /* Colores principales */
+    /* Primary colors */
     --primary: #6b46f3;
     --primary-dark: #5b3ae6;
     --primary-light: #8b5cf6;
@@ -12,7 +12,7 @@
     --dark-bg: #171e4a;
     --dark-bg-light: #1e293b;
     
-    /* Grises y neutros */
+    /* Grays and neutrals */
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
     --gray-200: #e2e8f0;
@@ -24,7 +24,7 @@
     --gray-800: #1e293b;
     --gray-900: #0f172a;
     
-    /* Estados */
+    /* States */
     --success: #5acca4;
     --warning: #f59e0b;
     --error: #ef4444;
@@ -35,31 +35,31 @@
     --bg-secondary: #ffffff;
     --bg-dark: #171e4a;
     
-    /* Texto */
+    /* Text */
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --text-light: #94a3b8;
     --text-white: #ffffff;
     
-    /* Bordes */
+    /* Borders */
     --border-light: #e2e8f0;
     --border-medium: #cbd5e1;
     --border-dark: #94a3b8;
     
-    /* Sombras */
+    /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
     --shadow-primary: 0 4px 12px rgba(107, 70, 243, 0.3);
     --shadow-secondary: 0 4px 12px rgba(90, 204, 164, 0.3);
     
-    /* Radios */
+    /* Border radius */
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
     
-    /* Espaciado */
+    /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
@@ -67,13 +67,13 @@
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
     
-    /* Transiciones */
+    /* Transitions */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
 }
 
-/* Tema claro */
+/* Light theme */
 .theme-light {
     --left-bg: #ffffff;
     --input-border: #cbd5e1;
@@ -87,7 +87,7 @@
     --border-radius: var(--radius-lg);
 }
 
-/* Tema oscuro */
+/* Dark theme */
 .theme-dark {
     --left-bg: #171e4a;
     --input-border: #475569;
@@ -116,7 +116,7 @@ body {
     transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* Utilidades globales */
+/* Global utilities */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -183,7 +183,7 @@ body {
     transition: all var(--transition-normal);
 }
 
-/* Tipografía */
+/* Typography */
 .text-xs { font-size: 0.75rem; }
 .text-sm { font-size: 0.875rem; }
 .text-base { font-size: 1rem; }
@@ -202,7 +202,7 @@ body {
 .text-light { color: var(--text-light); }
 .text-white { color: var(--text-white); }
 
-/* Colores de texto para estados */
+/* Text colors for states */
 .text-success { color: var(--success); }
 .text-warning { color: var(--warning); }
 .text-error { color: var(--error); }
@@ -218,12 +218,12 @@ body {
 .bg-error { background-color: var(--error); }
 .bg-info { background-color: var(--info); }
 
-/* Bordes */
+/* Borders */
 .border { border: 1px solid var(--border-light); }
 .border-medium { border: 1px solid var(--border-medium); }
 .border-dark { border: 1px solid var(--border-dark); }
 
-/* Botones base */
+/* Base buttons */
 .btn-base {
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-md);
@@ -271,7 +271,7 @@ body {
     color: var(--text-white);
 }
 
-/* Formularios base */
+/* Base forms */
 .form-input {
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-light);
@@ -297,7 +297,7 @@ body {
     display: block;
 }
 
-/* Cards base */
+/* Base cards */
 .card {
     background: var(--bg-secondary);
     border-radius: var(--radius-lg);
@@ -312,7 +312,7 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-/* Estados de loading */
+/* Loading states */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -351,7 +351,15 @@ body {
     }
 }
 
-/* Animaciones personalizadas */
+.show-sm { display: none; }
+.show-md { display: none; }
+.show-lg { display: none; }
+
+@media (min-width: 640px) { .show-sm { display: block; } }
+@media (min-width: 768px) { .show-md { display: block; } }
+@media (min-width: 1024px) { .show-lg { display: block; } }
+
+/* Custom animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -370,7 +378,7 @@ body {
     animation: slideIn 0.3s ease-out;
 }
 
-/* Efectos hover personalizados */
+/* Custom hover effects */
 .hover-lift {
     transition: transform var(--transition-normal);
 }
@@ -402,7 +410,7 @@ body {
     justify-content: center;
 }
 
-/* Scrollbar personalizado */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
 }

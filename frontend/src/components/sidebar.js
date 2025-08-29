@@ -77,15 +77,15 @@ export function Sidebar() {
     `;
     sidebarElement.querySelector('.sidebar-menu').appendChild(menuList);
 
-    // Agregar event listeners para manejar clicks en los enlaces del menú
+    // Add event listeners to handle menu link clicks
     sidebarElement.querySelectorAll('.sidebar-menu a').forEach(link => {
         link.addEventListener('click', function(e) {
-            // Remover clase active de todos los li dentro de este sidebar
+            // Remove active class from all li elements within this sidebar
             sidebarElement.querySelectorAll('.sidebar-menu li').forEach(li => {
                 li.classList.remove('active');
             });
             
-            // Agregar clase active al li padre del enlace clickeado
+            // Add active class to the parent li of the clicked link
             this.parentElement.classList.add('active');
         });
     });

@@ -1,6 +1,6 @@
-/* styles.css - Estructura principal y layout de la aplicación */
+/* styles.css - Main structure and design of the application */
 
-/* Estructura del Layout */
+/* Layout Structure */
 .app-container {
     display: flex;
     min-height: 100vh;
@@ -19,7 +19,7 @@
     overflow-y: auto;
 }
 
-/* Estilos de páginas de estado (404, 403) */
+/* Status page styles (404, 403) */
 .status-page-container {
     display: flex;
     align-items: center;
@@ -62,7 +62,7 @@
 /* Responsive */
 @media (max-width: 768px) {
     .app-container {
-        flex-direction: column-reverse; /* El sidebar ahora va abajo */
+        flex-direction: column-reverse;   /* The sidebar now goes below */
     }
     
     .page-content {

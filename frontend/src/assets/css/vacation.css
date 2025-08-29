@@ -1,6 +1,6 @@
-/* vacation.css - Actualizado con nueva paleta de colores */
+/* vacation.css - Updated with new color palette */
 
-/* ===== COMPONENTES COMUNES ===== */
+/* ===== COMMON COMPONENTS ===== */
 .loading-container,
 .error-container {
     display: flex;
@@ -36,7 +36,7 @@
     margin-bottom: 1rem;
 }
 
-/* ===== ALERTAS ===== */
+/* ===== ALERTS ===== */
 .alerts-section {
     margin-bottom: 2rem;
 }
@@ -111,7 +111,7 @@
     background: rgba(0, 0, 0, 0.05);
 }
 
-/* ===== TARJETAS DE RESUMEN ===== */
+/* ===== SUMMARY CARDS ===== */
 .vacation-summary,
 .vacation-summary-cards {
     display: grid;
@@ -179,7 +179,7 @@
     color: #1e293b;
 }
 
-/* Para las tarjetas simples del formulario */
+/* For simple form cards */
 .summary-card h3 {
     font-size: 0.875rem;
     font-weight: 600;
@@ -191,7 +191,7 @@
 .days-count.used { color: #f59e0b; }
 .days-count.pending { color: #6b46f3; }
 
-/* ===== FORMULARIOS ===== */
+/* ===== FORMS ===== */
 .vacation-request-container,
 .my-requests-container {
     padding: 0;
@@ -253,7 +253,7 @@
     min-height: 100px;
 }
 
-/* ===== INFORMACIÓN CALCULADA ===== */
+/* ===== CALCULATED INFO ===== */
 .calculated-info {
     background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     padding: 1.5rem;
@@ -284,7 +284,7 @@
     font-size: 1.125rem;
 }
 
-/* ===== BOTONES ===== */
+/* ===== BUTTONS ===== */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -382,7 +382,7 @@
     transform: translateY(-1px);
 }
 
-/* ===== TABLAS ===== */
+/* ===== TABLES ===== */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -478,7 +478,7 @@
     font-size: 1.125rem;
 }
 
-/* ===== BADGES DE ESTADO ===== */
+/* ===== STATUS BADGES ===== */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -510,13 +510,13 @@
     color: #475569;
 }
 
-/* ===== ACCIONES ===== */
+/* ===== ACTIONS ===== */
 .action-buttons {
     display: flex;
     gap: 0.5rem;
 }
 
-/* ===== ESTADO VACÍO ===== */
+/* ===== EMPTY STATE ===== */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -608,7 +608,7 @@
     padding: 1.5rem;
 }
 
-/* ===== DETALLES DE SOLICITUD ===== */
+/* ===== REQUEST DETAILS ===== */
 .request-details {
     display: flex;
     flex-direction: column;
@@ -719,7 +719,7 @@
     font-size: 0.75rem;
 }
 
-/* ===== MENSAJES ===== */
+/* ===== MESSAGES ===== */
 .error-message,
 .success-message {
     padding: 1rem;
@@ -740,7 +740,7 @@
     border: 1px solid #a7f3d0;
 }
 
-/* ===== RESPONSIVO ===== */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .vacation-summary,
     .vacation-summary-cards {

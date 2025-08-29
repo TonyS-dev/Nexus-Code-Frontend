@@ -1,4 +1,4 @@
-/* dashboard.css - Estilos específicos para el Dashboard */
+/* dashboard.css - Specific styles for the Dashboard */
 
 .main-header {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
@@ -48,7 +48,7 @@
     width: 70em;
     height: 5em;    
     margin-left: 15em;
-    margin-top: 2.5em;
+    margin-top: em;
 }
 
 .dashboard-card, .info-card {
@@ -126,7 +126,7 @@
     gap: 8px;
 }
 
-/* Badges de estado */
+/* Status badges */
 .status {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
