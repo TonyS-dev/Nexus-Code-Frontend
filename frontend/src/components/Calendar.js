@@ -10,17 +10,49 @@ export function renderCalendar(container, events = []) {
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,dayGridWeek'
+      right: ''
     },
     height: 'auto',
-    allDayDefault: true, // All events are all-day by default
-    displayEventTime: false, // Don't display time for events
+    allDayDefault: true,
+    displayEventTime: false,
+    dayMaxEvents: 3, // Limit events shown per day
+    moreLinkClick: 'popover', // Show popover for extra events
+    eventDisplay: 'block',
+    eventBackgroundColor: 'transparent',
+    eventBorderColor: 'transparent',
+    eventTextColor: '#fff',
+    dayCellClassNames: function(info) {
+      return 'hover:bg-gray-50 cursor-pointer transition-colors';
+    },
     events: events.map(e => ({
-      title: e.type.charAt(0).toUpperCase() + e.type.slice(1), // Capitalize first letter
-      start: e.start_date.split('T')[0], // Extract only the date part
+      title: e.type.charAt(0).toUpperCase() + e.type.slice(1),
+      start: e.start_date.split('T')[0],
       end: e.end_date ? e.end_date.split('T')[0] : e.start_date.split('T')[0],
-      allDay: true, // Mark as all-day event
-      color: e.status === 'approved' ? '#27ae60' : e.status === 'pending' ? '#f39c12' : e.status === 'rejected' ? '#e74c3c' : '#95a5a6'
-    }))
+      allDay: true,
+      backgroundColor: getEventColor(e.status),
+      borderColor: getEventColor(e.status),
+      textColor: '#ffffff',
+      extendedProps: {
+        status: e.status,
+        type: e.type
+      }
+    })),
+    eventContent: function(arg) {
+      return {
+        html: `<div class="px-1 py-0.5 text-xs font-medium rounded truncate" style="background-color: ${getEventColor(arg.event.extendedProps.status)};">
+                 ${arg.event.title}
+               </div>`
+      };
+    }
   }).render();
+}
+
+function getEventColor(status) {
+  const colors = {
+    'approved': '#10b981',
+    'pending': '#f59e0b',   
+    'rejected': '#ef4444',  
+    'cancelled': '#6b7280'  
+  };
+  return colors[status?.toLowerCase()] || '#6b7280';
 }

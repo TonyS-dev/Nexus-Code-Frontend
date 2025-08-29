@@ -88,31 +88,89 @@ export function showDashboardPage() {
                 </div>
 
                 <!-- Calendar Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
                     <!-- Calendar -->
-                    <div class="lg:col-span-2 bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
-                        <h3 class="text-lg font-semibold text-text-primary mb-6">Calendar</h3>
-                        <div id="calendar-container"></div>
+                    <div class="xl:col-span-3 bg-background-primary rounded-xl shadow-special border border-border-color">
+                        <div class="p-6 border-b border-border-color">
+                            <h3 class="text-lg font-semibold text-text-primary">Calendar</h3>
+                        </div>
+                        <div class="p-3">
+                            <div class="p-3" id="calendar-container" style="height: 600px; overflow-y: auto;"></div>
+                        </div>
                     </div>
 
-                    <!-- Recent Activity -->
-                    <div class="bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
-                        <h3 class="text-lg font-semibold text-text-primary mb-4">Recent Activity</h3>
-                        <div id="recent-activity" class="space-y-3">
-                            ${requestsData.slice(0, 5).map(request => `
-                                <div class="flex items-center gap-3 p-3 bg-background-secondary rounded-lg">
-                                    <div class="w-2 h-2 rounded-full ${getStatusColor(request.name)}"></div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-text-primary capitalize">${request.request_type}</p>
-                                        <p class="text-xs text-text-secondary">${new Date(request.created_at).toLocaleDateString()}</p>
-                                    </div>
-                                    <span class="text-xs px-2 py-1 rounded-full ${getStatusBadgeClass(request.name)}">${request.name}</span>
-                                </div>
-                            `).join('')}
+                    <!-- Recent Activity - Fixed Height with Scroll -->
+                    <div class="xl:col-span-1 bg-background-primary rounded-xl shadow-special border border-border-color flex flex-col h-full">
+                        <div class="p-6 border-b border-border-color flex-shrink-0">
+                            <h3 class="text-lg font-semibold text-text-primary">Recent Activity</h3>
                         </div>
+                        <div class="flex-1 overflow-y-auto" style="max-height: 650px;">
+                            <div class="p-6 space-y-3">
+                                ${
+                                    requestsData.length > 0
+                                        ? requestsData
+                                              .slice(0, 10)
+                                              .map(
+                                                  (request) => `
+                                    <div class="flex items-start gap-3 p-3 bg-background-secondary rounded-lg hover:shadow-md transition-shadow">
+                                        <div class="w-3 h-3 rounded-full ${getStatusColor(
+                                            request.name
+                                        )} flex-shrink-0 mt-1"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <p class="text-sm font-medium text-text-primary capitalize truncate">${
+                                                    request.request_type
+                                                }</p>
+                                                <span class="text-xs px-2 py-1 rounded-full ${getStatusBadgeClass(
+                                                    request.name
+                                                )} flex-shrink-0">${
+                                                      request.name
+                                                  }</span>
+                                            </div>
+                                            <p class="text-xs text-text-secondary">${formatDate(
+                                                request.created_at
+                                            )}</p>
+                                        </div>
+                                    </div>
+                                `
+                                              )
+                                              .join('')
+                                        : `
+                                    <div class="text-center py-8">
+                                        <i class="fa-solid fa-calendar-xmark text-3xl text-text-muted mb-3"></i>
+                                        <p class="text-sm text-text-secondary">No recent activity</p>
+                                    </div>
+                                `
+                                }
+                            </div>
+                        </div>
+                        ${
+                            requestsData.length > 10
+                                ? `
+                            <div class="p-4 border-t border-border-color text-center flex-shrink-0">
+                                <a href="/my-requests" class="text-sm text-primary-color hover:text-primary-color/80 font-medium">
+                                    View All Requests →
+                                </a>
+                            </div>
+                        `
+                                : ''
+                        }
                     </div>
                 </div>
             `;
+
+            // Add formatDate helper function
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) return 'Today';
+                if (diffDays === 1) return 'Yesterday';
+                if (diffDays < 7) return `${diffDays} days ago`;
+                return date.toLocaleDateString();
+            }
 
             // Use the existing FullCalendar component
             const calendarContainer = document.getElementById('calendar-container');

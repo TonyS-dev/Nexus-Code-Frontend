@@ -47,12 +47,11 @@ export const auth = {
     logout() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        // We navigate here to ensure a consistent logout experience.
         router.navigate('/login');
     },
 
     /**
-     * CRITICAL UPDATE: Checks if a token exists and is not expired.
+     * Checks if a token exists and is not expired.
      * @returns {boolean} True if the user has a valid, non-expired token.
      */
     isAuthenticated() {
@@ -72,7 +71,7 @@ export const auth = {
         const isExpired = decoded.exp < Date.now() / 1000;
 
         if (isExpired) {
-            console.log('Session expired. Logging out.');
+            alert('Session expired. Logging out.');
             this.logout();
             return false;
         }
