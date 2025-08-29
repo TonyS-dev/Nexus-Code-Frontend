@@ -1,5 +1,5 @@
 /* src/assets/css/dashboard.css */
-.dashboard-container {
+.dashboard-container{
     width: 100%;
     max-width: 1200px;
     margin: 0 auto; 
@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 
-.main-header {
+.main-header{
     background: linear-gradient(135deg, #8b5cf6, #a855f7);
     border-radius: var(--radius-xl);
     padding: 1.75rem 2rem;
@@ -20,7 +20,7 @@
     margin: 2rem auto 2rem; 
 }
 
-.main-header h1 {
+.main-header h1{
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -28,15 +28,13 @@
     z-index: 1;
 }
 
-.main-header p {
+.main-header p{
     font-size: 1rem;
     opacity: 0.9;
     position: relative;
     z-index: 1;
 }
-
-/* === GRID DE TARJETAS === */
-.info-cards {
+.info-cards{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--spacing-lg);
@@ -46,9 +44,7 @@
     margin: 0 auto; 
     justify-content: center;
 }
-
-/* === TARJETA INDIVIDUAL === */
-.info-card {
+.info-card{
     background: var(--bg-secondary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
@@ -58,20 +54,20 @@
     cursor: pointer;
 }
 
-.info-card:hover {
+.info-card:hover{
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary);
 }
 
-.info-card h3 {
+.info-card h3{
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
-.info-card p {
+.info-card p{
     color: var(--text-secondary);
     line-height: 1.5;
     font-size: 0.875rem;

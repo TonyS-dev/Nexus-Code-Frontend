@@ -66,6 +66,7 @@ function setupEventListeners(container) {
     }else{
         console.warn('Back button not found');
     }
+    
     const form = container.querySelector('#new-request-form');
     const errorElement = container.querySelector('#form-error');
 
