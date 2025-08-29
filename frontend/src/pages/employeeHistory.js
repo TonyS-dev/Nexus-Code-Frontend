@@ -22,7 +22,7 @@ export function showEmployeeHistoryPage(params) {
                 return;
             }
 
-            // Llogic to display the actual history
+            // Logic to display the actual history
             container.innerHTML = `
                 <div class="main-header">
                     <h1>History for ${employee.first_name} ${
@@ -39,7 +39,7 @@ export function showEmployeeHistoryPage(params) {
                         employee.hire_date
                     ).toLocaleDateString()}</p>
                 </div>
-                <!-- Here you would show a table or timeline with data from the employee_histories table -->
+                <!-- !TODO: show a table or timeline with data from the employee_histories table -->
             `;
         } catch (error) {
             container.innerHTML = `<div class="alert error">Error loading history: ${error.message}</div>`;
