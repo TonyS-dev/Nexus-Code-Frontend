@@ -68,7 +68,7 @@ export function Sidebar() {
         <div class="sidebar-header">
             <img src="https://i.pravatar.cc/60?u=${user.email}" alt="Profile">
             <h3>${user.first_name} ${user.last_name}</h3>
-            <p>${user.role_name || 'Employee'}</p>
+            <p>${user.role}</p>
         </div>
         <div class="sidebar-menu"></div>
         <div class="sidebar-footer">
