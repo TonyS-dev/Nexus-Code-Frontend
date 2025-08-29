@@ -60,6 +60,7 @@ function renderPage(pageComponent, options = {}) {
  * Initializes and configures all application routes.
  */
 export function setupRouter() {
+    const user = auth.getUser();
     const routes = {
         '/': () => {
             // Redirect based on authentication status.
@@ -74,7 +75,7 @@ export function setupRouter() {
             appContainer.append(showLoginPage());
             initializeTheme();
         },
-        '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
+        '/dashboard': () => renderPage(showDashboardPage, { title: `Welcome, ${user.first_name}!` }),
         '/my-requests': () => renderPage(showMyRequestsPage, { title: 'My Requests' }),
         '/requests/new': () => renderPage(showNewRequestPage, { title: 'New Request' }),
         

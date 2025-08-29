@@ -14,15 +14,12 @@ export function showMyRequestsPage() {
             const requests = await getRequestsByEmployeeId(user.id);
 
             container.innerHTML = `
-                <header class="bg-background-primary border-b border-border-color p-6 shadow-sm flex justify-between items-center">
-                    <h1 class="text-2xl font-bold text-text-primary">My Requests</h1>
-                    <button id="new-request-btn" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors">
-                        New Request
-                    </button>
-                </header>
                 <main class="flex-1 p-6 overflow-y-auto">
                     <div class="bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
                         <h2 class="text-xl font-semibold text-text-primary mb-4">Request History</h2>
+                    <button id="new-request-btn" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors">
+                        New Request
+                    </button>
                         ${
                             requests.length > 0
                                 ? renderTable(requests)
