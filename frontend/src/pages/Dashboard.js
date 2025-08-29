@@ -13,9 +13,6 @@ export function showDashboardPage() {
 
     // Initial loading state
     container.innerHTML = `
-        <header class="bg-background-primary border-b border-border-color p-6 shadow-sm">
-            <h1 class="text-2xl font-bold text-text-primary">Welcome, ${user.first_name}!</h1>
-        </header>
         <main class="flex-1 p-6 overflow-y-auto">
             <h2 class="text-xl font-semibold text-text-primary mb-6">Your Summary</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -1,24 +1,18 @@
 /**
  * @file api.service.js
- * @description Centralized API request handler and endpoint definitions.
- * This service provides a wrapper around the native fetch API to streamline
- * API calls, automatically handle authentication tokens, and standardize error handling.
+ * @description Centralized API request handler with automatic token expiration handling.
  */
 import { auth } from './auth.service.js';
 
-// The base URL for the API is retrieved from environment variables.
-// This allows for easy configuration between development and production environments.
 const API_BASE_URL =
     import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 /**
- * A centralized fetch wrapper for making API requests.
- * It automatically adds the authorization header and handles common response scenarios.
+ * Centralized fetch wrapper. Now automatically handles 401/403 errors by logging out the user.
  * @param {string} path - The API endpoint path (e.g., '/employees').
- * @param {string} [method='GET'] - The HTTP method for the request.
- * @param {object|null} [body=null] - The request payload for POST/PUT requests.
+ * @param {string} [method='GET'] - The HTTP method.
+ * @param {object|null} [body=null] - The request payload.
  * @returns {Promise<any>} The JSON response from the API.
- * @throws {Error} Throws an error if the network request fails or the API returns an error status.
  */
 export async function apiRequest(path, method = 'GET', body = null) {
     const url = `${API_BASE_URL}${path}`;
@@ -37,7 +31,12 @@ export async function apiRequest(path, method = 'GET', body = null) {
     try {
         const response = await fetch(url, options);
 
-        // A 204 'No Content' response is successful but has no body to parse.
+        if (response.status === 401 || response.status === 403) {
+            auth.logout();
+            // Stop further execution and prevent components from processing an error they can't handle.
+            throw new Error('Session expired. Please log in again.');
+        }
+
         if (response.status === 204) {
             return;
         }
@@ -45,14 +44,11 @@ export async function apiRequest(path, method = 'GET', body = null) {
         const data = await response.json();
 
         if (!response.ok) {
-            // The API should return a 'message' field in its error responses.
             throw new Error(data.message || `HTTP Error: ${response.status}`);
         }
 
         return data;
     } catch (error) {
-        console.error(`API request failed: ${method} ${path}`, error);
-        // Re-throw the error to be caught by the calling function.
         throw error;
     }
 }
@@ -91,3 +87,5 @@ export const getVacationBalance = (employeeId) =>
 export const getVacationTypes = () => apiRequest('/vacation-types');
 export const getLeaveTypes = () => apiRequest('/leave-types');
 export const getCertificateTypes = () => apiRequest('/certificate-types');
+
+export const getRequestStatuses = () => apiRequest('/request-statuses');

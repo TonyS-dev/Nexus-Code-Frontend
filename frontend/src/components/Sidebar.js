@@ -1,32 +1,34 @@
 /**
  * @file Sidebar.js
- * @description Creates the sidebar navigation component.
- * Links are dynamically rendered based on the user's access level, which is
- * read directly from the decoded JWT payload for security and accuracy.
+ * @description Creates the sidebar navigation component, styled with Tailwind CSS
+ * to match the application's design system. Links are dynamically rendered
+ * based on the user's access level from the JWT.
  */
 import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
 
 export function Sidebar() {
-    // Get the complete user object, now including JWT data like 'accessLevel'.
     const user = auth.getUser();
-    if (!user) return document.createElement('div'); // Failsafe
+    if (!user) return document.createElement('aside'); // Return empty element if no user
 
-    const sidebarElement = document.createElement('div');
-    sidebarElement.className = 'sidebar';
+    // Main sidebar container with Tailwind classes for styling
+    const sidebarElement = document.createElement('aside');
+    sidebarElement.className =
+        'h-full w-64 bg-background-primary flex flex-col p-4 border-r border-border-color shrink-0';
 
-    // Base menu for every authenticated user.
+    // Base menu items available to all users
     let menuItems = [
         { href: '/dashboard', icon: 'fa-house', label: 'Dashboard' },
-        { href: '/my-requests', icon: 'fa-file-alt', label: 'My Requests' },
-        { href: '/requests/new', icon: 'fa-plus-circle', label: 'New Request' },
+        { href: '/my-requests', icon: 'fa-file-lines', label: 'My Requests' },
+        { href: '/requests/new', icon: 'fa-plus', label: 'New Request' },
     ];
 
+    // Dynamically add links based on the user's access level
     if (user.accessLevel === 'Admin') {
         menuItems.push(
             {
                 href: '/manager-requests',
-                icon: 'fa-check-circle',
+                icon: 'fa-check-to-slot',
                 label: 'Approve Requests',
             },
             {
@@ -34,25 +36,22 @@ export function Sidebar() {
                 icon: 'fa-users-cog',
                 label: 'Manage Users',
             }
-            // Add any other Admin-specific links here
         );
-    }
-    // Example for a different access level, like a manager who is not a full admin.
-    else if (user.accessLevel === 'Manager' || user.accessLevel === 'HR') {
+    } else if (user.accessLevel === 'Manager' || user.accessLevel === 'HR') {
         menuItems.push({
             href: '/manager-requests',
-            icon: 'fa-check-circle',
+            icon: 'fa-check-to-slot',
             label: 'Approve Requests',
         });
     }
-    // This structure is now easily extendable for other roles.
 
+    // Generate the HTML for the navigation links
     const menuList = menuItems
         .map(
             (item) => `
-        <li>
-            <a href="${item.href}" data-navigo>
-                <i class="fa-solid ${item.icon}"></i>
+        <li data-path="${item.href}">
+            <a href="${item.href}" data-navigo class="flex items-center gap-3 p-3 rounded-lg text-text-secondary hover:bg-primary-light hover:text-primary-color transition-colors font-medium">
+                <i class="fa-solid ${item.icon} w-5 text-center text-base"></i>
                 <span>${item.label}</span>
             </a>
         </li>
@@ -60,30 +59,46 @@ export function Sidebar() {
         )
         .join('');
 
+    // Construct the full sidebar inner HTML
     sidebarElement.innerHTML = `
-        <div class="sidebar-header">
-            <img src="https://i.pravatar.cc/60?u=${
-                user.email
-            }" alt="User Avatar">
-            <h3>${user.first_name} ${user.last_name}</h3>
-            <p>${
-                user.role || 'Employee'
-            }</p> <!-- Display the authoritative access level -->
+        <!-- User Profile Section -->
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-primary-light mb-6">
+            <img 
+                src="https://api.dicebear.com/8.x/initials/svg?seed=${user?.first_name || 'User'}"
+                alt="User Avatar" class="w-10 h-10 rounded-full object-cover">
+            <div>
+                <h3 class="font-semibold text-sm text-text-primary">${
+                    user.first_name
+                } ${user.last_name}</h3>
+                <p class="text-xs text-text-secondary capitalize">${
+                    user.role || 'Developer'
+                }</p>
+            </div>
         </div>
-        <nav class="sidebar-menu">
-            <ul>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1">
+            <ul class="space-y-2">
                 ${menuList}
             </ul>
         </nav>
     `;
 
-    // Highlight active link logic...
-    const currentPath = router.lastResolved()?.url || '';
-    sidebarElement.querySelectorAll('a').forEach((link) => {
-        if (link.getAttribute('href') === `/${currentPath}`) {
-            link.parentElement.classList.add('active');
-        }
-    });
+    // --- Active Link Logic ---
+    // After rendering, find the current path and apply the 'active' class
+    const currentPath = `/${router.lastResolved()?.url || ''}`;
+    const activeLink = sidebarElement.querySelector(
+        `li[data-path='${currentPath}'] a`
+    );
+
+    if (activeLink) {
+        activeLink.classList.add(
+            'bg-primary-light',
+            'text-primary-color',
+            'font-semibold'
+        );
+        activeLink.classList.remove('text-text-secondary');
+    }
 
     return sidebarElement;
 }
