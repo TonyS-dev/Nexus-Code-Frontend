@@ -56,9 +56,16 @@ function renderForm(container) {
 }
 
 function setupEventListeners(container) {
-    container.querySelector('[data-action="back"]').onclick = () =>
-        router.navigate('/my-requests');
-
+    const backButton = container.querySelector('[data-action="back"]');
+    if(backButton){
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Back button clicked');
+            router.navigate('/my-requests');
+        });
+    }else{
+        console.warn('Back button not found');
+    }
     const form = container.querySelector('#new-request-form');
     const errorElement = container.querySelector('#form-error');
 

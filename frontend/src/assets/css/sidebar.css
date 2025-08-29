@@ -2,7 +2,7 @@
 .sidebar {
     width: 280px;
     height: 100vh;
-    background: var(--dark-bg);
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
     color: var(--text-white);
     position: relative;
     padding: var(--spacing-xl) 0;
@@ -39,7 +39,7 @@
 }
 
 .sidebar-header p {
-    color: var(--gray-400);
+    color: var(--text-white);
     font-size: 0.875rem;
 }
 
@@ -56,18 +56,19 @@
     margin: 0.25rem 0;
     border-radius: var(--radius-lg);
     transition: all var(--transition-normal);
+    border-bottom: 2px solid #ffff; 
 }
 
 /* Active and hover states */
 .sidebar-menu li:hover,
 .sidebar-menu li.active {
-    background: rgba(107, 70, 243, 0.2);
+    background: rgba(17, 26, 160, 0.2);
 }
 
 /* Menu links */
 .sidebar-menu a {
     text-decoration: none;
-    color: var(--gray-300);
+    color: var(--text-white);
     display: flex;
     align-items: center;
     gap: 12px;

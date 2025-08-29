@@ -1,0 +1,155 @@
+/* src/assets/css/newRequest.css */
+
+/* === CONTENEDOR PRINCIPAL === */
+.content-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-primary);
+}
+
+/* === HEADER DEL FORMULARIO === */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.main-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Botón de regreso */
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--border-medium);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-200);
+    color: var(--text-primary);
+}
+
+/* === FORMULARIO === */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    transition: border-color var(--transition-normal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(107, 70, 243, 0.2);
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+/* === ACCIONES DEL FORMULARIO === */
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--text-white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-primary);
+}
+
+/* === MENSAJE DE ERROR === */
+.error-message {
+    grid-column: 1 / -1;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    border: 1px solid #fecaca;
+    margin-top: var(--spacing-md);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .content-section {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .main-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .form-actions {
+        justify-content: center;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
