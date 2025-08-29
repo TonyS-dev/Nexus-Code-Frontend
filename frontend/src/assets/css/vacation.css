@@ -1,6 +1,6 @@
-/* src/assets/css/vacation.css */
+/* vacation.css - Updated with new color palette */
 
-/* ===== COMPONENTES COMUNES ===== */
+/* ===== COMMON COMPONENTS ===== */
 .loading-container,
 .error-container {
     display: flex;
@@ -15,8 +15,8 @@
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f4f6;
-    border-top: 4px solid #6366f1;
+    border: 4px solid #f8fafc;
+    border-top: 4px solid #6b46f3;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -32,11 +32,11 @@
 }
 
 .error-container p {
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 1rem;
 }
 
-/* ===== ALERTAS ===== */
+/* ===== ALERTS ===== */
 .alerts-section {
     margin-bottom: 2rem;
 }
@@ -44,17 +44,18 @@
 .alert {
     display: flex;
     align-items: flex-start;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
     margin-bottom: 1rem;
     position: relative;
     border-left: 4px solid;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .alert-info {
     background-color: #dbeafe;
-    border-left-color: #3b82f6;
-    color: #1e40af;
+    border-left-color: #6b46f3;
+    color: #1e293b;
 }
 
 .alert-warning {
@@ -71,7 +72,7 @@
 
 .alert-success {
     background-color: #d1fae5;
-    border-left-color: #10b981;
+    border-left-color: #5acca4;
     color: #047857;
 }
 
@@ -87,6 +88,7 @@
 .alert-content strong {
     display: block;
     margin-bottom: 0.25rem;
+    font-weight: 600;
 }
 
 .alert-dismiss {
@@ -100,20 +102,17 @@
     color: currentColor;
     opacity: 0.7;
     transition: opacity 0.3s ease;
+    border-radius: 0.25rem;
+    padding: 0.25rem;
 }
 
 .alert-dismiss:hover {
     opacity: 1;
+    background: rgba(0, 0, 0, 0.05);
 }
 
-/* ===== TARJETAS DE RESUMEN ===== */
-.vacation-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
+/* ===== SUMMARY CARDS ===== */
+.vacation-summary,
 .vacation-summary-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -126,38 +125,48 @@
     padding: 1.5rem;
     border-radius: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .summary-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(107, 70, 243, 0.1);
+    border-color: #6b46f3;
 }
 
 .card-icon {
     width: 3rem;
     height: 3rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     color: white;
+    flex-shrink: 0;
 }
 
-.card-icon.available { background-color: #10b981; }
-.card-icon.used { background-color: #f59e0b; }
-.card-icon.pending { background-color: #6366f1; }
-.card-icon.total { background-color: #8b5cf6; }
+.card-icon.available { 
+    background: linear-gradient(135deg, #5acca4, #34d399); 
+}
+.card-icon.used { 
+    background: linear-gradient(135deg, #f59e0b, #eab308); 
+}
+.card-icon.pending { 
+    background: linear-gradient(135deg, #6b46f3, #8b5cf6); 
+}
+.card-icon.total { 
+    background: linear-gradient(135deg, #8b5cf6, #a855f7); 
+}
 
 .card-content h3 {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.025em;
@@ -167,22 +176,22 @@
 .days-count {
     font-size: 2rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #1e293b;
 }
 
-/* Para las tarjetas simples del formulario */
+/* For simple form cards */
 .summary-card h3 {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 0.5rem;
 }
 
-.days-count.available { color: #10b981; }
+.days-count.available { color: #5acca4; }
 .days-count.used { color: #f59e0b; }
-.days-count.pending { color: #6366f1; }
+.days-count.pending { color: #6b46f3; }
 
-/* ===== FORMULARIOS ===== */
+/* ===== FORMS ===== */
 .vacation-request-container,
 .my-requests-container {
     padding: 0;
@@ -194,7 +203,7 @@
     padding: 2rem;
     border-radius: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
 }
 
 .form-grid {
@@ -215,7 +224,7 @@
 
 .form-group label {
     font-weight: 600;
-    color: #374151;
+    color: #334155;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
 }
@@ -227,15 +236,16 @@
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #6b46f3;
+    box-shadow: 0 0 0 3px rgba(107, 70, 243, 0.1);
 }
 
 .form-group textarea {
@@ -243,12 +253,12 @@
     min-height: 100px;
 }
 
-/* ===== INFORMACIÓN CALCULADA ===== */
+/* ===== CALCULATED INFO ===== */
 .calculated-info {
-    background: #f9fafb;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     padding: 1.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
     margin-bottom: 2rem;
 }
 
@@ -265,16 +275,16 @@
 
 .info-row .label {
     font-weight: 500;
-    color: #374151;
+    color: #334155;
 }
 
 .info-row .value {
-    font-weight: 600;
-    color: #1f2937;
+    font-weight: 700;
+    color: #1e293b;
     font-size: 1.125rem;
 }
 
-/* ===== BOTONES ===== */
+/* ===== BUTTONS ===== */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -289,7 +299,7 @@
     font-size: 0.875rem;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -301,46 +311,78 @@
 }
 
 .btn-primary {
-    background-color: #6366f1;
+    background: #6b46f3;
     color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: #4f46e5;
+    background: #5b3ae6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 70, 243, 0.3);
 }
 
 .btn-secondary {
-    background-color: #6b7280;
-    color: white;
+    background: #fff;
+    color: #1e293b;
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background-color: #4b5563;
+    background: #5acca4;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: #5acca4;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #4ade80;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(90, 204, 164, 0.3);
 }
 
 .btn-icon {
     width: 2rem;
     height: 2rem;
     padding: 0;
-    border-radius: 0.25rem;
+    border-radius: 0.375rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.btn-view { background-color: #3b82f6; color: white; }
-.btn-view:hover { background-color: #2563eb; }
+.btn-view { 
+    background: #6b46f3; 
+    color: white; 
+}
+.btn-view:hover { 
+    background: #5b3ae6;
+    transform: translateY(-1px);
+}
 
-.btn-edit { background-color: #f59e0b; color: white; }
-.btn-edit:hover { background-color: #d97706; }
+.btn-edit { 
+    background: #f59e0b; 
+    color: white; 
+}
+.btn-edit:hover { 
+    background: #d97706;
+    transform: translateY(-1px);
+}
 
-.btn-cancel { background-color: #ef4444; color: white; }
-.btn-cancel:hover { background-color: #dc2626; }
+.btn-cancel { 
+    background: #ef4444; 
+    color: white; 
+}
+.btn-cancel:hover { 
+    background: #dc2626;
+    transform: translateY(-1px);
+}
 
-/* ===== TABLAS ===== */
+/* ===== TABLES ===== */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -351,7 +393,7 @@
 .section-header h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #1e293b;
 }
 
 .filter-controls {
@@ -365,6 +407,13 @@
     border-radius: 0.375rem;
     background: white;
     font-size: 0.875rem;
+    color: #374151;
+}
+
+.filter-controls select:focus {
+    outline: none;
+    border-color: #6b46f3;
+    box-shadow: 0 0 0 3px rgba(107, 70, 243, 0.1);
 }
 
 .requests-table-container {
@@ -372,7 +421,7 @@
     border-radius: 0.75rem;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
 }
 
 .requests-table {
@@ -381,23 +430,24 @@
 }
 
 .requests-table th {
-    background-color: #f9fafb;
-    padding: 1rem;
+    background: #f8fafc;
+    padding: 1rem 1.25rem;
     text-align: left;
     font-weight: 600;
-    color: #374151;
+    color: #334155;
     font-size: 0.875rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .requests-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
     vertical-align: top;
+    color: #64748b;
 }
 
 .requests-table tr:hover {
-    background-color: #f9fafb;
+    background: #f8fafc;
 }
 
 .date-range {
@@ -408,18 +458,19 @@
 
 .date-range strong {
     font-weight: 600;
-    color: #1f2937;
+    color: #1e293b;
 }
 
 .date-separator {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: #64748b;
     align-self: center;
 }
 
 .vacation-type {
     font-size: 0.875rem;
-    color: #4b5563;
+    color: #475569;
+    font-weight: 500;
 }
 
 .days-count {
@@ -427,7 +478,7 @@
     font-size: 1.125rem;
 }
 
-/* ===== BADGES DE ESTADO ===== */
+/* ===== STATUS BADGES ===== */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -440,38 +491,38 @@
 }
 
 .status-pending {
-    background-color: #fef3c7;
+    background: #fef3c7;
     color: #92400e;
 }
 
 .status-approved {
-    background-color: #d1fae5;
+    background: #d1fae5;
     color: #047857;
 }
 
 .status-rejected {
-    background-color: #fee2e2;
+    background: #fee2e2;
     color: #dc2626;
 }
 
 .status-cancelled {
-    background-color: #f3f4f6;
-    color: #4b5563;
+    background: #f3f4f6;
+    color: #475569;
 }
 
-/* ===== ACCIONES ===== */
+/* ===== ACTIONS ===== */
 .action-buttons {
     display: flex;
     gap: 0.5rem;
 }
 
-/* ===== ESTADO VACÍO ===== */
+/* ===== EMPTY STATE ===== */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
     background: white;
     border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
 }
 
 .empty-icon {
@@ -483,12 +534,12 @@
 .empty-state h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #374151;
+    color: #334155;
     margin-bottom: 0.5rem;
 }
 
 .empty-state p {
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 2rem;
 }
 
@@ -499,7 +550,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -514,7 +566,7 @@
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
@@ -522,13 +574,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .modal-header h3 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #1e293b;
 }
 
 .modal-close {
@@ -536,7 +588,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #6b7280;
+    color: #64748b;
     padding: 0.25rem;
     width: 2rem;
     height: 2rem;
@@ -544,19 +596,19 @@
     align-items: center;
     justify-content: center;
     border-radius: 0.25rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .modal-close:hover {
-    background-color: #f3f4f6;
-    color: #1f2937;
+    background: #f1f5f9;
+    color: #1e293b;
 }
 
 .modal-body {
     padding: 1.5rem;
 }
 
-/* ===== DETALLES DE SOLICITUD ===== */
+/* ===== REQUEST DETAILS ===== */
 .request-details {
     display: flex;
     flex-direction: column;
@@ -566,9 +618,9 @@
 .detail-section h4 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #1e293b;
     margin-bottom: 1rem;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 2px solid #e2e8f0;
     padding-bottom: 0.5rem;
 }
 
@@ -586,21 +638,21 @@
 
 .detail-item label {
     font-weight: 600;
-    color: #6b7280;
+    color: #64748b;
     font-size: 0.875rem;
 }
 
 .detail-item span {
-    color: #1f2937;
+    color: #1e293b;
     font-weight: 500;
 }
 
 .comments {
-    background-color: #f9fafb;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     padding: 1rem;
     border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    color: #374151;
+    border: 1px solid #e2e8f0;
+    color: #334155;
     font-style: italic;
 }
 
@@ -617,7 +669,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background-color: #e5e7eb;
+    background: linear-gradient(to bottom, #6b46f3, #5acca4);
 }
 
 .timeline-item {
@@ -633,39 +685,41 @@
     top: 0.25rem;
     width: 0.75rem;
     height: 0.75rem;
-    background-color: #6366f1;
+    background: #6b46f3;
     border-radius: 50%;
     border: 2px solid white;
+    box-shadow: 0 0 0 3px rgba(107, 70, 243, 0.2);
 }
 
 .timeline-item:last-child::before {
-    background-color: #10b981;
+    background: #5acca4;
+    box-shadow: 0 0 0 3px rgba(90, 204, 164, 0.2);
 }
 
 .timeline-date {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: #64748b;
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
 
 .timeline-content strong {
-    color: #1f2937;
+    color: #1e293b;
     font-weight: 600;
 }
 
 .timeline-content p {
-    color: #4b5563;
+    color: #475569;
     margin: 0.5rem 0;
     font-style: italic;
 }
 
 .timeline-content small {
-    color: #6b7280;
+    color: #64748b;
     font-size: 0.75rem;
 }
 
-/* ===== MENSAJES ===== */
+/* ===== MESSAGES ===== */
 .error-message,
 .success-message {
     padding: 1rem;
@@ -675,18 +729,18 @@
 }
 
 .error-message {
-    background-color: #fee2e2;
+    background: #fee2e2;
     color: #dc2626;
     border: 1px solid #fecaca;
 }
 
 .success-message {
-    background-color: #d1fae5;
+    background: #d1fae5;
     color: #047857;
     border: 1px solid #a7f3d0;
 }
 
-/* ===== RESPONSIVO ===== */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .vacation-summary,
     .vacation-summary-cards {

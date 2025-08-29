@@ -124,7 +124,7 @@ export function showLoginPage() {
         </div>
       </div>
       <div class="right-panel">
-        <h1 class="welcome-text-right"><span class="riwi-text-gradient">Riwi</span> Team</h1>
+        <h1 class="welcome-text-right"><span class="riwi-text-gradient">Riwi</span> Nexus</h1>
         <img src="/images/login-illustration.png" alt="Login Illustration" class="full-illustration" />
       </div>
     </div>
