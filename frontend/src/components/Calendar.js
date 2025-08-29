@@ -15,12 +15,20 @@ export function renderCalendar(container, events = []) {
     height: 'auto',
     allDayDefault: true,
     displayEventTime: false,
-    dayMaxEvents: 3, // Limit events shown per day
-    moreLinkClick: 'popover', // Show popover for extra events
+    dayMaxEvents: 3,
+    moreLinkClick: 'popover',
     eventDisplay: 'block',
     eventBackgroundColor: 'transparent',
     eventBorderColor: 'transparent',
     eventTextColor: '#fff',
+    // Custom button styling
+    buttonText: {
+      today: 'Today',
+      prev: '‹',
+      next: '›'
+    },
+    // Custom CSS classes for buttons
+    customButtons: {},
     dayCellClassNames: function(info) {
       return 'hover:bg-gray-50 cursor-pointer transition-colors';
     },
@@ -43,6 +51,30 @@ export function renderCalendar(container, events = []) {
                  ${arg.event.title}
                </div>`
       };
+    },
+    // Apply custom styles after render
+    viewDidMount: function() {
+      // Style the buttons to match your theme
+      const buttons = container.querySelectorAll('.fc-button');
+      buttons.forEach(button => {
+        button.style.backgroundColor = '#6b46f3'; // Primary blue
+        button.style.borderColor = '#EFE9E9FF';
+        button.style.color = 'white';
+        button.style.borderRadius = '0.5rem'; // rounded-lg
+        button.style.fontWeight = '500';
+        button.style.padding = '0.5rem 1rem';
+        button.style.transition = 'all 0.2s';
+        
+        // Hover effects
+        button.addEventListener('mouseenter', () => {
+          button.style.backgroundColor = '#6b46f3'; // Darker blue
+          button.style.borderColor = '#967EFFFF';
+        });
+        button.addEventListener('mouseleave', () => {
+          button.style.backgroundColor = '#6b46f3';
+          button.style.borderColor = '#E9E9EFFF';
+        });
+      });
     }
   }).render();
 }

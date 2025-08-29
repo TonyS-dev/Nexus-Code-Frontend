@@ -175,13 +175,30 @@ export function showDashboardPage() {
             // Use the existing FullCalendar component
             const calendarContainer = document.getElementById('calendar-container');
             if (calendarContainer) {
-                // Transform requests data to calendar events format
-                const calendarEvents = requestsData.map(request => ({
-                    type: request.request_type,
-                    start_date: request.created_at,
-                    end_date: request.created_at, // Same day for most requests
-                    status: request.name?.toLowerCase()
-                }));
+                // Transform requests data to calendar events with actual request periods
+                const calendarEvents = requestsData.map(request => {
+                    let startDate, endDate;
+                    
+                    // Use actual request dates based on type
+                    if (request.request_type === 'vacation' && request.vacation_start_date) {
+                        startDate = request.vacation_start_date;
+                        endDate = request.vacation_end_date;
+                    } else if (request.request_type === 'leave' && request.leave_start_date) {
+                        startDate = request.leave_start_date;
+                        endDate = request.leave_end_date;
+                    } else {
+                        // For certificates or requests without date ranges, use creation date
+                        startDate = request.created_at;
+                        endDate = request.created_at;
+                    }
+                    
+                    return {
+                        type: request.request_type,
+                        start_date: startDate,
+                        end_date: endDate,
+                        status: request.name?.toLowerCase()
+                    };
+                });
                 
                 renderCalendar(calendarContainer, calendarEvents);
             }
