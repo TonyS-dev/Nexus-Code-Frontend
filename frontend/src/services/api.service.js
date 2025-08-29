@@ -31,9 +31,7 @@ export async function apiRequest(path, method = 'GET', body = null) {
     try {
         const response = await fetch(url, options);
 
-        // CRITICAL UPDATE: Intercept unauthorized responses.
         if (response.status === 401 || response.status === 403) {
-            console.log('Unauthorized API response. Logging out.');
             auth.logout();
             // Stop further execution and prevent components from processing an error they can't handle.
             throw new Error('Session expired. Please log in again.');
@@ -51,7 +49,6 @@ export async function apiRequest(path, method = 'GET', body = null) {
 
         return data;
     } catch (error) {
-        console.error(`API request failed: ${method} ${path}`, error);
         throw error;
     }
 }
@@ -90,3 +87,5 @@ export const getVacationBalance = (employeeId) =>
 export const getVacationTypes = () => apiRequest('/vacation-types');
 export const getLeaveTypes = () => apiRequest('/leave-types');
 export const getCertificateTypes = () => apiRequest('/certificate-types');
+
+export const getRequestStatuses = () => apiRequest('/request-statuses');
