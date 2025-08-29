@@ -3,7 +3,7 @@
  * @description Renders the main dashboard view with dynamic user data.
  */
 import { auth } from '../services/auth.service.js';
-import { getVacationBalance } from '../services/api.service.js';
+import { getVacationBalance, getRequestsByEmployeeId } from '../services/api.service.js';
 
 export function showDashboardPage() {
     const user = auth.getUser();
@@ -25,13 +25,26 @@ export function showDashboardPage() {
 
     async function loadDashboardData() {
         try {
-            const balanceData = await getVacationBalance(user.id);
+            // Load both vacation balance and requests data
+            const [balanceData, requestsData] = await Promise.all([
+                getVacationBalance(user.id),
+                getRequestsByEmployeeId(user.id)
+            ]);
+
             const currentYearBalance = balanceData.find(
                 (b) => b.year === new Date().getFullYear()
             ) || { available_days: 0, days_taken: 0 };
             const remainingDays =
                 currentYearBalance.available_days -
                 currentYearBalance.days_taken;
+
+            // Count total requests
+            const totalRequests = requestsData.length;
+
+            // Count pending requests
+            const pendingRequests = requestsData.filter(
+                request => request.name && request.name.toLowerCase() === 'pending'
+            ).length;
 
             // Re-render the content with the fetched data
             const content = container.querySelector('main');
@@ -48,20 +61,29 @@ export function showDashboardPage() {
                             <p class="text-3xl font-bold text-text-primary">${remainingDays}</p>
                         </div>
                     </div>
-                    <!-- Requests Card (Placeholder) -->
+                    <!-- Total Requests Card -->
                     <div class="bg-background-primary p-5 rounded-xl shadow-special border border-border-color flex items-center gap-4">
                          <div class="bg-teal-100 text-accent p-3 rounded-lg">
                             <i class="fa-solid fa-calendar-check text-2xl"></i>
                          </div>
                          <div>
-                            <p class="text-sm font-semibold text-text-secondary">Requests Submitted</p>
-                            <p class="text-3xl font-bold text-text-primary">--</p>
+                            <p class="text-sm font-semibold text-text-secondary">Total Requests</p>
+                            <p class="text-3xl font-bold text-text-primary">${totalRequests}</p>
+                         </div>
+                    </div>
+                    <!-- Pending Requests Card -->
+                    <div class="bg-background-primary p-5 rounded-xl shadow-special border border-border-color flex items-center gap-4">
+                         <div class="bg-yellow-100 text-yellow-600 p-3 rounded-lg">
+                            <i class="fa-solid fa-clock text-2xl"></i>
+                         </div>
+                         <div>
+                            <p class="text-sm font-semibold text-text-secondary">Pending Requests</p>
+                            <p class="text-3xl font-bold text-text-primary">${pendingRequests}</p>
                          </div>
                     </div>
                 </div>
             `;
         } catch (error) {
-            console.error('Failed to load dashboard data:', error);
             container.querySelector(
                 'main'
             ).innerHTML = `<div class="bg-danger/10 text-danger p-4 rounded-lg">Could not load dashboard data: ${error.message}</div>`;

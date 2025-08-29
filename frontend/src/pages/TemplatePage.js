@@ -1,5 +1,5 @@
 /**
- * @file YourNewPage.js
+ * @file NewPage.js
  * @description Template for creating a new page component that fetches data from the API.
  * 1. Rename this file (e.g., ManageUsers.js).
  * 2. Change the function name (e.g., showManageUsersPage).
@@ -11,7 +11,7 @@ import { apiRequest } from '../services/api.service.js';
 
 export function showYourNewPage() {
     const container = document.createElement('div');
-    container.className = 'your-new-page-container'; // Use a unique class for styling
+    container.className = 'new-page-container'; // Use a unique class for styling
 
     // Set initial loading state. This provides immediate feedback to the user.
     container.innerHTML = `<div class="loading">Loading page content...</div>`;
@@ -22,7 +22,7 @@ export function showYourNewPage() {
     async function loadData() {
         try {
             // STEP 1: Replace this with the actual API call you need for this page.
-            const pageData = await apiRequest('/your-endpoint');
+            const pageData = await apiRequest('/endpoint');
 
             // STEP 2: Render the main content using the fetched data.
             renderContent(container, pageData);

@@ -36,7 +36,8 @@ function renderPage(pageComponent, options = {}) {
 
     const user = auth.getUser();
     if (options.roles && !options.roles.includes(user?.role)) {
-        renderForbiddenPage();
+        console.warn('User is not authorized to access this page');
+        router.navigate('/forbidden');
         return;
     }
 
@@ -91,10 +92,15 @@ export function setupRouter() {
         },
     };
 
-    router.on(routes).resolve();
-
+    // Configure the router with routes
+    router.on(routes);
+    
+    // Handle 404 - not found routes
     router.notFound(() => {
         appContainer.innerHTML = '';
         appContainer.append(renderNotFoundPage());
     });
+    
+    // Start the router
+    router.resolve();
 }

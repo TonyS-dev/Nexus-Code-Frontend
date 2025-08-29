@@ -21,9 +21,9 @@ export function showNewRequestPage() {
                             <label for="request-type" class="block text-sm font-semibold text-text-secondary mb-2">Request Type</label>
                             <select id="request-type" class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition">
                                 <option value="">-- Choose a type --</option>
-                                <option value="vacation">Vacation</option>
-                                <option value="leave">Leave / Permit</option>
-                                <option value="certificate">Certificate</option>
+                                <option value="VACATION">Vacation</option>
+                                <option value="LEAVE">Leave / Permit</option>
+                                <option value="CERTIFICATE">Certificate</option>
                             </select>
                         </div>
                         
