@@ -1,6 +1,13 @@
-// src/services/theme.js
+/**
+ * @file theme.service.js
+ * @description Manages the application's light/dark theme.
+ */
 const html = document.documentElement;
 
+/**
+ * Applies a specified theme to the application.
+ * @param {string} theme - The theme to apply ('light' or 'dark').
+ */
 function applyTheme(theme) {
     html.classList.remove('theme-light', 'theme-dark');
     html.classList.add(`theme-${theme}`);
@@ -18,12 +25,15 @@ function applyTheme(theme) {
         const sun = themeToggle.querySelector('.sun');
         const moon = themeToggle.querySelector('.moon');
         if (sun && moon) {
-            sun.style.opacity = theme === 'light' ? 1 : 0;
-            moon.style.opacity = theme === 'dark' ? 1 : 0;
+            sun.style.display = theme === 'light' ? 'block' : 'none';
+            moon.style.display = theme === 'dark' ? 'block' : 'none';
         }
     }
 }
 
+/**
+ * Toggles the theme between light and dark and saves the preference.
+ */
 export function toggleTheme() {
     const currentTheme = localStorage.getItem('theme') || 'dark';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -31,6 +41,9 @@ export function toggleTheme() {
     applyTheme(newTheme);
 }
 
+/**
+ * Initializes the theme on application load based on saved preference or system settings.
+ */
 export function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia(

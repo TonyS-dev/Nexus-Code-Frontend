@@ -1,30 +1,31 @@
-// frontend/src/router/router.js
+/**
+ * @file router.js
+ * @description Configures the client-side router using Navigo.
+ * Handles route definitions, protection, and rendering of page components within the main layout.
+ */
 import Navigo from 'navigo';
-import { auth } from '../services/auth.js';
-import { AppLayout } from '../components/layout.js';
+import { auth } from '../services/auth.service.js';
+import { AppLayout } from '../components/Layout.js';
 
-// Imports of all the views 
-import { showLoginPage } from '../views/login.js';
-import { showDashboardPage } from '../views/dashboard.js';
-import { showMyRequestsPage } from '../views/myRequests.js';
-import { showNewRequestPage } from '../views/newRequest.js';
-import { showManageUsersPage } from '../views/manageUsers.js';
-import { showAdminRequestsPage } from '../views/adminRequests.js';
-import { showManagerRequestsPage } from '../views/managerRequests.js';
-import { showEmployeeHistoryPage } from '../views/employeeHistory.js';
-import { renderNotFoundPage } from '../views/notFound.js';
-import { renderForbiddenPage } from '../views/forbidden.js';
+// Import all page components
+import { showLoginPage } from '../pages/Login.js';
+import { showDashboardPage } from '../pages/Dashboard.js';
+import { showMyRequestsPage } from '../pages/MyRequests.js';
+import { showNewRequestPage } from '../pages/NewRequest.js';
+import { showManagerRequestsPage } from '../pages/ManagerRequests.js';
+import { renderNotFoundPage } from '../pages/NotFound.js';
+import { renderForbiddenPage } from '../pages/Forbidden.js';
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
 
 /**
  * Renders a page component within the main application layout.
- * It handles authenticated access and authorization before rendering.
+ * It handles authenticated access and role-based authorization before rendering.
  * @param {Function} pageComponent - The function that creates the page's DOM element.
  * @param {Object} [options={}] - Configuration for the route.
  * @param {string} [options.title] - The title for the navbar.
- * @param {string} [options.role] - An optional role required to access this page.
+ * @param {string[]} [options.roles] - An array of roles allowed to access this page.
  */
 function renderPage(pageComponent, options = {}) {
     if (!auth.isAuthenticated()) {
@@ -33,27 +34,34 @@ function renderPage(pageComponent, options = {}) {
     }
 
     const user = auth.getUser();
-    if (options.role && user?.role !== options.role) {
-        router.navigate('/forbidden');
+    if (options.roles && !options.roles.includes(user?.role)) {
+        renderForbiddenPage();
         return;
     }
 
     appContainer.innerHTML = '';
     const layout = AppLayout();
+    const match = router.lastResolved()?.params;
 
-    const match = router.lastResolved()?.[0];
-    const page = pageComponent(match?.params); // Pass the params object to the page
+    // The page component is now responsible for handling its own data fetching.
+    const pageElement = pageComponent(match?.data); // Pass route params if any
 
-    layout.querySelector('#app-content').append(page);
+    layout.querySelector('#app-content').append(pageElement);
     layout.setTitle(options.title || 'Dashboard');
     appContainer.append(layout);
+
+    // After rendering, ensure Navigo scans for new links.
+    router.updatePageLinks();
 }
 
+/**
+ * Initializes and configures all application routes.
+ */
 export function setupRouter() {
     const routes = {
         '/': () => {
-            if (auth.isAuthenticated()) router.navigate('/dashboard');
-            else router.navigate('/login');
+            // Redirect based on authentication status.
+            auth.isAuthenticated() ? router.navigate('/dashboard') : router.navigate('/login');
         },
         '/login': () => {
             if (auth.isAuthenticated()) {
@@ -63,57 +71,26 @@ export function setupRouter() {
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
         },
-        '/dashboard': () =>
-            renderPage(showDashboardPage, { title: 'Dashboard' }),
-        '/my-requests': () =>
-            renderPage(showMyRequestsPage, { title: 'My Requests' }),
-        '/requests/new': () =>
-            renderPage(showNewRequestPage, { title: 'New Request' }),
-
-        // Routes protected by role
-        '/manage-users': () =>
-            renderPage(showManageUsersPage, {
-                title: 'Manage Users',
-                role: 'Admin',
-            }),
-        '/admin-requests': () =>
-            renderPage(showAdminRequestsPage, {
-                title: 'HR Dashboard',
-                role: 'HR',
-            }),
-        '/manager-requests': () =>
-            renderPage(showManagerRequestsPage, {
-                title: 'Approve Requests',
-                role: 'Manager',
-            }),
-
-        // Dynamic route 
-        '/employee/:id/history': (match) =>
-            renderPage(showEmployeeHistoryPage, {
-                title: 'Employee History',
-                params: match.data,
-            }),
-
+        '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
+        '/my-requests': () => renderPage(showMyRequestsPage, { title: 'My Requests' }),
+        '/requests/new': () => renderPage(showNewRequestPage, { title: 'New Request' }),
+        
+        // Role-protected routes
+        '/manager-requests': () => renderPage(showManagerRequestsPage, {
+            title: 'Approve Requests',
+            roles: ['Manager', 'Admin', 'HR'], // Example: multiple roles can access
+        }),
+        
         '/forbidden': () => {
             appContainer.innerHTML = '';
             appContainer.append(renderForbiddenPage());
         },
     };
 
-    router.on(routes);
-
-    router.hooks({
-        after: (match) => {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar && sidebar.updateActiveLink) {
-                sidebar.updateActiveLink(`/${match.url}`);
-            }
-        },
-    });
+    router.on(routes).resolve();
 
     router.notFound(() => {
-        renderPage(renderNotFoundPage, { title: 'Not Found' });
+        appContainer.innerHTML = '';
+        appContainer.append(renderNotFoundPage());
     });
-
-    router.resolve();
 }

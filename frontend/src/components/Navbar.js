@@ -1,12 +1,12 @@
-// frontend/src/components/navbar.js
-import { auth } from '../services/auth.js';
+/**
+ * @file Navbar.js
+ * @description Creates the top navigation bar component with title, notifications, and logout.
+ */
+import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
 
-/**
- * Creates the top navigation bar component.
- */
 export function Navbar() {
-    const navbarElement = document.createElement('header');
+    const navbarElement = document.createElement('nav');
     navbarElement.className = 'navbar';
 
     navbarElement.innerHTML = `
@@ -18,17 +18,22 @@ export function Navbar() {
                 <i class="fa-solid fa-bell"></i>
                 <span class="notification-count">0</span>
             </div>
-            <button id="navbar-logout-btn" class="btn-logout">Log out</button>
+            <button id="navbar-logout-btn" class="btn-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Log out</span>
+            </button>
         </div>
     `;
 
-    navbarElement.querySelector('#navbar-logout-btn').addEventListener('click', () => {
-        auth.logout();
-        router.navigate('/login');
-    });
+    navbarElement
+        .querySelector('#navbar-logout-btn')
+        .addEventListener('click', () => {
+            auth.logout();
+            router.navigate('/login');
+        });
 
     /**
-     * Exposes a method to update the navbar's title.
+     * Method to update the navbar's title dynamically.
      * @param {string} title - The new title to display.
      */
     navbarElement.setTitle = (title) => {

@@ -1,13 +1,9 @@
 // frontend/src/main.js
 import './assets/css/main.css';
-import './assets/css/dashboard.css';
 import './assets/css/login.css';
-import './assets/css/navbar.css';
-import './assets/css/sidebar.css';
-import './assets/css/vacation.css'
 
 import { setupRouter } from './router/router.js';
-import { initializeTheme } from './services/theme.js';
+import { initializeTheme } from './services/theme.service.js';
 
 // Función para notificaciones
 function checkNotifications() {

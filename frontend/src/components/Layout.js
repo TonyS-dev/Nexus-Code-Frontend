@@ -1,18 +1,16 @@
-// frontend/src/components/Layout.js
-
-import { Sidebar } from './sidebar.js';
-import { Navbar } from './navbar.js';
-
 /**
- * Creates the main application layout which includes the sidebar and the main content area.
+ * @file Layout.js
+ * @description Creates the main application layout, including the sidebar and main content area.
  * This component acts as the primary container for all authenticated views.
  */
+import { Sidebar } from './Sidebar.js';
+import { Navbar } from './Navbar.js';
+
 export function AppLayout() {
     const layoutContainer = document.createElement('div');
     layoutContainer.className = 'app-container';
 
-    // Create the main structural elements
-    const sidebarContainer = document.createElement('div');
+    const sidebarContainer = document.createElement('aside');
     sidebarContainer.id = 'sidebar-container';
 
     const mainPanel = document.createElement('div');
@@ -22,19 +20,22 @@ export function AppLayout() {
     navbarContainer.id = 'navbar-container';
 
     const contentArea = document.createElement('main');
-    contentArea.id = 'app-content'; // This is where the router will inject pages
+    contentArea.id = 'app-content'; // Router injects page content here.
 
-    // Assemble the structure
+    // Assemble the layout structure.
     mainPanel.append(navbarContainer, contentArea);
     layoutContainer.append(sidebarContainer, mainPanel);
 
-    // Populate the containers with their respective components
+    // Populate containers with their respective components.
     sidebarContainer.append(Sidebar());
 
     const navbarComponent = Navbar();
     navbarContainer.append(navbarComponent);
 
-    // Expose a method on the layout itself to set the navbar title
+    /**
+     * Exposes a method on the layout element to dynamically set the navbar title.
+     * @param {string} title - The new title to display in the navbar.
+     */
     layoutContainer.setTitle = (title) => {
         navbarComponent.setTitle(title);
     };
