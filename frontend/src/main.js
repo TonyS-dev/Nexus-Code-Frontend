@@ -5,6 +5,7 @@ import './assets/css/login.css';
 import './assets/css/navbar.css';
 import './assets/css/sidebar.css';
 import './assets/css/vacation.css'
+import './assets/css/styles.css';
 
 import { setupRouter } from './router/router.js';
 import { initializeTheme } from './services/theme.service.js';
