@@ -69,7 +69,7 @@ export function Sidebar() {
             }" alt="User Avatar">
             <h3>${user.first_name} ${user.last_name}</h3>
             <p>${
-                user.accessLevel || 'User'
+                user.role || 'Employee'
             }</p> <!-- Display the authoritative access level -->
         </div>
         <nav class="sidebar-menu">

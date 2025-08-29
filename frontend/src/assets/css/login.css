@@ -1,12 +1,90 @@
-.login-container{
-    display:flex;
-    min-height:100vh;
-    width:100%;
-    position:relative;
+/* login.css - Standalone Login Styles */
+
+/* CSS Variables for Login */
+:root {
+    /* Primary colors */
+    --primary: #6b46f3;
+    --primary-dark: #5b3ae6;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Border radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
-.left-panel{
-    flex:1;
-    background-color:var(--left-bg);
+
+body {
+    margin: 0;
+}
+
+/* Light theme variables */
+.theme-light {
+    --left-bg: #ffffff;
+    --input-border: #cbd5e1;
+    --input-border-focus: #6b46f3;
+    --btn-bg: #6b46f3;
+    --btn-hover: #5b3ae6;
+    --text-light: #1e293b;
+    --text-dark: #1e293b;
+    --left-text-secondary: #64748b;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --border-radius: var(--radius-lg);
+}
+
+/* Dark theme variables */
+.theme-dark {
+    --left-bg: #171e4a;
+    --input-border: #475569;
+    --input-border-focus: #6b46f3;
+    --btn-bg: #6b46f3;
+    --btn-hover: #5b3ae6;
+    --text-light: #ffffff;
+    --text-dark: #1e293b;
+    --left-text-secondary: #94a3b8;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --border-radius: var(--radius-lg);
+}
+
+/* Reset for login page */
+.login-container * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Base body styles for login */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Main login container */
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* Left panel with form */
+.left-panel {
+    flex: 1;
+    background-color: var(--left-bg);
     padding: 3rem 2rem;
     display: flex;
     flex-direction: column;
@@ -14,8 +92,10 @@
     align-items: center;
     transition: background-color 0.3s ease;
 }
-.right-panel{
-    flex:1;
+
+/* Right panel with illustration */
+.right-panel {
+    flex: 1;
     background-color: #6c5ce7;
     display: flex;
     justify-content: center;
@@ -23,164 +103,197 @@
     position: relative;
     overflow: hidden;
 }
-.login-form-container{
-    width:400px;
+
+/* Login form container */
+.login-form-container {
+    width: 400px;
     text-align: center;
     max-width: 100%;
     padding: 2rem;
-    background-color: transparent; 
+    background-color: transparent;
     border-radius: 12px;
     transition: all 0.3s ease;
 }
-.riwi-logo{
-    width:180px;
-    height:auto;
-    margin-bottom: 1.8rem;   
+
+/* Logo styling */
+.riwi-logo {
+    width: 180px;
+    height: auto;
+    margin-bottom: 1.8rem;
 }
-.form-title{
-    font-size:2.2rem;
-    font-weight:700;
-    margin-bottom:0.8rem;
+
+/* Form title */
+.form-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
     color: var(--text-light);
 }
-.form-text{
+
+/* Form subtitle text */
+.form-text {
     color: rgb(176, 176, 224);
-    font-size:1.1rem;
-    margin-bottom:2rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
 }
-.form-control{
+
+/* Form input controls */
+.form-control {
     background-color: transparent;
-    border:none;
-    border-bottom:2px solid var(--input-border);
+    border: none;
+    border-bottom: 2px solid var(--input-border);
     color: var(--text-light);
-    padding:0.8rem 0;
-    width:100%;
-    margin-bottom:1.8rem;
-    font-size:1.2rem;
+    padding: 0.8rem 0;
+    width: 100%;
+    margin-bottom: 1.8rem;
+    font-size: 1.2rem;
     font-weight: 500;
     outline: none;
     transition: border-color 0.3s ease;
 }
-.form-control::placeholder{
+
+.form-control::placeholder {
     color: var(--left-text-secondary);
 }
-.form-control:focus{
+
+.form-control:focus {
     border-bottom-color: var(--primary);
 }
-.password-field{
+
+/* Password field container */
+.password-field {
     position: relative;
-    width:100%;
-    margin-bottom:1.8rem;
+    width: 100%;
+    margin-bottom: 1.8rem;
 }
-.toggle-password-icon{
+
+/* Password toggle icon */
+.toggle-password-icon {
     position: absolute;
     right: 12px;
-    top:30%;
+    top: 30%;
     transform: translateY(-50%);
-    width:20px ;
-    height:20px ;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
-    opacity:0.7;
+    opacity: 0.7;
     transition: all 0.3s ease;
 }
-.toggle-password-icon:hover{
+
+.toggle-password-icon:hover {
     opacity: 1;
     transform: translateY(-50%) scale(1.1);
 }
-.forgot-password{
-    display:block;
+
+/* Forgot password link */
+.forgot-password {
+    display: block;
     color: rgb(176, 176, 224);
     font-size: 1.1rem;
-    cursor:pointer;
+    cursor: pointer;
     margin: 1.2rem auto 1.8rem;
     text-decoration: none;
     transition: color 0.3s ease;
     width: fit-content;
 }
-.forgot-password:hover{
+
+.forgot-password:hover {
     color: var(--text-light);
     text-decoration: underline;
 }
 
+/* Login button with enhanced effects */
 .btn-login {
-
-  background: var(--btn-bg);
-  color: rgb(37, 10, 71);
-  border: none;
-  padding: 1rem 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    background: var(--btn-bg);
+    color: rgb(37, 10, 71);
+    border: none;
+    padding: 1rem 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .btn-login:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(106, 17, 203, 0.6),
-    0 0 40px rgba(141, 0, 249, 0.4);
-  filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(106, 17, 203, 0.6),
+        0 0 40px rgba(141, 0, 249, 0.4);
+    filter: brightness(1.05);
 }
 
 .btn-login::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: 1;
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
 }
 
 .btn-login:hover::before {
-  opacity: 1;
+    opacity: 1;
 }
 
-/* Efecto de luz que cruza (shine) */
+/* Shine effect that crosses the button */
 .btn-login::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.5),
-    transparent
-  );
-  transform: skewX(-25deg);
-  transition: left 0.8s ease;
-  z-index: 1;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        transparent
+    );
+    transform: skewX(-25deg);
+    transition: left 0.8s ease;
+    z-index: 1;
 }
 
 .btn-login:hover::after {
-  left: 120%;
+    left: 120%;
 }
 
 .btn-login:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-login:focus {
-  outline: none;
+    outline: none;
 }
 
-.welcome-text-right{
+/* Error message styling */
+.error-message {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-top: var(--spacing-md);
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+/* Welcome text on right panel */
+.welcome-text-right {
     position: absolute;
     top: 50px;
     left: 50%;
@@ -192,6 +305,8 @@
     letter-spacing: 0.1rem;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
+
+/* Riwi gradient text effect */
 .riwi-text-gradient {
     background: linear-gradient(90deg, #5845e2, #351486, #210c5e, #5845e2);
     background-size: 200% 100%;
@@ -203,11 +318,14 @@
     display: inline;
     animation: gradientShift 4s ease infinite;
 }
-@keyframes gradientShift{
-    0%{background-position: 0% 50%;}
-    50%{background-position: 100% 50%;}
-    100%{background-position: 0% 50%;}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
+
+/* Full illustration styling */
 .full-illustration {
     width: 100%;
     height: 70%;
@@ -216,6 +334,8 @@
     border-radius: var(--border-radius);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
+
+/* Theme toggle button */
 .theme-toggle {
     position: absolute;
     top: 20px;
@@ -233,6 +353,8 @@
     z-index: 20;
     overflow: hidden;
 }
+
+/* Sun and moon icons */
 .sun,
 .moon {
     font-size: 1.8rem;
@@ -244,38 +366,100 @@
     transform: translate(-50%, -50%);
 }
 
-.theme-dark .moon{
+.theme-dark .moon {
     opacity: 1;
 }
-.theme-light .sun{
+
+.theme-light .sun {
     opacity: 1;
 }
-.theme-toggle:hover{
+
+.theme-toggle:hover {
     transform: scale(1.1);
 }
-.theme-toggle:active{
-    transform: scale(0.95);
 
+.theme-toggle:active {
+    transform: scale(0.95);
 }
-@media (max-width:768px){
-    .login-container{
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .login-container {
         flex-direction: column;
     }
-    .right-panel{
+    
+    .right-panel {
         display: none;
     }
-    .left-panel{
+    
+    .left-panel {
         padding: 2rem 1rem;
     }
-    .login-form-container{
-        width:90%;
+    
+    .login-form-container {
+        width: 90%;
         padding: 1.5rem;
     }
-    .welcome-text-right{
+    
+    .welcome-text-right {
         font-size: 2.5rem;
     }
-    .theme-toggle{
-        top:15px;
-        right:15px;
+    
+    .theme-toggle {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .form-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-text {
+        font-size: 1rem;
+    }
+    
+    .form-control {
+        font-size: 1rem;
+    }
+    
+    .btn-login {
+        font-size: 1.1rem;
+    }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+    .left-panel {
+        padding: 1.5rem 1rem;
+    }
+    
+    .login-form-container {
+        padding: 1rem;
+    }
+    
+    .riwi-logo {
+        width: 140px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .form-text {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control {
+        padding: 0.6rem 0;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .btn-login {
+        padding: 0.9rem 0;
+        font-size: 1rem;
     }
 }

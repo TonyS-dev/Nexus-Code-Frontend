@@ -8,30 +8,32 @@ import * as api from '../services/api.service.js';
 
 export function showNewRequestPage() {
     const container = document.createElement('div');
-    container.className = 'new-request-container';
+    container.className = 'w-full h-full flex flex-col';
     container.innerHTML = `
-        <div class="main-header">
-            <h1>Create a New Request</h1>
-        </div>
-        <form id="new-request-form" class="form-grid content-section">
-            <!-- Fields will be injected here -->
-            <div class="form-group">
-                <label for="request-type">1. Select Request Type*</label>
-                <select id="request-type" required>
-                    <option value="">--Please choose an option--</option>
-                    <option value="vacation">Vacation</option>
-                    <option value="leave">Leave / Permit</option>
-                    <option value="certificate">Certificate</option>
-                </select>
-            </div>
-            
-            <div id="dynamic-form-fields"></div>
-
-            <div class="form-actions full-width">
-                <button type="submit" class="btn btn-primary" disabled>Submit Request</button>
-            </div>
-            <p id="form-error" class="error-message" style="display: none;"></p>
-        </form>
+        <header class="bg-background-primary border-b border-border-color p-6 shadow-sm">
+            <h1 class="text-2xl font-bold text-text-primary">Create a New Request</h1>
+        </header>
+        <main class="flex-1 p-6 overflow-y-auto">
+            <form id="new-request-form" class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color max-w-3xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="request-type" class="block text-sm font-semibold text-text-primary mb-2">Request Type</label>
+                        <select id="request-type" class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">
+                            <option value="">-- Choose a type --</option>
+                            <option value="vacation">Vacation</option>
+                            <option value="leave">Leave / Permit</option>
+                            <option value="certificate">Certificate</option>
+                        </select>
+                    </div>
+                    <div id="dynamic-fields" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-border-color flex justify-end gap-4">
+                    <button type="button" id="cancel-btn" class="bg-background-secondary text-text-secondary font-semibold py-2 px-4 rounded-lg hover:bg-border-color/50 transition-colors">Cancel</button>
+                    <button type="submit" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50" disabled>Submit Request</button>
+                </div>
+                <p id="form-error" class="text-danger mt-4 text-sm" style="display: none;"></p>
+            </form>
+        </main>
     `;
 
     const requestTypeSelect = container.querySelector('#request-type');
@@ -76,21 +78,21 @@ function renderVacationForm(container, types) {
         .map((t) => `<option value="${t.id}">${t.name}</option>`)
         .join('');
     container.innerHTML = `
-        <div class="form-group">
-            <label for="vacation-type">2. Vacation Type*</label>
-            <select id="vacation-type" name="vacation_type_id" required>${options}</select>
+        <div class="md:col-span-2">
+            <label for="vacation-type" class="block text-sm font-semibold text-text-primary mb-2">Vacation Type</label>
+            <select id="vacation-type" name="vacation_type_id" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">${options}</select>
         </div>
-        <div class="form-group">
-            <label for="start-date">Start Date*</label>
-            <input type="date" id="start-date" name="start_date" required />
+        <div>
+            <label for="start-date" class="block text-sm font-semibold text-text-primary mb-2">Start Date</label>
+            <input type="date" id="start-date" name="start_date" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" />
         </div>
-        <div class="form-group">
-            <label for="end-date">End Date*</label>
-            <input type="date" id="end-date" name="end_date" required />
+        <div>
+            <label for="end-date" class="block text-sm font-semibold text-text-primary mb-2">End Date</label>
+            <input type="date" id="end-date" name="end_date" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" />
         </div>
-        <div class="form-group full-width">
-            <label for="comments">Comments</label>
-            <textarea id="comments" name="comments" placeholder="e.g., Family trip"></textarea>
+        <div class="md:col-span-2">
+            <label for="comments" class="block text-sm font-semibold text-text-primary mb-2">Comments</label>
+            <textarea id="comments" name="comments" class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" rows="3"></textarea>
         </div>
     `;
 }

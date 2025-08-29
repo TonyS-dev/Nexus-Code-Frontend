@@ -56,7 +56,7 @@ export function showLoginPage() {
     <div class="login-container">
       <button id="themeToggle" class="theme-toggle" aria-label="Switch theme">
         <span class="sun" style="display: none;">☀️</span>
-        <span class="moon" style="display: block;">🌙</span>
+        <span class="moon" style="display: none;">🌙</span>
       </button>
       <div class="left-panel">
         <div class="login-form-container">
