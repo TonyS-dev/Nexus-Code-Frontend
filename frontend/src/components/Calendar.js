@@ -75,6 +75,23 @@ export function renderCalendar(container, events = []) {
           button.style.borderColor = '#E9E9EFFF';
         });
       });
+      
+      // Popover z-index to appear above everything
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const popover = node.querySelector?.('.fc-popover') || (node.classList?.contains('fc-popover') ? node : null);
+              if (popover) {
+                popover.style.zIndex = '9999';
+                popover.style.position = 'fixed';
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, { childList: true, subtree: true });
     }
   }).render();
 }
