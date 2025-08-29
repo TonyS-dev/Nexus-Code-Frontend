@@ -32,7 +32,7 @@ export function showNewRequestPage() {
                         <div id="dynamic-fields" class="contents"></div>
                     </div>
 
-                    <div class="mt-8 pt-6 border-t border-border-color flex justify-end gap-4">
+                    <div class="mt-7 pt-6 border-t border-border-color flex justify-end gap-2">
                         <button type="button" id="cancel-btn" class="bg-gray-200 text-text-secondary font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition-colors">Cancel</button>
                         <button type="submit" class="btn-primary py-1 px-5" disabled>Submit Request</button>
                     </div>
@@ -104,7 +104,7 @@ function renderVacationForm(container, types) {
         </div>
         <div class="col-span-full">
             <label for="comments" class="block text-sm font-semibold text-text-secondary mb-2">Comments</label>
-            <textarea id="comments" name="comments" class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition" rows="3"></textarea>
+            <textarea id="comments" name="comments" class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition" rows="2"></textarea>
         </div>
     `;
 }
@@ -132,7 +132,7 @@ function renderLeaveForm(container, types) {
 
         <div class="col-span-full">
             <label for="reason" class="block text-sm font-semibold text-text-secondary mb-2">Reason</label>
-            <textarea id="reason" name="reason" required class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition" rows="3" placeholder="e.g., Medical appointment"></textarea>
+            <textarea id="reason" name="reason" required class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition" rows="2" placeholder="e.g., Medical appointment"></textarea>
         </div>
     `;
 }
