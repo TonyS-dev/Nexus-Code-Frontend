@@ -1,6 +1,6 @@
 // frontend/src/views/manageUsers.js
-import { auth } from '../services/auth.js';
-import { apiRequest } from '../services/api.js';
+import { auth } from '../services/auth.service.js';
+import { apiRequest } from '../services/api.service.js';
 import { router } from '../router/router.js';
 
 export async function showManageUsersPage() {

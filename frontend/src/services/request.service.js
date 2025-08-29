@@ -1,5 +1,5 @@
 // frontend/src/services/requestService.js
-import { apiRequest } from './api.js';
+import { apiRequest } from './api.service.js';
 
 export const requestService = {
     /**

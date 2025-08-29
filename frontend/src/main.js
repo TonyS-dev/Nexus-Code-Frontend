@@ -7,7 +7,7 @@ import './assets/css/sidebar.css';
 import './assets/css/vacation.css'
 
 import { setupRouter } from './router/router.js';
-import { initializeTheme } from './services/theme.js';
+import { initializeTheme } from './services/theme.service.js';
 
 // Función para notificaciones
 function checkNotifications() {

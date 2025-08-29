@@ -1,6 +1,6 @@
 // frontend/src/views/employeeHistory.js
-import { auth } from '../services/auth.js';
-import { apiRequest } from '../services/api.js';
+import { auth } from '../services/auth.service.js';
+import { apiRequest } from '../services/api.service.js';
 
 export function showEmployeeHistoryPage(params) {
     const container = document.createElement('div');
