@@ -1,6 +1,7 @@
 /**
  * @file NewRequest.js
- * @description Renders a dynamic form for creating new employee requests.
+ * @description Renders a dynamic form for creating new employee requests,
+ * loading specific fields based on the selected request type.
  */
 import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
@@ -9,6 +10,7 @@ import * as api from '../services/api.service.js';
 export function showNewRequestPage() {
     const container = document.createElement('div');
     container.className = 'w-full h-full flex flex-col';
+    // Initial structure with the main select and a placeholder for dynamic fields
     container.innerHTML = `
         <header class="bg-background-primary border-b border-border-color p-6 shadow-sm">
             <h1 class="text-2xl font-bold text-text-primary">Create a New Request</h1>
@@ -25,7 +27,9 @@ export function showNewRequestPage() {
                             <option value="certificate">Certificate</option>
                         </select>
                     </div>
-                    <div id="dynamic-fields" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                    <div id="dynamic-fields" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Dynamic fields will be injected here -->
+                    </div>
                 </div>
                 <div class="mt-8 pt-6 border-t border-border-color flex justify-end gap-4">
                     <button type="button" id="cancel-btn" class="bg-background-secondary text-text-secondary font-semibold py-2 px-4 rounded-lg hover:bg-border-color/50 transition-colors">Cancel</button>
@@ -37,36 +41,50 @@ export function showNewRequestPage() {
     `;
 
     const requestTypeSelect = container.querySelector('#request-type');
-    const dynamicFieldsContainer = container.querySelector(
-        '#dynamic-form-fields'
-    );
+    const dynamicFieldsContainer = container.querySelector('#dynamic-fields');
     const form = container.querySelector('#new-request-form');
     const submitButton = form.querySelector('button[type="submit"]');
 
-    // Event listener to dynamically change the form based on request type
+    // --- Event Listener for Request Type Change ---
     requestTypeSelect.addEventListener('change', async (e) => {
         const type = e.target.value;
-        dynamicFieldsContainer.innerHTML =
-            '<div class="loading">Loading form...</div>';
-        submitButton.disabled = true;
 
-        if (type === 'vacation') {
-            const vacationTypes = await api.getVacationTypes();
-            renderVacationForm(dynamicFieldsContainer, vacationTypes);
-        } else if (type === 'leave') {
-            const leaveTypes = await api.getLeaveTypes();
-            renderLeaveForm(dynamicFieldsContainer, leaveTypes);
-        } else if (type === 'certificate') {
-            const certificateTypes = await api.getCertificateTypes();
-            renderCertificateForm(dynamicFieldsContainer, certificateTypes);
-        } else {
-            dynamicFieldsContainer.innerHTML = '';
+        // Clear previous dynamic fields and show a loading indicator.
+        dynamicFieldsContainer.innerHTML =
+            '<div class="loading">Loading form fields...</div>';
+        submitButton.disabled = true; // Disable submit while loading
+
+        try {
+            let fetchedTypes = null;
+            if (type === 'vacation') {
+                fetchedTypes = await api.getVacationTypes();
+                renderVacationForm(dynamicFieldsContainer, fetchedTypes);
+            } else if (type === 'leave') {
+                fetchedTypes = await api.getLeaveTypes();
+                renderLeaveForm(dynamicFieldsContainer, fetchedTypes);
+            } else if (type === 'certificate') {
+                fetchedTypes = await api.getCertificateTypes();
+                renderCertificateForm(dynamicFieldsContainer, fetchedTypes);
+            } else {
+                // If no type is selected or it's invalid, clear the dynamic fields.
+                dynamicFieldsContainer.innerHTML = '';
+            }
+            // Enable submit button only if a valid type was selected and form fields loaded.
+            submitButton.disabled = !type;
+        } catch (error) {
+            console.error(`Error fetching ${type} types:`, error);
+            dynamicFieldsContainer.innerHTML = `<div class="text-danger text-sm">Could not load form fields for ${type}. Please try again.</div>`;
+            submitButton.disabled = true; // Keep disabled if there's an error
         }
-        submitButton.disabled = !type;
     });
 
     // Handle form submission
     form.addEventListener('submit', handleFormSubmit);
+
+    // Cancel button navigation
+    container
+        .querySelector('#cancel-btn')
+        .addEventListener('click', () => router.navigate('/my-requests'));
 
     return container;
 }
@@ -74,13 +92,21 @@ export function showNewRequestPage() {
 // --- Form Rendering Functions ---
 
 function renderVacationForm(container, types) {
+    if (!types || types.length === 0) {
+        container.innerHTML =
+            '<div class="text-danger md:col-span-2">Could not load vacation types.</div>';
+        return;
+    }
     const options = types
         .map((t) => `<option value="${t.id}">${t.name}</option>`)
         .join('');
     container.innerHTML = `
         <div class="md:col-span-2">
             <label for="vacation-type" class="block text-sm font-semibold text-text-primary mb-2">Vacation Type</label>
-            <select id="vacation-type" name="vacation_type_id" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">${options}</select>
+            <select id="vacation-type" name="vacation_type_id" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">
+                <option value="">-- Select Vacation Type --</option>
+                ${options}
+            </select>
         </div>
         <div>
             <label for="start-date" class="block text-sm font-semibold text-text-primary mb-2">Start Date</label>
@@ -91,48 +117,64 @@ function renderVacationForm(container, types) {
             <input type="date" id="end-date" name="end_date" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" />
         </div>
         <div class="md:col-span-2">
-            <label for="comments" class="block text-sm font-semibold text-text-primary mb-2">Comments</label>
-            <textarea id="comments" name="comments" class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" rows="3"></textarea>
+            <label for="comments" class="block text-sm font-semibold text-text-primary mb-2">Comments (Optional)</label>
+            <textarea id="comments" name="comments" class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" rows="3" placeholder="e.g., Family trip"></textarea>
         </div>
     `;
 }
 
 function renderLeaveForm(container, types) {
+    if (!types || types.length === 0) {
+        container.innerHTML =
+            '<div class="text-danger md:col-span-2">Could not load leave types.</div>';
+        return;
+    }
     const options = types
         .map((t) => `<option value="${t.id}">${t.name}</option>`)
         .join('');
     container.innerHTML = `
-        <div class="form-group">
-            <label for="leave-type">2. Leave Type*</label>
-            <select id="leave-type" name="leave_type_id" required>${options}</select>
+        <div class="md:col-span-2">
+            <label for="leave-type" class="block text-sm font-semibold text-text-primary mb-2">Leave Type</label>
+            <select id="leave-type" name="leave_type_id" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">
+                <option value="">-- Select Leave Type --</option>
+                ${options}
+            </select>
         </div>
-        <div class="form-group">
-            <label for="start-date">Start Date & Time*</label>
-            <input type="datetime-local" id="start-date" name="start_date" required />
+        <div class="md:col-span-2">
+            <label for="start-date" class="block text-sm font-semibold text-text-primary mb-2">Start Date & Time</label>
+            <input type="datetime-local" id="start-date" name="start_date" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" />
         </div>
-        <div class="form-group">
-            <label for="end-date">End Date & Time*</label>
-            <input type="datetime-local" id="end-date" name="end_date" required />
+        <div class="md:col-span-2">
+            <label for="end-date" class="block text-sm font-semibold text-text-primary mb-2">End Date & Time</label>
+            <input type="datetime-local" id="end-date" name="end_date" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" />
         </div>
-        <div class="form-group full-width">
-            <label for="reason">Reason*</label>
-            <textarea id="reason" name="reason" required placeholder="e.g., Medical appointment"></textarea>
+        <div class="md:col-span-2">
+            <label for="reason" class="block text-sm font-semibold text-text-primary mb-2">Reason</label>
+            <textarea id="reason" name="reason" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" rows="3" placeholder="e.g., Medical appointment"></textarea>
         </div>
     `;
 }
 
 function renderCertificateForm(container, types) {
+    if (!types || types.length === 0) {
+        container.innerHTML =
+            '<div class="text-danger md:col-span-2">Could not load certificate types.</div>';
+        return;
+    }
     const options = types
         .map((t) => `<option value="${t.id}">${t.name}</option>`)
         .join('');
     container.innerHTML = `
-        <div class="form-group">
-            <label for="certificate-type">2. Certificate Type*</label>
-            <select id="certificate-type" name="certificate_type_id" required>${options}</select>
+        <div class="md:col-span-2">
+            <label for="certificate-type" class="block text-sm font-semibold text-text-primary mb-2">Certificate Type</label>
+            <select id="certificate-type" name="certificate_type_id" required class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition">
+                <option value="">-- Select Certificate Type --</option>
+                ${options}
+            </select>
         </div>
-        <div class="form-group full-width">
-            <label for="comments">Comments</label>
-            <textarea id="comments" name="comments" placeholder="e.g., For a visa application"></textarea>
+        <div class="md:col-span-2">
+            <label for="comments" class="block text-sm font-semibold text-text-primary mb-2">Comments (Optional)</label>
+            <textarea id="comments" name="comments" class="w-full p-2 border border-border-color rounded-md bg-background-secondary focus:ring-2 focus:ring-primary focus:border-primary transition" rows="3" placeholder="e.g., For a visa application"></textarea>
         </div>
     `;
 }
@@ -156,8 +198,8 @@ async function handleFormSubmit(e) {
         const user = auth.getUser();
         data.employee_id = user.id;
 
-        // The backend expects a default pending status, which it should handle.
-        // We do not send status_id from the frontend on creation.
+        // The backend is responsible for setting the initial status.
+        // We don't send status_id from the frontend on creation.
 
         switch (requestType) {
             case 'vacation':
