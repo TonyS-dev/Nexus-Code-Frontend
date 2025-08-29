@@ -31,6 +31,4 @@ export const requestService = {
         return apiRequest(`/vacation-balances/employee/${employeeId}`);
     },
 
-    // You can add more specific business logic functions here as needed,
-    // like calculateBusinessDays, checkOverlap, etc.
 };

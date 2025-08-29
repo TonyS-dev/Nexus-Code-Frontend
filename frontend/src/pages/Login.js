@@ -4,7 +4,7 @@
  */
 import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
-import { toggleTheme, initializeTheme } from '../services/theme.service.js';
+import { toggleTheme } from '../services/theme.service.js';
 
 /**
  * Sets up the event listener for the login form submission.
@@ -17,7 +17,10 @@ function setupLoginForm(element) {
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitButton = loginForm.querySelector('button[type="submit"]');
         errorMessageElement.style.display = 'none';
+        submitButton.disabled = true;
+        submitButton.textContent = 'Logging in...';
 
         try {
             const email = element.querySelector('#email').value.trim();
@@ -27,15 +30,14 @@ function setupLoginForm(element) {
                 throw new Error('Please fill in all fields.');
             }
 
-            // Await the login process from the auth service.
             await auth.login(email, password);
-
-            // On success, navigate to the main application dashboard.
             router.navigate('/dashboard');
         } catch (error) {
             errorMessageElement.textContent =
                 error.message || 'Login failed. Please try again.';
             errorMessageElement.style.display = 'block';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Login';
         }
     });
 }
@@ -46,17 +48,13 @@ function setupLoginForm(element) {
  */
 export function showLoginPage() {
     const loginContainer = document.createElement('div');
-    const initialLogoSrc = document.documentElement.classList.contains(
-        'theme-light'
-    )
-        ? '/images/logo-light.webp'
-        : '/images/logo-dark.png';
+    const initialLogoSrc = '/images/logo-dark.png'; // Start with a default, theme service will correct it
 
     loginContainer.innerHTML = `
     <div class="login-container">
       <button id="themeToggle" class="theme-toggle" aria-label="Switch theme">
-        <span class="sun" style="display: none;">☀️</span>
-        <span class="moon" style="display: none;">🌙</span>
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
       </button>
       <div class="left-panel">
         <div class="login-form-container">
@@ -86,14 +84,11 @@ export function showLoginPage() {
     </div>
   `;
 
-    // Initialize functionalities for this page.
+    // Initialize event listeners for elements inside this component.
     loginContainer
         .querySelector('#themeToggle')
         .addEventListener('click', toggleTheme);
     setupLoginForm(loginContainer);
-
-    // Re-initialize theme elements specifically for this isolated page
-    initializeTheme();
 
     return loginContainer;
 }

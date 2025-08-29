@@ -51,7 +51,7 @@ export function showMyRequestsPage() {
         const rows = requests
             .map((req) => {
                 const statusClass =
-                    statusStyles[req.status_name] ||
+                    statusStyles[req.name] ||
                     'bg-gray-100 text-gray-600';
                 return `
                 <tr class="hover:bg-background-secondary transition-colors">
@@ -63,7 +63,7 @@ export function showMyRequestsPage() {
                     }</td>
                     <td class="py-3 px-4">
                         <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass}">
-                            ${req.status_name}
+                            ${req.name}
                         </span>
                     </td>
                     <td class="py-3 px-4 text-right">

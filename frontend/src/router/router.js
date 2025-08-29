@@ -6,6 +6,7 @@
 import Navigo from 'navigo';
 import { auth } from '../services/auth.service.js';
 import { AppLayout } from '../components/Layout.js';
+import { initializeTheme } from '../services/theme.service.js'; 
 
 // Import all page components
 import { showLoginPage } from '../pages/Login.js';
@@ -51,6 +52,7 @@ function renderPage(pageComponent, options = {}) {
     appContainer.append(layout);
 
     // After rendering, ensure Navigo scans for new links.
+    initializeTheme();
     router.updatePageLinks();
 }
 
@@ -70,6 +72,7 @@ export function setupRouter() {
             }
             appContainer.innerHTML = '';
             appContainer.append(showLoginPage());
+            initializeTheme();
         },
         '/dashboard': () => renderPage(showDashboardPage, { title: 'Dashboard' }),
         '/my-requests': () => renderPage(showMyRequestsPage, { title: 'My Requests' }),

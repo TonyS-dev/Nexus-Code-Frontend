@@ -5,7 +5,6 @@ import './assets/css/login.css';
 import { setupRouter } from './router/router.js';
 import { initializeTheme } from './services/theme.service.js';
 
-// Función para notificaciones
 function checkNotifications() {
   setInterval(async () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -23,11 +22,11 @@ function checkNotifications() {
     } catch (e) {
       console.error('Error al cargar notificaciones', e);
     }
-  }, 300000); // Cada 5 minutos
+  }, 300000); 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeTheme();
-  setupRouter();        // se ejecuta esto router
-  checkNotifications(); // Para luego ejecutar esta parte que son las notificaciones
+  setupRouter();     
+  checkNotifications(); 
 });

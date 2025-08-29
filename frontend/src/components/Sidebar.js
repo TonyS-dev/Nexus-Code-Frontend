@@ -22,8 +22,6 @@ export function Sidebar() {
         { href: '/requests/new', icon: 'fa-plus-circle', label: 'New Request' },
     ];
 
-    // --- CORRECTED CONDITIONAL LOGIC ---
-    // This now checks the 'accessLevel' property from the decoded token.
     if (user.accessLevel === 'Admin') {
         menuItems.push(
             {

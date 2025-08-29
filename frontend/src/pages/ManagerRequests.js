@@ -15,7 +15,6 @@ export function showManagerRequestsPage() {
 
     async function loadData() {
         try {
-            // Your backend should have an endpoint that returns requests needing this user's approval.
             const requests = await getPendingManagerRequests();
 
             container.innerHTML = `
@@ -89,8 +88,7 @@ async function handleActionClick(event) {
     const { action, id } = event.target.dataset;
     const user = auth.getUser();
 
-    // You need to get the correct status UUIDs from your DB/backend.
-    // These are placeholders.
+    // !todo: get the correct status UUIDs from your DB/backend.
     const statusMap = {
         approve: 'c0ff36f5-68cb-49fc-87cc-6a21a6f07d90', // 'Approved'
         reject: 'c669d605-5d7a-4dc9-ae9c-f7ecc50592e5', // 'Rejected'
@@ -110,8 +108,7 @@ async function handleActionClick(event) {
             '.manager-requests-container'
         );
         pageContainer.innerHTML = `<div class="loading">Reloading...</div>`;
-        // This is a simplified reload, ideally you would just re-run the loadData function.
-        window.location.reload();
+        loadData();
     } catch (error) {
         alert(`Failed to ${action} request: ${error.message}`);
     }
