@@ -113,13 +113,17 @@ body {
     background-color: transparent;
     border-radius: 12px;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Logo styling */
 .riwi-logo {
     width: 180px;
-    height: auto;
+    height: 80px;
+    object-fit: contain;
     margin-bottom: 1.8rem;
+    align-self: center;
 }
 
 /* Form title */
@@ -304,6 +308,7 @@ body {
     z-index: 10;
     letter-spacing: 0.1rem;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    width: max-content;
 }
 
 /* Riwi gradient text effect */
@@ -394,6 +399,7 @@ body {
     
     .left-panel {
         padding: 2rem 1rem;
+        width: 100vw;
     }
     
     .login-form-container {
