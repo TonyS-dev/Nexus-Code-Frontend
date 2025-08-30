@@ -26,7 +26,13 @@ function checkNotifications() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initializeTheme();
-  setupRouter();     
-  checkNotifications(); 
+    // Ensure the app container is ready for a full-height layout
+    const appElement = document.getElementById('app');
+    if (appElement) {
+        appElement.classList.add('h-screen', 'w-screen');
+    }
+
+    initializeTheme();
+    setupRouter();
+    checkNotifications();
 });
