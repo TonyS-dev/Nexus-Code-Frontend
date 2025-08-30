@@ -4,7 +4,7 @@
  */
 import { auth } from './auth.service.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 /**
  * Centralized fetch wrapper that automatically handles 401/403 errors by logging out the user.
@@ -105,7 +105,7 @@ export const getManagers = () => apiRequest('/employees?role=Manager');
 
 // Requests and Approvals
 export const getRequestsByEmployeeId = (employeeId) => apiRequest(`/requests/employee/${employeeId}`);
-export const getPendingManagerRequests = () => apiRequest('/approvals/approver/pending');
+export const getPendingManagerRequests = (approverId) => apiRequest(`/approvals/approver/${approverId}`);;
 export const createVacationRequest = (data) => apiRequest('/requests/vacation', 'POST', data);
 export const createLeaveRequest = (data) => apiRequest('/requests/leave', 'POST', data);
 export const createCertificateRequest = (data) => apiRequest('/requests/certificate', 'POST', data);

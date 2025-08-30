@@ -12,7 +12,7 @@ export async function showNewEmployeePage() {
       return document.createElement('div');
     }
     
-    const superiorRoles = ['Admin', 'HR Talent Leader', 'Manager'];
+    const superiorRoles = ['Admin', 'HR Talent Leader', 'Manager', 'CEO'];
     const userRole = user?.role || user?.roles?.[0]?.name || 'Employee';
     
     if (!superiorRoles.includes(userRole)) {
