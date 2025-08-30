@@ -97,7 +97,7 @@ export function removeNotification(id) {
 }
 
 // Make removeNotification available globally for onclick handlers
-window.Notification = removeNotification;
+window.removeNotification = removeNotification;
 
 /**
  * Shorthand methods for common notification types

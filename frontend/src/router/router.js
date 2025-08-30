@@ -1,7 +1,6 @@
 /**
  * @file router.js
  * @description Configures the client-side router using Navigo.
- * Handles route definitions, protection, and rendering of page components within the main layout.
  */
 import Navigo from 'navigo';
 import { auth } from '../services/auth.service.js';
@@ -16,19 +15,22 @@ import { showNewRequestPage } from '../pages/NewRequest.js';
 import { showManagerRequestsPage } from '../pages/ManagerRequests.js';
 import { renderNotFoundPage } from '../pages/NotFound.js';
 import { renderForbiddenPage } from '../pages/Forbidden.js';
+import { showManageUsersPage } from '../pages/manageUsers.js';
+import { showNewEmployeePage } from '../pages/newEmployee.js';
+import { showEditEmployeePage } from '../pages/editEmployee.js';
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
 
 /**
- * Renders a page component within the main application layout.
- * It handles authenticated access and role-based authorization before rendering.
+ * Renders a page component within the main layout.
  * @param {Function} pageComponent - The function that creates the page's DOM element.
- * @param {Object} [options={}] - Configuration for the route.
- * @param {string} [options.title] - The title for the navbar.
- * @param {string[]} [options.roles] - An array of roles allowed to access this page.
+ * @param {Object} [options={}] - Route configuration options.
+ * @param {Object} [params={}] - Parameters extracted from the URL.
  */
-function renderPage(pageComponent, options = {}) {
+async function renderPage(pageComponent, options = {}, params = {}) {
+    appContainer.innerHTML = '';
+    
     if (!auth.isAuthenticated()) {
         router.navigate('/login');
         return;
@@ -36,30 +38,34 @@ function renderPage(pageComponent, options = {}) {
 
     const user = auth.getUser();
     if (options.roles && !options.roles.includes(user?.role)) {
-        console.warn('User is not authorized to access this page');
-        router.navigate('/forbidden');
+        
+        /* router.navigate('/forbidden'); */
+
+        appContainer.append(renderForbiddenPage());
         return;
     }
 
-    appContainer.innerHTML = '';
-    const layout = AppLayout();
-    const match = router.lastResolved()?.params;
-
-    // The page component is now responsible for handling its own data fetching.
-    const pageElement = pageComponent(match?.data); // Pass route params if any
-
-    layout.querySelector('#app-content').append(pageElement);
-    layout.setTitle(options.title || 'Dashboard');
-    appContainer.append(layout);
-
-    // After rendering, ensure Navigo scans for new links.
-    initializeTheme();
-    router.updatePageLinks();
+    try {
+        const layout = AppLayout();
+        
+        // Page function now receives parameters directly
+        const pageElement = await pageComponent(params);
+        
+        const appContent = layout.querySelector('#app-content');
+        appContent.innerHTML = '';
+        appContent.append(pageElement);
+        
+        layout.setTitle(options.title || 'Dashboard');
+        appContainer.append(layout);
+        
+        initializeTheme();
+        router.updatePageLinks();
+    } catch (error) {
+        // Removed console.error for cleaner production console
+        appContainer.innerHTML = `<div class="alert error"><h3>Error Loading Page</h3><p>${error.message}</p></div>`;
+    }
 }
 
-/**
- * Initializes and configures all application routes.
- */
 export function setupRouter() {
     const routes = {
         '/': () => {
@@ -93,7 +99,26 @@ export function setupRouter() {
         '/manager-requests': () =>
             renderPage(showManagerRequestsPage, {
                 title: 'Approve Requests',
-                roles: ['Manager', 'Admin', 'HR'], // Example: multiple roles can access
+                roles: ['Manager', 'Admin', 'HR Talent Leader'], // Example: multiple roles can access
+            }),
+        '/manage-users': () =>
+            renderPage(showManageUsersPage, {
+                title: 'Manage Users',
+                roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+            }),
+        '/manage-users/edit/:id': (match) => {
+            renderPage(showEditEmployeePage, {
+                    title: 'Edit User',
+                    roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+                },
+                match.data
+            ); // Pass 'match.data' as the third 'params' argument.
+        },
+
+        '/employees/new': () =>
+            renderPage(showNewEmployeePage, {
+                title: 'New User',
+                roles: ['HR Talent Leader', 'Admin', 'Manager'],
             }),
 
         '/forbidden': () => {
@@ -102,10 +127,9 @@ export function setupRouter() {
         },
     };
 
-    // Configure the router with routes
-    router.on(routes);
-
     // Handle 404 - not found routes
+    router.on(routes);
+    
     router.notFound(() => {
         appContainer.innerHTML = '';
         appContainer.append(renderNotFoundPage());
