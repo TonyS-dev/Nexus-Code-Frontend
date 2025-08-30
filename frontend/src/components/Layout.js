@@ -8,34 +8,45 @@ import { Navbar } from './Navbar.js';
 
 export function AppLayout() {
     const layoutContainer = document.createElement('div');
-    layoutContainer.className = 'app-container';
+    layoutContainer.className =
+        'flex h-screen bg-background-secondary overflow-hidden w-full';
 
-    const sidebarContainer = document.createElement('aside');
-    sidebarContainer.id = 'sidebar-container';
+    // Sidebar
+    const sidebarComponent = Sidebar();
+    sidebarComponent.id = 'sidebar-container';
 
+    // Main content panel
     const mainPanel = document.createElement('div');
-    mainPanel.className = 'main-panel';
+    mainPanel.className = 'flex-1 flex flex-col h-full overflow-hidden';
 
+    // Overlay for mobile sidebar
+    const overlay = document.createElement('div');
+    overlay.id = 'sidebar-overlay';
+    overlay.className =
+        'fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden';
+
+    // Navbar
     const navbarContainer = document.createElement('header');
     navbarContainer.id = 'navbar-container';
 
+    // Main content area
     const contentArea = document.createElement('main');
-    contentArea.id = 'app-content'; // Router injects page content here.
+    contentArea.id = 'app-content';
+    contentArea.className = 'flex-1 overflow-y-auto'; // Makes content scrollable
+
+    const toggleSidebar = () => {
+        sidebarComponent.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    };
 
     // Assemble the layout structure.
-    mainPanel.append(navbarContainer, contentArea);
-    layoutContainer.append(sidebarContainer, mainPanel);
-
-    // Populate containers with their respective components.
-    sidebarContainer.append(Sidebar());
-
-    const navbarComponent = Navbar();
+    const navbarComponent = Navbar(toggleSidebar);
     navbarContainer.append(navbarComponent);
+    mainPanel.append(navbarContainer, contentArea);
+    layoutContainer.append(sidebarComponent, mainPanel, overlay);
 
-    /**
-     * Exposes a method on the layout element to dynamically set the navbar title.
-     * @param {string} title - The new title to display in the navbar.
-     */
+    overlay.addEventListener('click', toggleSidebar);
+
     layoutContainer.setTitle = (title) => {
         navbarComponent.setTitle(title);
     };
