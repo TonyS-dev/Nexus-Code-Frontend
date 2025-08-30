@@ -99,7 +99,7 @@ export function setupRouter() {
         '/manager-requests': () =>
             renderPage(showManagerRequestsPage, {
                 title: 'Approve Requests',
-                roles: ['Manager', 'Admin', 'HR Talent Leader'], // Example: multiple roles can access
+                roles: ['Manager', 'Admin', 'HR Talent Leader', 'CEO'], // Example: multiple roles can access
             }),
         '/manage-users': () =>
             renderPage(showManageUsersPage, {
@@ -118,7 +118,7 @@ export function setupRouter() {
         '/employees/new': () =>
             renderPage(showNewEmployeePage, {
                 title: 'New User',
-                roles: ['HR Talent Leader', 'Admin', 'Manager'],
+                roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
             }),
 
         '/forbidden': () => {

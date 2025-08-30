@@ -58,7 +58,7 @@ export async function showEditEmployeePage(params = {}) {
             return container;
         }
 
-        const superiorRoles = ['HR Talent Leader', 'Admin', 'Manager'];
+        const superiorRoles = ['HR Talent Leader', 'Admin', 'Manager','CEO'];
         const userRole = getEmployeeRole(user);
         console.log('User role detected:', userRole);
 
