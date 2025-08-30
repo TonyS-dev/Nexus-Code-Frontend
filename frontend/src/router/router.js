@@ -6,7 +6,7 @@
 import Navigo from 'navigo';
 import { auth } from '../services/auth.service.js';
 import { AppLayout } from '../components/Layout.js';
-import { initializeTheme } from '../services/theme.service.js'; 
+import { initializeTheme } from '../services/theme.service.js';
 
 // Import all page components
 import { showLoginPage } from '../pages/Login.js';
@@ -61,11 +61,12 @@ function renderPage(pageComponent, options = {}) {
  * Initializes and configures all application routes.
  */
 export function setupRouter() {
-    const user = auth.getUser();
     const routes = {
         '/': () => {
             // Redirect based on authentication status.
-            auth.isAuthenticated() ? router.navigate('/dashboard') : router.navigate('/login');
+            auth.isAuthenticated()
+                ? router.navigate('/dashboard')
+                : router.navigate('/login');
         },
         '/login': () => {
             if (auth.isAuthenticated()) {
@@ -76,16 +77,25 @@ export function setupRouter() {
             appContainer.append(showLoginPage());
             initializeTheme();
         },
-        '/dashboard': () => renderPage(showDashboardPage, { title: `Welcome, ${user.first_name}!` }),
-        '/my-requests': () => renderPage(showMyRequestsPage, { title: 'My Requests' }),
-        '/requests/new': () => renderPage(showNewRequestPage, { title: 'New Request' }),
-        
+        '/dashboard': () => {
+            const user = auth.getUser();
+            const title = user?.first_name
+                ? `Welcome, ${user.first_name}!`
+                : 'Dashboard';
+            renderPage(showDashboardPage, { title });
+        },
+        '/my-requests': () =>
+            renderPage(showMyRequestsPage, { title: 'My Requests' }),
+        '/requests/new': () =>
+            renderPage(showNewRequestPage, { title: 'New Request' }),
+
         // Role-protected routes
-        '/manager-requests': () => renderPage(showManagerRequestsPage, {
-            title: 'Approve Requests',
-            roles: ['Manager', 'Admin', 'HR'], // Example: multiple roles can access
-        }),
-        
+        '/manager-requests': () =>
+            renderPage(showManagerRequestsPage, {
+                title: 'Approve Requests',
+                roles: ['Manager', 'Admin', 'HR'], // Example: multiple roles can access
+            }),
+
         '/forbidden': () => {
             appContainer.innerHTML = '';
             appContainer.append(renderForbiddenPage());
@@ -94,13 +104,13 @@ export function setupRouter() {
 
     // Configure the router with routes
     router.on(routes);
-    
+
     // Handle 404 - not found routes
     router.notFound(() => {
         appContainer.innerHTML = '';
         appContainer.append(renderNotFoundPage());
     });
-    
+
     // Start the router
     router.resolve();
 }

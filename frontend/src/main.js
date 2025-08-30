@@ -11,7 +11,7 @@ function checkNotifications() {
     if (!user) return;
 
     try {
-      const response = await fetch('/api/notifications/unread', {
+      const response = await fetch('/notifications/unread', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

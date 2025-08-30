@@ -6,6 +6,7 @@
 import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
 import * as api from '../services/api.service.js';
+import { notify } from '../services/notification.service.js';
 
 export function showNewRequestPage() {
     const container = document.createElement('div');
@@ -21,9 +22,9 @@ export function showNewRequestPage() {
                             <label for="request-type" class="block text-sm font-semibold text-text-secondary mb-2">Request Type</label>
                             <select id="request-type" class="w-full p-3 border border-border-color rounded-lg bg-background-secondary focus:ring-2 focus:ring-primary-color/50 focus:border-primary-color transition">
                                 <option value="">-- Choose a type --</option>
-                                <option value="VACATION">Vacation</option>
-                                <option value="LEAVE">Leave / Permit</option>
-                                <option value="CERTIFICATE">Certificate</option>
+                                <option value="vacation">Vacation</option>
+                                <option value="leave">Leave / Permit</option>
+                                <option value="certificate">Certificate</option>
                             </select>
                         </div>
                         
@@ -351,7 +352,9 @@ async function handleFormSubmit(e) {
                 throw new Error('Invalid request type selected.');
         }
 
-        alert('Request submitted successfully!');
+        notify.success('Request submitted successfully!', { 
+            description: `Your ${requestType} request has been sent for approval` 
+        });
         router.navigate('/my-requests');
     } catch (error) {
         // Try to get more detailed error information from the API response
