@@ -5,7 +5,7 @@
 import { auth } from './auth.service.js';
 
 const API_BASE_URL =
-    import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    import.meta.env.VITE_API_URL;
 
 /**
  * Centralized fetch wrapper. Now automatically handles 401/403 errors by logging out the user.
@@ -89,3 +89,12 @@ export const getLeaveTypes = () => apiRequest('/leave-types');
 export const getCertificateTypes = () => apiRequest('/certificate-types');
 
 export const getRequestStatuses = () => apiRequest('/request-statuses');
+
+// Notifications
+export const getUserNotifications = () => apiRequest('/notifications');
+export const getUnreadNotificationCount = () =>
+    apiRequest('/notifications/unread-count');
+export const markNotificationAsRead = (notificationId) =>
+    apiRequest(`/notifications/${notificationId}/read`, 'PATCH');
+export const markAllNotificationsAsRead = () =>
+    apiRequest('/notifications/mark-all-read', 'PATCH');

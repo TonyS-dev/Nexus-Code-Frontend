@@ -4,6 +4,7 @@
  */
 import { loginUser } from './api.service.js';
 import { router } from '../router/router.js';
+import { notify } from './notification.service.js';
 
 /**
  * Parses the payload of a JWT token without verifying its signature.
@@ -36,6 +37,7 @@ export const auth = {
         if (response.token && response.user) {
             localStorage.setItem('token', response.token);
             localStorage.setItem('user', JSON.stringify(response.user));
+            notify.success('Login successful!');
             return response.user;
         }
         throw new Error('Login failed: Invalid server response.');
@@ -47,6 +49,7 @@ export const auth = {
     logout() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        notify.info('You have been logged out');
         router.navigate('/login');
     },
 
@@ -71,7 +74,7 @@ export const auth = {
         const isExpired = decoded.exp < Date.now() / 1000;
 
         if (isExpired) {
-            alert('Session expired. Logging out.');
+            notify.warning('Session expired. Please log in again.');
             this.logout();
             return false;
         }

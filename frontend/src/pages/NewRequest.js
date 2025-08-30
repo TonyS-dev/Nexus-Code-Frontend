@@ -6,6 +6,7 @@
 import { auth } from '../services/auth.service.js';
 import { router } from '../router/router.js';
 import * as api from '../services/api.service.js';
+import { notify } from '../services/notification.service.js';
 
 export function showNewRequestPage() {
     const container = document.createElement('div');
@@ -351,7 +352,9 @@ async function handleFormSubmit(e) {
                 throw new Error('Invalid request type selected.');
         }
 
-        alert('Request submitted successfully!');
+        notify.success('Request submitted successfully!', { 
+            description: `Your ${requestType} request has been sent for approval` 
+        });
         router.navigate('/my-requests');
     } catch (error) {
         // Try to get more detailed error information from the API response
