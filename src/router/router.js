@@ -73,6 +73,12 @@ async function renderPage(pageComponent, options = {}, params = {}) {
         
         layout.setTitle(options.title || 'Dashboard');
         
+        // Update sidebar active link after navigation
+        const sidebar = layout.querySelector('aside');
+        if (sidebar && sidebar.updateActiveLink) {
+            sidebar.updateActiveLink();
+        }
+        
         initializeTheme();
         router.updatePageLinks();
     } catch (error) {
