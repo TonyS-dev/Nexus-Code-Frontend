@@ -4,7 +4,7 @@
  */
 import { auth } from './auth.service.js';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Centralized fetch wrapper that automatically handles 401/403 errors by logging out the user.
@@ -91,7 +91,7 @@ export const deleteEmployee = (id) => {
     if (!id) {
         throw new Error('Employee ID is required');
     }
-    return apiRequest(`/employees/${id}`, 'DELETE');
+    return apiRequest(`/employees/${id}`, 'PATCH');
 };
 
 // Form Population Endpoints
