@@ -40,7 +40,6 @@ export async function showManageUsersPage() {
         if (!Array.isArray(employees))
             throw new Error('Invalid server response.');
 
-        console.log('Fetched employees:', employees);
         const rows = employees
             .map((emp) => {
                 const fullName = `${emp.first_name || ''} ${
