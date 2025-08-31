@@ -26,10 +26,16 @@ export async function showManageUsersPage() {
     }
 
     const container = document.createElement('div');
-    container.className = 'content-section';
+    container.className = 'w-full h-full flex flex-col';
 
     try {
-        container.innerHTML = `<div class="loading-container"><div class="loading-spinner"></div><p>Loading users...</p></div>`;
+        container.innerHTML = `
+            <div class="p-6 text-text-secondary flex items-center justify-center">
+                <div class="w-8 h-8 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+                <span class="ml-3">Loading users...</span>
+            </div>
+        `;
+
         const employees = await apiRequest('/employees');
         if (!Array.isArray(employees))
             throw new Error('Invalid server response.');
@@ -45,57 +51,74 @@ export async function showManageUsersPage() {
                     ? emp.roles.join(', ')
                     : emp.roles || '';
                 return `
-    <tr>
-      <td>${fullName}</td>
-      <td>${emp.email || ''}</td>
-      <td>
-        <span class="role-badge role-${rolesStr
-            .toLowerCase()
-            .replace(/\s+/g, '-')}">
-          ${rolesStr}
-        </span>
-      </td>
-      <td>${emp.headquarters_name}</td>
-      <td>
-        <button class="btn-sm btn-edit" data-id="${
-            emp.id
-        }" title="Edit user"><i class="icon-edit"></i> Edit</button>
-        <button class="btn-sm btn-delete" data-id="${
-            emp.id
-        }" data-name="${fullName}" title="Delete user"><i class="icon-delete"></i> Delete</button>
-      </td>
-    </tr>`;
+                    <tr class="hover:bg-background-secondary transition-colors">
+                        <td class="py-3 px-4 text-sm font-medium text-text-primary">${fullName}</td>
+                        <td class="py-3 px-4 text-sm text-text-secondary">${emp.email || ''}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+                                ${rolesStr}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-sm text-text-secondary">${emp.headquarters_name || ''}</td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <button class="text-primary hover:text-primary-hover font-semibold text-sm btn-edit" data-id="${emp.id}" title="Edit user">Edit</button>
+                            <button class="text-danger hover:text-danger font-semibold text-sm btn-delete" data-id="${emp.id}" data-name="${fullName}" title="Delete user">Delete</button>
+                        </td>
+                    </tr>`;
             })
             .join('');
 
         container.innerHTML = `
-      <div class="main-header">
-        <h1>Manage Users</h1>
-        <button class="btn btn-primary" id="new-employee-btn">
-          <i class="icon-plus"></i> New Employee
-        </button>
-      </div>
-      <div class="filters-section">
-        <div class="filter-group">
-          <label for="roles-filter">Filter by role:</label>
-          <select id="roles-filter" class="form-select">
-            <option value="">All Roles</option>
-            <option value="ceo">CEO</option>
-            <option value="admin">Admin</option>
-            <option value="hr talent leader">HR Talent Leader</option>
-            <option value="learning leader">Learning Leader</option>
-            <option value="manager">Manager</option>
-            <option value="developer">Developer</option>
-            <option value="employee">Employee</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="search-input">Search:</label>
-          <input type="text" id="search-input" class="form-input" placeholder="Search by name or email...">
-        </div>
-      </div>
-      <div class="table-container"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Area</th><th>Actions</th></tr></thead><tbody id="users-tbody">${rows}</tbody></table></div>
-      <div class="table-footer"><span id="total-count">Total: ${employees.length} users</span></div>`;
+            <main class="flex-1 p-6 overflow-y-auto">
+                <div class="bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                        <h2 class="text-xl font-semibold text-text-primary">Manage Users</h2>
+                        <button id="new-employee-btn" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors mt-4 sm:mt-0">
+                            <i class="fa-solid fa-plus mr-2"></i>New Employee
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label for="roles-filter" class="block text-sm font-medium text-text-secondary mb-2">Filter by role:</label>
+                            <select id="roles-filter" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
+                                <option value="">All Roles</option>
+                                <option value="ceo">CEO</option>
+                                <option value="admin">Admin</option>
+                                <option value="hr talent leader">HR Talent Leader</option>
+                                <option value="learning leader">Learning Leader</option>
+                                <option value="manager">Manager</option>
+                                <option value="developer">Developer</option>
+                                <option value="employee">Employee</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="search-input" class="block text-sm font-medium text-text-secondary mb-2">Search:</label>
+                            <input type="text" id="search-input" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" placeholder="Search by name or email...">
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto bg-background-primary rounded-lg border border-border-color">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-border-color bg-background-secondary">
+                                    <th class="py-3 px-4 font-semibold text-text-secondary text-sm">Name</th>
+                                    <th class="py-3 px-4 font-semibold text-text-secondary text-sm">Email</th>
+                                    <th class="py-3 px-4 font-semibold text-text-secondary text-sm">Role</th>
+                                    <th class="py-3 px-4 font-semibold text-text-secondary text-sm">Area</th>
+                                    <th class="py-3 px-4 font-semibold text-text-secondary text-sm">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">${rows}</tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-text-secondary">
+                        <span id="total-count">Total: ${employees.length} users</span>
+                    </div>
+                </div>
+            </main>
+        `;
 
         function attachEventListeners() {
             container.querySelectorAll('.btn-edit').forEach((btn) => {

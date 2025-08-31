@@ -16,9 +16,9 @@ import { showNewRequestPage } from '../pages/NewRequest.js';
 import { showManagerRequestsPage } from '../pages/ManagerRequests.js';
 import { renderNotFoundPage } from '../pages/NotFound.js';
 import { renderForbiddenPage } from '../pages/Forbidden.js';
-import { showManageUsersPage } from '../pages/manageUsers.js';
-import { showNewEmployeePage } from '../pages/newEmployee.js';
-import { showEditEmployeePage } from '../pages/editEmployee.js';
+import { showManageUsersPage } from '../pages/ManageUsers.js';
+import { showNewEmployeePage } from '../pages/NewEmployee.js';
+import { showEditEmployeePage } from '../pages/EditEmployee.js';
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
