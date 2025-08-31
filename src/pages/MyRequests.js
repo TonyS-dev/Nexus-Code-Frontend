@@ -62,7 +62,7 @@ export function showMyRequestsPage() {
                     }</td>
                     <td class="py-3 px-4">
                         <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass}">
-                            ${req.name}
+                            ${req.status_name}
                         </span>
                     </td>
                     <td class="py-3 px-4 text-right">
