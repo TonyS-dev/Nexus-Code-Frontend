@@ -50,7 +50,7 @@ export function showMyRequestsPage() {
         const rows = requests
             .map((req) => {
                 const statusClass =
-                    statusStyles[req.name] ||
+                    statusStyles[req.status_name] ||
                     'bg-gray-100 text-gray-600';
                 return `
                 <tr class="hover:bg-background-secondary transition-colors">

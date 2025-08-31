@@ -41,7 +41,7 @@ export function showDashboardPage() {
                 currentYearBalance.days_taken;
             const totalRequests = requestsData.length;
             const pendingRequests = requestsData.filter(
-                (req) => req.name && req.name.toLowerCase() === 'pending'
+                (req) => req.status_name && req.status_name.toLowerCase() === 'pending'
             ).length;
 
             // Re-render the container's content with fetched data
@@ -104,7 +104,7 @@ export function showDashboardPage() {
                                                   (request) => `
                                     <div class="flex items-start gap-3 p-3 bg-background-secondary rounded-lg">
                                         <div class="w-3 h-3 rounded-full ${getStatusColor(
-                                            request.name
+                                            request.status_name
                                         )} flex-shrink-0 mt-1.5"></div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between mb-1">
@@ -112,9 +112,9 @@ export function showDashboardPage() {
                                                     request.request_type
                                                 }</p>
                                                 <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadgeClass(
-                                                    request.name
+                                                    request.status_name
                                                 )} flex-shrink-0">${
-                                                      request.name
+                                                      request.status_name
                                                   }</span>
                                             </div>
                                             <p class="text-xs text-text-secondary">${formatDate(
@@ -174,7 +174,7 @@ export function showDashboardPage() {
                         type: request.request_type,
                         start_date: startDate,
                         end_date: endDate,
-                        status: request.name?.toLowerCase(),
+                        status: request.status_name?.toLowerCase(),
                     };
                 });
                 renderCalendar(calendarContainer, calendarEvents);
