@@ -1,7 +1,7 @@
 import { auth } from '../services/auth.service.js';
 import { apiRequest } from '../services/api.service.js';
 import { router } from '../router/router.js';
-import { getUserAccessLevel, formatDateForInput } from '../utils/helpers.js'
+import { getUserAccessLevel, formatDateForInput, cleanFormData } from '../utils/helpers.js'
 
 export async function showEditEmployeePage(params = {}) {
     const employeeId = params?.id;
@@ -113,16 +113,21 @@ export async function showEditEmployeePage(params = {}) {
                     <form id="edit-employee-form" class="space-y-6">
                         <div class="bg-background-secondary p-6 rounded-lg border border-border-color">
                             <h3 class="text-lg font-semibold text-text-primary mb-4 border-b-2 border-primary pb-2">Personal Information</h3>
+                            <p class="text-sm text-text-secondary mb-4 italic">Fields marked with <span class="text-red-500 font-bold">*</span> are required</p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="employee_code" class="block text-sm font-medium text-text-secondary mb-2 required">Employee Code *</label>
+                                    <label for="employee_code" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Employee Code <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" id="employee_code" name="employee_code" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="EMP001" maxlength="20" value="${
                                                employee.employee_code || ''
                                            }">
                                 </div>
                                 <div>
-                                    <label for="email" class="block text-sm font-medium text-text-secondary mb-2 required">Email *</label>
+                                    <label for="email" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Email <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="user@nexus.com" maxlength="60" value="${
                                                employee.email || ''
@@ -131,7 +136,9 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="first_name" class="block text-sm font-medium text-text-secondary mb-2 required">First Name *</label>
+                                    <label for="first_name" class="block text-sm font-medium text-text-secondary mb-2">
+                                        First Name <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" id="first_name" name="first_name" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            maxlength="40" value="${
                                                employee.first_name || ''
@@ -147,7 +154,9 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="last_name" class="block text-sm font-medium text-text-secondary mb-2 required">Last Name *</label>
+                                    <label for="last_name" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Last Name <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" id="last_name" name="last_name" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            maxlength="40" value="${
                                                employee.last_name || ''
@@ -163,21 +172,27 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="phone" class="block text-sm font-medium text-text-secondary mb-2 required">Phone *</label>
+                                    <label for="phone" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Phone <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="tel" id="phone" name="phone" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="+57 300 123 4567" maxlength="20" value="${
                                                employee.phone || ''
                                            }">
                                 </div>
                                 <div>
-                                    <label for="birth_date" class="block text-sm font-medium text-text-secondary mb-2 required">Birth Date *</label>
+                                    <label for="birth_date" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Birth Date <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="date" id="birth_date" name="birth_date" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            value="${formattedBirthDate}">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="gender_id" class="block text-sm font-medium text-text-secondary mb-2 required">Gender *</label>
+                                    <label for="gender_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Gender <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="gender_id" name="gender_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select gender...</option>
                                         ${safeGenders
@@ -194,7 +209,9 @@ export async function showEditEmployeePage(params = {}) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="identification_type_id" class="block text-sm font-medium text-text-secondary mb-2 required">ID Type *</label>
+                                    <label for="identification_type_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        ID Type <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="identification_type_id" name="identification_type_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select type...</option>
                                         ${safeIdentificationTypes
@@ -214,7 +231,9 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="identification_number" class="block text-sm font-medium text-text-secondary mb-2 required">ID Number *</label>
+                                    <label for="identification_number" class="block text-sm font-medium text-text-secondary mb-2">
+                                        ID Number <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="text" id="identification_number" name="identification_number" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="12345678" maxlength="50" value="${
                                                employee.identification_number ||
@@ -222,9 +241,10 @@ export async function showEditEmployeePage(params = {}) {
                                            }">
                                 </div>
                                 <div>
-                                    <label for="password" class="block text-sm font-medium text-text-secondary mb-2">New Password (leave blank to keep current)</label>
+                                    <label for="password" class="block text-sm font-medium text-text-secondary mb-2">New Password (optional)</label>
                                     <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
-                                           placeholder="New password" minlength="6">
+                                           placeholder="Leave blank to keep current password" minlength="6">
+                                    <p class="text-xs text-text-muted mt-1">Minimum 6 characters. Leave empty to keep current password.</p>
                                 </div>
                             </div>
                         </div>
@@ -233,12 +253,16 @@ export async function showEditEmployeePage(params = {}) {
                             <h3 class="text-lg font-semibold text-text-primary mb-4 border-b-2 border-primary pb-2">Job Information</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="hire_date" class="block text-sm font-medium text-text-secondary mb-2 required">Hire Date *</label>
+                                    <label for="hire_date" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Hire Date <span class="text-red-500">*</span>
+                                    </label>
                                     <input type="date" id="hire_date" name="hire_date" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            value="${formattedHireDate}">
                                 </div>
                                 <div>
-                                    <label for="role_id" class="block text-sm font-medium text-text-secondary mb-2 required">Role *</label>
+                                    <label for="role_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Role <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="role_id" name="role_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select role...</option>
                                         ${safeRoles
@@ -256,7 +280,9 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="headquarters_id" class="block text-sm font-medium text-text-secondary mb-2 required">Headquarters *</label>
+                                    <label for="headquarters_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Headquarters <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="headquarters_id" name="headquarters_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select headquarters...</option>
                                         ${safeHeadquarters
@@ -274,7 +300,7 @@ export async function showEditEmployeePage(params = {}) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="manager_id" class="block text-sm font-medium text-text-secondary mb-2">Manager</label>
+                                    <label for="manager_id" class="block text-sm font-medium text-text-secondary mb-2">Manager (optional)</label>
                                     <select id="manager_id" name="manager_id" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">No manager assigned...</option>
                                         ${safeManagers
@@ -296,7 +322,9 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="status_id" class="block text-sm font-medium text-text-secondary mb-2 required">Status *</label>
+                                    <label for="status_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Status <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="status_id" name="status_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select status...</option>
                                         ${safeEmployeeStatuses
@@ -314,7 +342,9 @@ export async function showEditEmployeePage(params = {}) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="access_level_id" class="block text-sm font-medium text-text-secondary mb-2 required">Access Level *</label>
+                                    <label for="access_level_id" class="block text-sm font-medium text-text-secondary mb-2">
+                                        Access Level <span class="text-red-500">*</span>
+                                    </label>
                                     <select id="access_level_id" name="access_level_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select level...</option>
                                         ${safeAccessLevels
@@ -427,84 +457,73 @@ export async function showEditEmployeePage(params = {}) {
             }
 
             const formData = new FormData(form);
-            const employeeData = {};
+            
+            // Define required fields based on our database constraints
+            const requiredFields = [
+                'employee_code', 'first_name', 'last_name', 'email', 'phone', 
+                'birth_date', 'identification_type_id', 'identification_number', 
+                'gender_id', 'access_level_id', 'hire_date', 'role_id', 
+                'headquarters_id', 'status_id'
+            ];
+            
+            // Clean form data using helper function
+            const employeeData = cleanFormData(formData, requiredFields);
 
-            // Process form data and clean empty values
-            for (let [key, value] of formData.entries()) {
-                const cleanValue = value?.trim();
-                if (key !== 'password' || (key === 'password' && cleanValue && cleanValue !== '')) {
-                    if (cleanValue && cleanValue !== '') {
-                        employeeData[key] = cleanValue;
-                    } else if (['employee_code', 'first_name', 'last_name', 'email', 'hire_date', 'headquarters_id', 'status_id'].includes(key)) {
-                        employeeData[key] = ''; // Keep required fields even if empty for validation
-                    }
+            // Handle password separately (only include if provided)
+            const password = formData.get('password')?.trim();
+            if (password && password.length > 0) {
+                if (password.length < 6) {
+                    alert('New password must be at least 6 characters long');
+                    return;
                 }
+                employeeData.password = password;
             }
 
-            // Remove password if empty (don't update password)
-            if (!employeeData.password || employeeData.password.length === 0) {
-                delete employeeData.password;
+            // Enhanced validation with better error messages
+            const validationErrors = [];
+            
+            if (!employeeData.employee_code) validationErrors.push('Employee Code');
+            if (!employeeData.first_name) validationErrors.push('First Name');
+            if (!employeeData.last_name) validationErrors.push('Last Name');
+            if (!employeeData.email) validationErrors.push('Email');
+            if (!employeeData.phone) validationErrors.push('Phone');
+            if (!employeeData.birth_date) validationErrors.push('Birth Date');
+            if (!employeeData.identification_type_id) validationErrors.push('ID Type');
+            if (!employeeData.identification_number) validationErrors.push('ID Number');
+            if (!employeeData.gender_id) validationErrors.push('Gender');
+            if (!employeeData.access_level_id) validationErrors.push('Access Level');
+            if (!employeeData.hire_date) validationErrors.push('Hire Date');
+            if (!employeeData.role_id) validationErrors.push('Role');
+            if (!employeeData.headquarters_id) validationErrors.push('Headquarters');
+            if (!employeeData.status_id) validationErrors.push('Status');
+
+            if (validationErrors.length > 0) {
+                alert(`The following required fields are missing:\n\n• ${validationErrors.join('\n• ')}\n\nPlease fill in all required fields marked with (*)`);
+                return;
             }
 
-            // Validation
-            if (!employeeData.employee_code) {
-                alert('Employee code is required');
+            // Email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(employeeData.email)) {
+                alert('Please enter a valid email address');
                 return;
             }
-            if (!employeeData.first_name) {
-                alert('First name is required');
+
+            // Phone format validation
+            const phoneRegex = /^[\+]?[\d\s\-\(\)]{7,20}$/;
+            if (!phoneRegex.test(employeeData.phone)) {
+                alert('Please enter a valid phone number');
                 return;
             }
-            if (!employeeData.last_name) {
-                alert('Last name is required');
+
+            // Date format validation
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(employeeData.hire_date)) {
+                alert('Hire date must be in YYYY-MM-DD format');
                 return;
             }
-            if (!employeeData.email) {
-                alert('Email is required');
-                return;
-            }
-            if (!employeeData.phone) {
-                alert('Phone is required');
-                return;
-            }
-            if (!employeeData.birth_date) {
-                alert('Birth date is required');
-                return;
-            }
-            if (!employeeData.identification_type_id) {
-                alert('ID Type is required');
-                return;
-            }
-            if (!employeeData.identification_number) {
-                alert('ID Number is required');
-                return;
-            }
-            if (!employeeData.gender_id) {
-                alert('Gender is required');
-                return;
-            }
-            if (!employeeData.access_level_id) {
-                alert('Access Level is required');
-                return;
-            }
-            if (employeeData.password && employeeData.password.length < 6) {
-                alert('New password must be at least 6 characters long');
-                return;
-            }
-            if (!employeeData.hire_date) {
-                alert('Hire date is required');
-                return;
-            }
-            if (!employeeData.role_id) {
-                alert('Role is required');
-                return;
-            }
-            if (!employeeData.headquarters_id) {
-                alert('Headquarters is required');
-                return;
-            }
-            if (!employeeData.status_id) {
-                alert('Status is required');
+            if (!dateRegex.test(employeeData.birth_date)) {
+                alert('Birth date must be in YYYY-MM-DD format');
                 return;
             }
 

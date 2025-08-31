@@ -1,6 +1,7 @@
 // frontend/src/main.js
 import './assets/css/main.css';
 import './assets/css/login.css';
+import './assets/css/forms.css';
 
 import { setupRouter } from './router/router.js';
 import { initializeTheme } from './services/theme.service.js';
