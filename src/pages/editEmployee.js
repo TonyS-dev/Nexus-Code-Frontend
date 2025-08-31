@@ -1,44 +1,10 @@
 import { auth } from '../services/auth.service.js';
 import { apiRequest } from '../services/api.service.js';
 import { router } from '../router/router.js';
-
-/**
- * Helper function to reliably get the primary role of an employee.
- * @param {object} emp - The employee object from the API.
- * @returns {string} The name of the role.
- */
-function getEmployeeRole(emp) {
-    if (!emp) return 'No role';
-    
-    // Try to get role from different possible structures
-    let role = '';
-    
-    if (typeof emp.roles === 'string') {
-        try {
-            const rolesArray = JSON.parse(emp.roles);
-            if (Array.isArray(rolesArray) && rolesArray.length > 0) {
-                role = rolesArray[0].name || rolesArray[0] || '';
-            }
-        } catch (e) {
-            console.warn('Error parsing roles JSON:', e);
-        }
-    }
-    
-    if (!role && Array.isArray(emp.roles) && emp.roles.length > 0) {
-        role = emp.roles[0].name || emp.roles[0] || '';
-    }
-    
-    if (!role) {
-        role = emp.role || emp.role_name || emp.roleName || '';
-    }
-    
-    return role || 'No role';
-}
+import { getUserAccessLevel, formatDateForInput } from '../utils/helpers.js'
 
 export async function showEditEmployeePage(params = {}) {
     const employeeId = params?.id;
-    console.log('showEditEmployeePage called with params:', params);
-    console.log('Employee ID from params:', employeeId);
 
     const container = document.createElement('div');
     container.className = 'max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg';
@@ -61,20 +27,16 @@ export async function showEditEmployeePage(params = {}) {
         console.log('Authenticated user:', user);
 
         if (!user) {
-            console.log('User not authenticated, redirecting to /login');
             setTimeout(() => router.navigate('/login'), 100);
-            container.innerHTML = '<div class="text-center p-8">Redirigiendo...</div>';
+            container.innerHTML = '<div class="text-center p-8">Redirecting...</div>';
             return container;
         }
 
         // Check if user has permission to edit employees
-        const userRole = getEmployeeRole(user);
-        console.log('User role detected:', userRole);
+        const userAccessLevel = getUserAccessLevel(user);
         
-        const allowedRoles = ['Admin', 'HR Talent Leader', 'Manager', 'CEO', 'admin', 'hr talent leader', 'manager', 'ceo'];
-
-        if (!allowedRoles.some(role => role.toLowerCase() === userRole.toLowerCase())) {
-            console.log('Unauthorized role, redirecting to /forbidden');
+        if (userAccessLevel.toLowerCase() !== 'admin') {
+            console.log('Unauthorized access level, redirecting to /forbidden');
             setTimeout(() => router.navigate('/forbidden'), 100);
             container.innerHTML = '<div class="text-center p-8">Acceso denegado...</div>';
             return container;
@@ -110,7 +72,7 @@ export async function showEditEmployeePage(params = {}) {
 
 
         if (!employee) {
-            throw new Error('Usuario no encontrado');
+            throw new Error('User not found');
         }
 
         const user = auth.getUser();
@@ -119,9 +81,13 @@ export async function showEditEmployeePage(params = {}) {
             currentRoleId = employee.roles[0].id || '';
         }
 
-        const userRole = getEmployeeRole(user);
-        const canEdit = ['Admin', 'HR Talent Leader', 'Manager', 'CEO', 'admin', 'hr talent leader', 'manager', 'ceo']
-                       .some(role => role.toLowerCase() === userRole.toLowerCase());
+        const userAccessLevel = getUserAccessLevel(user);
+        const canEdit = userAccessLevel.toLowerCase() === 'admin';
+        
+        // Format dates for input fields
+        const formattedBirthDate = formatDateForInput(employee.birth_date);
+        const formattedHireDate = formatDateForInput(employee.hire_date);
+        
         // Ensure all arrays are safe
         const safeGenders = Array.isArray(genders) ? genders : [];
         const safeIdentificationTypes = Array.isArray(identificationTypes) ? identificationTypes : [];
@@ -159,24 +125,24 @@ export async function showEditEmployeePage(params = {}) {
                         <div>
                             <label for="first_name" class="block text-sm font-medium text-gray-700 required">First Name *</label>
                             <input type="text" id="first_name" name="first_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   placeholder="John" maxlength="40" value="${employee.first_name || ''}">
+                                   maxlength="40" value="${employee.first_name || ''}">
                         </div>
                         <div>
                             <label for="middle_name" class="block text-sm font-medium text-gray-700">Middle Name</label>
                             <input type="text" id="middle_name" name="middle_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   placeholder="Charles" maxlength="40" value="${employee.middle_name || ''}">
+                                   maxlength="40" value="${employee.middle_name || ''}">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label for="last_name" class="block text-sm font-medium text-gray-700 required">Last Name *</label>
                             <input type="text" id="last_name" name="last_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   placeholder="Smith" maxlength="40" value="${employee.last_name || ''}">
+                                   maxlength="40" value="${employee.last_name || ''}">
                         </div>
                         <div>
                             <label for="second_last_name" class="block text-sm font-medium text-gray-700">Second Last Name</label>
                             <input type="text" id="second_last_name" name="second_last_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   placeholder="Johnson" maxlength="40" value="${employee.second_last_name || ''}">
+                                   maxlength="40" value="${employee.second_last_name || ''}">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -188,7 +154,7 @@ export async function showEditEmployeePage(params = {}) {
                         <div>
                             <label for="birth_date" class="block text-sm font-medium text-gray-700">Birth Date</label>
                             <input type="date" id="birth_date" name="birth_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   value="${employee.birth_date || ''}">
+                                   value="${formattedBirthDate}">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -227,7 +193,7 @@ export async function showEditEmployeePage(params = {}) {
                         <div>
                             <label for="hire_date" class="block text-sm font-medium text-gray-700 required">Hire Date *</label>
                             <input type="date" id="hire_date" name="hire_date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2" 
-                                   value="${employee.hire_date || ''}">
+                                   value="${formattedHireDate}">
                         </div>
                         <div>
                             <label for="role_id" class="block text-sm font-medium text-gray-700 required">Role *</label>
@@ -313,14 +279,12 @@ export async function showEditEmployeePage(params = {}) {
 
         backBtn?.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Back button clicked');
             router.navigate('/manage-users');
         });
 
         cancelBtn?.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-                console.log('Cancel confirmed, navigating to /manage-users');
                 router.navigate('/manage-users');
             }
         });

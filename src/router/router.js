@@ -6,6 +6,7 @@ import Navigo from 'navigo';
 import { auth } from '../services/auth.service.js';
 import { AppLayout } from '../components/Layout.js';
 import { initializeTheme } from '../services/theme.service.js';
+import { getUserAccessLevel } from '../utils/helpers.js';
 
 // Import all page components
 import { showLoginPage } from '../pages/Login.js';
@@ -37,12 +38,14 @@ async function renderPage(pageComponent, options = {}, params = {}) {
     }
 
     const user = auth.getUser();
-    if (options.roles && !options.roles.includes(user?.role)) {
-        
-        /* router.navigate('/forbidden'); */
-
-        appContainer.append(renderForbiddenPage());
-        return;
+    
+    // Check access level instead of role for app permissions
+    if (options.accessLevels) {
+        const userAccessLevel = getUserAccessLevel(user);
+        if (!options.accessLevels.some(level => level.toLowerCase() === userAccessLevel.toLowerCase())) {
+            appContainer.append(renderForbiddenPage());
+            return;
+        }
     }
 
     try {
@@ -61,7 +64,6 @@ async function renderPage(pageComponent, options = {}, params = {}) {
         initializeTheme();
         router.updatePageLinks();
     } catch (error) {
-        // Removed console.error for cleaner production console
         appContainer.innerHTML = `<div class="alert error"><h3>Error Loading Page</h3><p>${error.message}</p></div>`;
     }
 }
@@ -94,22 +96,22 @@ export function setupRouter() {
             renderPage(showMyRequestsPage, { title: 'My Requests' }),
         '/requests/new': () =>
             renderPage(showNewRequestPage, { title: 'New Request' }),
-
-        // Role-protected routes
         '/manager-requests': () =>
             renderPage(showManagerRequestsPage, {
                 title: 'Approve Requests',
-                roles: ['Manager', 'Admin', 'HR Talent Leader'], // Example: multiple roles can access
+                accessLevels: ['Admin'], // Only Admin access level can approve requests
             }),
+
+        // Access level protected routes (Admin only)
         '/manage-users': () =>
             renderPage(showManageUsersPage, {
                 title: 'Manage Users',
-                roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+                accessLevels: ['Admin'],
             }),
-        '/manage-users/edit/:id': (match) => {
+        '/edit-employee/:id': (match) => {
             renderPage(showEditEmployeePage, {
-                    title: 'Edit User',
-                    roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+                    title: 'Edit Employee',
+                    accessLevels: ['Admin'],
                 },
                 match.data
             ); // Pass 'match.data' as the third 'params' argument.
@@ -117,8 +119,8 @@ export function setupRouter() {
 
         '/new-employee': () =>
             renderPage(showNewEmployeePage, {
-                title: 'New User',
-                roles: ['HR Talent Leader', 'Admin', 'Manager'],
+                title: 'New Employee',
+                accessLevels: ['Admin'],
             }),
 
         '/forbidden': () => {
