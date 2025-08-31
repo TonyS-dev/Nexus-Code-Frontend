@@ -91,7 +91,7 @@ export const deleteEmployee = (id) => {
     if (!id) {
         throw new Error('Employee ID is required');
     }
-    return apiRequest(`/employees/${id}`, 'DELETE');
+    return apiRequest(`/employees/${id}`, 'PATCH');
 };
 
 // Form Population Endpoints
@@ -105,7 +105,7 @@ export const getManagers = () => apiRequest('/employees?role=Manager');
 
 // Requests and Approvals
 export const getRequestsByEmployeeId = (employeeId) => apiRequest(`/requests/employee/${employeeId}`);
-export const getPendingManagerRequests = () => apiRequest('/approvals/approver/pending');
+export const getPendingManagerRequests = (approverId) => apiRequest(`/approvals/approver/${approverId}`);;
 export const createVacationRequest = (data) => apiRequest('/requests/vacation', 'POST', data);
 export const createLeaveRequest = (data) => apiRequest('/requests/leave', 'POST', data);
 export const createCertificateRequest = (data) => apiRequest('/requests/certificate', 'POST', data);

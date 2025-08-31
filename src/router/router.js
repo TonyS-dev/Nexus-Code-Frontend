@@ -6,6 +6,7 @@ import Navigo from 'navigo';
 import { auth } from '../services/auth.service.js';
 import { AppLayout } from '../components/Layout.js';
 import { initializeTheme } from '../services/theme.service.js';
+import { getUserAccessLevel } from '../utils/helpers.js';
 
 // Import all page components
 import { showLoginPage } from '../pages/Login.js';
@@ -15,9 +16,9 @@ import { showNewRequestPage } from '../pages/NewRequest.js';
 import { showManagerRequestsPage } from '../pages/ManagerRequests.js';
 import { renderNotFoundPage } from '../pages/NotFound.js';
 import { renderForbiddenPage } from '../pages/Forbidden.js';
-import { showManageUsersPage } from '../pages/manageUsers.js';
-import { showNewEmployeePage } from '../pages/newEmployee.js';
-import { showEditEmployeePage } from '../pages/editEmployee.js';
+import { showManageUsersPage } from '../pages/ManageUsers.js';
+import { showNewEmployeePage } from '../pages/NewEmployee.js';
+import { showEditEmployeePage } from '../pages/EditEmployee.js';
 
 const appContainer = document.getElementById('app');
 export const router = new Navigo('/');
@@ -29,39 +30,59 @@ export const router = new Navigo('/');
  * @param {Object} [params={}] - Parameters extracted from the URL.
  */
 async function renderPage(pageComponent, options = {}, params = {}) {
-    appContainer.innerHTML = '';
-    
     if (!auth.isAuthenticated()) {
         router.navigate('/login');
         return;
     }
 
     const user = auth.getUser();
-    if (options.roles && !options.roles.includes(user?.role)) {
-        
-        /* router.navigate('/forbidden'); */
-
-        appContainer.append(renderForbiddenPage());
-        return;
+    
+    // Check access level instead of role for app permissions
+    if (options.accessLevels) {
+        const userAccessLevel = getUserAccessLevel(user);
+        if (!options.accessLevels.some(level => level.toLowerCase() === userAccessLevel.toLowerCase())) {
+            appContainer.innerHTML = '';
+            appContainer.append(renderForbiddenPage());
+            return;
+        }
     }
 
     try {
-        const layout = AppLayout();
+        // Check if layout already exists (SPA navigation)
+        let layout = appContainer.querySelector('.app-layout');
+        let appContent;
+        
+        if (layout) {
+            // Layout exists, just update the content
+            appContent = layout.querySelector('#app-content');
+        } else {
+            // First load or full re-render needed
+            appContainer.innerHTML = '';
+            layout = AppLayout();
+            appContent = layout.querySelector('#app-content');
+            layout.classList.add('app-layout'); // Add identifier class
+            appContainer.append(layout);
+        }
+        
+        // Clear and update only the content area
+        appContent.innerHTML = '';
         
         // Page function now receives parameters directly
         const pageElement = await pageComponent(params);
-        
-        const appContent = layout.querySelector('#app-content');
-        appContent.innerHTML = '';
         appContent.append(pageElement);
         
         layout.setTitle(options.title || 'Dashboard');
-        appContainer.append(layout);
+        
+        // Update sidebar active link after navigation
+        const sidebar = layout.querySelector('aside');
+        if (sidebar && sidebar.updateActiveLink) {
+            sidebar.updateActiveLink();
+        }
         
         initializeTheme();
         router.updatePageLinks();
     } catch (error) {
-        // Removed console.error for cleaner production console
+        console.error('Error rendering page:', error);
         appContainer.innerHTML = `<div class="alert error"><h3>Error Loading Page</h3><p>${error.message}</p></div>`;
     }
 }
@@ -94,31 +115,31 @@ export function setupRouter() {
             renderPage(showMyRequestsPage, { title: 'My Requests' }),
         '/requests/new': () =>
             renderPage(showNewRequestPage, { title: 'New Request' }),
-
-        // Role-protected routes
         '/manager-requests': () =>
             renderPage(showManagerRequestsPage, {
                 title: 'Approve Requests',
-                roles: ['Manager', 'Admin', 'HR Talent Leader'], // Example: multiple roles can access
+                accessLevels: ['Admin'], // Only Admin access level can approve requests
             }),
+
+        // Access level protected routes (Admin only)
         '/manage-users': () =>
             renderPage(showManageUsersPage, {
                 title: 'Manage Users',
-                roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+                accessLevels: ['Admin'],
             }),
-        '/manage-users/edit/:id': (match) => {
+        '/edit-employee/:id': (match) => {
             renderPage(showEditEmployeePage, {
-                    title: 'Edit User',
-                    roles: ['HR Talent Leader', 'Admin', 'Manager', 'CEO'],
+                    title: 'Edit Employee',
+                    accessLevels: ['Admin'],
                 },
                 match.data
             ); // Pass 'match.data' as the third 'params' argument.
         },
 
-        '/employees/new': () =>
+        '/new-employee': () =>
             renderPage(showNewEmployeePage, {
-                title: 'New User',
-                roles: ['HR Talent Leader', 'Admin', 'Manager'],
+                title: 'New Employee',
+                accessLevels: ['Admin'],
             }),
 
         '/forbidden': () => {

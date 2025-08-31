@@ -1,0 +1,266 @@
+/* Enhanced styling for required fields */
+.required::after {
+    content: " *";
+    color: #ef4444;
+    font-weight: bold;
+}
+
+/* Clean focus styles for inputs and selects - Elegant purple focus */
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Specific focus styles for different input states */
+input:required:focus:invalid, select:required:focus:invalid {
+    border-color: #f87171 !important;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
+}
+
+input:required:focus:valid, select:required:focus:valid {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Remove default browser focus styles */
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: none !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* Hover states */
+input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus) {
+    border-color: #c4b5fd;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Default border styles */
+input, select, textarea {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Dark mode focus styles (if you have dark mode) */
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Override Tailwind focus styles with clean purple focus */
+.focus\:ring-2:focus,
+.focus\:ring-primary:focus,
+.focus\:border-primary:focus,
+input[class*="focus:ring"]:focus,
+select[class*="focus:ring"]:focus,
+textarea[class*="focus:ring"]:focus {
+    --tw-ring-color: rgba(139, 92, 246, 0.2) !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-width: 3px !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+}
+
+/* Specific overrides for form inputs with Tailwind classes */
+input.w-full:focus,
+select.w-full:focus,
+textarea.w-full:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+    --tw-ring-shadow: none !important;
+}
+
+/* Clean focus for inputs in forms */
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+}
+
+/* Ensure no conflicting styles */
+*:focus {
+    outline: none !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+}
+
+/* For buttons, use a different focus style */
+button:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
+    outline: none !important;
+}
+
+/* Clean focus for specific input types */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+}
+
+/* Improved form styling */
+.form-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-section h3 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.required-note {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #92400e;
+}
+
+/* Loading button states */
+.btn-loading .spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+button.btn-loading .btn-loading {
+  display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Better validation feedback */
+.validation-error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    color: #dc2626;
+    font-size: 0.875rem;
+}
+
+.validation-success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    color: #166534;
+    font-size: 0.875rem;
+}
+
+/* Table Actions Column Styling - Centro automáticamente las columnas de acciones */
+th:last-child,
+td:last-child {
+    text-align: center !important;
+}
+
+/* Specific styling for action columns (when they contain buttons) */
+th:has(button), 
+td:has(button),
+th:has(.action-buttons),
+td:has(.action-buttons) {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* Alternative approach using common patterns for action columns */
+th[class*="action"], 
+td[class*="action"],
+th:contains("Actions"),
+td:contains("Actions") {
+    text-align: center !important;
+}
+
+/* Center any cell that contains multiple buttons */
+td:has(button + button),
+td:has(.btn + .btn) {
+    text-align: center !important;
+}
+
+/* Manual class for action columns if needed */
+.table-actions {
+    text-align: center !important;
+}
+
+.table-actions th {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+.table-actions td {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* Center action buttons in tables */
+td.table-actions,
+th.table-actions {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Individual action button styling */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive action buttons */
+@media (max-width: 768px) {
+    .action-buttons {
+        gap: 0.25rem;
+    }
+    
+    .action-btn {
+        min-width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.875rem;
+    }
+}
