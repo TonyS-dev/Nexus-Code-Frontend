@@ -115,7 +115,7 @@ export function setupRouter() {
             ); // Pass 'match.data' as the third 'params' argument.
         },
 
-        '/employees/new': () =>
+        '/new-employee': () =>
             renderPage(showNewEmployeePage, {
                 title: 'New User',
                 roles: ['HR Talent Leader', 'Admin', 'Manager'],

@@ -5,25 +5,34 @@ import { router } from '../router/router.js';
 /**
  * Helper function to reliably get the primary role of an employee.
  * @param {object} emp - The employee object from the API.
- * @returns {string} The name of the role in lowercase.
+ * @returns {string} The name of the role.
  */
 function getEmployeeRole(emp) {
+    if (!emp) return 'No role';
+    
+    // Try to get role from different possible structures
+    let role = '';
+    
     if (typeof emp.roles === 'string') {
         try {
             const rolesArray = JSON.parse(emp.roles);
             if (Array.isArray(rolesArray) && rolesArray.length > 0) {
-                return rolesArray[0].name || rolesArray[0] || 'No role';
+                role = rolesArray[0].name || rolesArray[0] || '';
             }
         } catch (e) {
             console.warn('Error parsing roles JSON:', e);
         }
     }
-
-    if (Array.isArray(emp.roles) && emp.roles.length > 0) {
-        return emp.roles[0].name || emp.roles[0] || 'No role';
+    
+    if (!role && Array.isArray(emp.roles) && emp.roles.length > 0) {
+        role = emp.roles[0].name || emp.roles[0] || '';
     }
-
-    return (emp.role || emp.role_name || emp.roleName || 'No role').trim().toLowerCase();
+    
+    if (!role) {
+        role = emp.role || emp.role_name || emp.roleName || '';
+    }
+    
+    return role || 'No role';
 }
 
 export async function showEditEmployeePage(params = {}) {
@@ -58,11 +67,13 @@ export async function showEditEmployeePage(params = {}) {
             return container;
         }
 
-        const superiorRoles = ['HR Talent Leader', 'Admin', 'Manager'];
+        // Check if user has permission to edit employees
         const userRole = getEmployeeRole(user);
         console.log('User role detected:', userRole);
+        
+        const allowedRoles = ['Admin', 'HR Talent Leader', 'Manager', 'CEO', 'admin', 'hr talent leader', 'manager', 'ceo'];
 
-        if (!superiorRoles.map(r => r.toLowerCase()).includes(userRole)) {
+        if (!allowedRoles.some(role => role.toLowerCase() === userRole.toLowerCase())) {
             console.log('Unauthorized role, redirecting to /forbidden');
             setTimeout(() => router.navigate('/forbidden'), 100);
             container.innerHTML = '<div class="text-center p-8">Acceso denegado...</div>';
@@ -108,7 +119,9 @@ export async function showEditEmployeePage(params = {}) {
             currentRoleId = employee.roles[0].id || '';
         }
 
-        const canEdit = getEmployeeRole(user) === 'hr talent leader';
+        const userRole = getEmployeeRole(user);
+        const canEdit = ['Admin', 'HR Talent Leader', 'Manager', 'CEO', 'admin', 'hr talent leader', 'manager', 'ceo']
+                       .some(role => role.toLowerCase() === userRole.toLowerCase());
         // Ensure all arrays are safe
         const safeGenders = Array.isArray(genders) ? genders : [];
         const safeIdentificationTypes = Array.isArray(identificationTypes) ? identificationTypes : [];
