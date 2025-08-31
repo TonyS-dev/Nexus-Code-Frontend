@@ -252,6 +252,75 @@ th.table-actions {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Forgot Password Page Styles */
+.forgot-password-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, #f8fafc 50%, rgba(139, 92, 246, 0.05) 100%);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.forgot-password-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    transform: translateY(-5vh);
+}
+
+.forgot-password-back-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.forgot-password-back-btn:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Back to Login Link */
+.forgot-password-back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Light Theme */
+.forgot-password-back-link {
+    color: #6366f1;
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+.forgot-password-back-link:hover {
+    color: #4f46e5;
+    background-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
 /* Responsive action buttons */
 @media (max-width: 768px) {
     .action-buttons {

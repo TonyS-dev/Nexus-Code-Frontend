@@ -7,11 +7,11 @@ import { SkeletonLoaders } from '../components/SkeletonLoader.js';
 
 export function showForgotPasswordPage() {
     const container = document.createElement('div');
-    container.className = 'min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background-primary to-primary/5 animate-fadeIn';
+    container.className = 'forgot-password-page';
 
     container.innerHTML = `
-        <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn hover-glow transition-all duration-500">
-            <div class="text-center mb-8 animate-fadeInUp">
+        <div class="forgot-password-card animate-scaleIn hover-glow transition-all duration-500">
+            <div class="text-center mb-8 animate-fadeInUp" style="margin-top: 2rem;">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4 animate-bounce">
                     <i class="fa-solid fa-key text-2xl text-primary"></i>
                 </div>
@@ -40,9 +40,9 @@ export function showForgotPasswordPage() {
                 </button>
             </form>
 
-            <div class="mt-6 text-center animate-fadeInUp animate-stagger-3">
-                <a href="/login" class="text-primary hover:text-primary-hover transition-colors text-sm">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>Back to Login
+            <div class="text-center" style="margin-top: 1.5rem;">
+                <a href="/login" class="forgot-password-back-link">
+                    <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Login
                 </a>
             </div>
 

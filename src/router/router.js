@@ -152,12 +152,16 @@ export function setupRouter() {
         // Password reset routes (public)
         '/forgot-password': async () => {
             const page = showForgotPasswordPage();
-            setContent(page);
+            appContainer.innerHTML = '';
+            appContainer.appendChild(page);
+            initializeTheme();
         },
 
         '/reset-password': async () => {
             const page = await showResetPasswordPage();
-            setContent(page);
+            appContainer.innerHTML = '';
+            appContainer.appendChild(page);
+            initializeTheme();
         },
     };
 
