@@ -163,22 +163,22 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="phone" class="block text-sm font-medium text-text-secondary mb-2">Phone</label>
-                                    <input type="tel" id="phone" name="phone" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
+                                    <label for="phone" class="block text-sm font-medium text-text-secondary mb-2 required">Phone *</label>
+                                    <input type="tel" id="phone" name="phone" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="+57 300 123 4567" maxlength="20" value="${
                                                employee.phone || ''
                                            }">
                                 </div>
                                 <div>
-                                    <label for="birth_date" class="block text-sm font-medium text-text-secondary mb-2">Birth Date</label>
-                                    <input type="date" id="birth_date" name="birth_date" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
+                                    <label for="birth_date" class="block text-sm font-medium text-text-secondary mb-2 required">Birth Date *</label>
+                                    <input type="date" id="birth_date" name="birth_date" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            value="${formattedBirthDate}">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="gender_id" class="block text-sm font-medium text-text-secondary mb-2">Gender</label>
-                                    <select id="gender_id" name="gender_id" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
+                                    <label for="gender_id" class="block text-sm font-medium text-text-secondary mb-2 required">Gender *</label>
+                                    <select id="gender_id" name="gender_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select gender...</option>
                                         ${safeGenders
                                             .map(
@@ -194,8 +194,8 @@ export async function showEditEmployeePage(params = {}) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="identification_type_id" class="block text-sm font-medium text-text-secondary mb-2">ID Type</label>
-                                    <select id="identification_type_id" name="identification_type_id" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
+                                    <label for="identification_type_id" class="block text-sm font-medium text-text-secondary mb-2 required">ID Type *</label>
+                                    <select id="identification_type_id" name="identification_type_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select type...</option>
                                         ${safeIdentificationTypes
                                             .map(
@@ -214,8 +214,8 @@ export async function showEditEmployeePage(params = {}) {
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div>
-                                    <label for="identification_number" class="block text-sm font-medium text-text-secondary mb-2">ID Number</label>
-                                    <input type="text" id="identification_number" name="identification_number" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
+                                    <label for="identification_number" class="block text-sm font-medium text-text-secondary mb-2 required">ID Number *</label>
+                                    <input type="text" id="identification_number" name="identification_number" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary" 
                                            placeholder="12345678" maxlength="50" value="${
                                                employee.identification_number ||
                                                ''
@@ -314,8 +314,8 @@ export async function showEditEmployeePage(params = {}) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="access_level_id" class="block text-sm font-medium text-text-secondary mb-2">Access Level</label>
-                                    <select id="access_level_id" name="access_level_id" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
+                                    <label for="access_level_id" class="block text-sm font-medium text-text-secondary mb-2 required">Access Level *</label>
+                                    <select id="access_level_id" name="access_level_id" required class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                         <option value="">Select level...</option>
                                         ${safeAccessLevels
                                             .map(
@@ -429,14 +429,19 @@ export async function showEditEmployeePage(params = {}) {
             const formData = new FormData(form);
             const employeeData = {};
 
+            // Process form data and clean empty values
             for (let [key, value] of formData.entries()) {
-                if (key !== 'password' || (key === 'password' && value.trim() !== '')) {
-                    if (value && value.trim() !== '') {
-                        employeeData[key] = value.trim();
+                const cleanValue = value?.trim();
+                if (key !== 'password' || (key === 'password' && cleanValue && cleanValue !== '')) {
+                    if (cleanValue && cleanValue !== '') {
+                        employeeData[key] = cleanValue;
+                    } else if (['employee_code', 'first_name', 'last_name', 'email', 'hire_date', 'headquarters_id', 'status_id'].includes(key)) {
+                        employeeData[key] = ''; // Keep required fields even if empty for validation
                     }
                 }
             }
 
+            // Remove password if empty (don't update password)
             if (!employeeData.password || employeeData.password.length === 0) {
                 delete employeeData.password;
             }
@@ -456,6 +461,30 @@ export async function showEditEmployeePage(params = {}) {
             }
             if (!employeeData.email) {
                 alert('Email is required');
+                return;
+            }
+            if (!employeeData.phone) {
+                alert('Phone is required');
+                return;
+            }
+            if (!employeeData.birth_date) {
+                alert('Birth date is required');
+                return;
+            }
+            if (!employeeData.identification_type_id) {
+                alert('ID Type is required');
+                return;
+            }
+            if (!employeeData.identification_number) {
+                alert('ID Number is required');
+                return;
+            }
+            if (!employeeData.gender_id) {
+                alert('Gender is required');
+                return;
+            }
+            if (!employeeData.access_level_id) {
+                alert('Access Level is required');
                 return;
             }
             if (employeeData.password && employeeData.password.length < 6) {
