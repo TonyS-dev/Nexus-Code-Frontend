@@ -36,9 +36,18 @@ export async function showManageUsersPage() {
             </div>
         `;
 
-        const employees = await apiRequest('/employees');
-        if (!Array.isArray(employees))
-            throw new Error('Invalid server response.');
+        // Fetch both employees and roles data
+        const [employees, roles] = await Promise.all([
+            apiRequest('/employees'),
+            apiRequest('/roles')
+        ]);
+
+        if (!Array.isArray(employees)) {
+            throw new Error('Invalid server response for employees.');
+        }
+
+        // Ensure roles is an array, fallback to empty array if not
+        const safeRoles = Array.isArray(roles) ? roles : [];
 
         const rows = employees
             .map((emp) => {
@@ -67,6 +76,11 @@ export async function showManageUsersPage() {
             })
             .join('');
 
+        // Generate role options dynamically
+        const roleOptions = safeRoles
+            .map(role => `<option value="${role.name.toLowerCase()}">${role.name}</option>`)
+            .join('');
+
         container.innerHTML = `
             <main class="flex-1 p-6 overflow-y-auto">
                 <div class="bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
@@ -82,13 +96,7 @@ export async function showManageUsersPage() {
                             <label for="roles-filter" class="block text-sm font-medium text-text-secondary mb-2">Filter by role:</label>
                             <select id="roles-filter" class="w-full px-3 py-2 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary">
                                 <option value="">All Roles</option>
-                                <option value="ceo">CEO</option>
-                                <option value="admin">Admin</option>
-                                <option value="hr talent leader">HR Talent Leader</option>
-                                <option value="learning leader">Learning Leader</option>
-                                <option value="manager">Manager</option>
-                                <option value="developer">Developer</option>
-                                <option value="employee">Employee</option>
+                                ${roleOptions}
                             </select>
                         </div>
                         <div>
