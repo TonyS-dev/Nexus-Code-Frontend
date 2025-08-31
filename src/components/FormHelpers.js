@@ -10,26 +10,43 @@ export const FormHelpers = {
      * @param {Function} onSubmit - Submit callback
      */
     addFormValidation(form, onSubmit) {
+        // Ensure submit button doesn't start in a loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            // Save original text if not already saved
+            if (!submitBtn.dataset.originalText) {
+                submitBtn.dataset.originalText = submitBtn.innerHTML;
+            }
+
+            // If some previous code left the button with a loading class, clean it up
+            if (submitBtn.classList.contains('btn-loading')) {
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.innerHTML = submitBtn.dataset.originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Add loading state to submit button
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                const originalText = submitBtn.innerHTML;
-                submitBtn.disabled = true;
-                submitBtn.classList.add('btn-loading');
-                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Submitting...';
-                
+
+            // Use the previously captured submit button reference
+            const btn = submitBtn || form.querySelector('button[type="submit"]');
+            if (btn) {
+                const originalText = btn.dataset.originalText || btn.innerHTML;
                 try {
+                    btn.disabled = true;
+                    btn.classList.add('btn-loading');
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Submitting...';
+
                     await onSubmit(new FormData(form));
                 } catch (error) {
                     console.error('Form submission error:', error);
+                    throw error;
                 } finally {
-                    // Reset button
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('btn-loading');
-                    submitBtn.innerHTML = originalText;
+                    // Reset button to its original state
+                    btn.disabled = false;
+                    btn.classList.remove('btn-loading');
+                    btn.innerHTML = originalText;
                 }
             } else {
                 await onSubmit(new FormData(form));

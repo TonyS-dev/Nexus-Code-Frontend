@@ -16,15 +16,17 @@ export function showMyRequestsPage() {
             container.innerHTML = `
                 <main class="flex-1 p-6 overflow-y-auto">
                     <div class="bg-background-primary p-6 rounded-xl shadow-special border border-border-color">
-                        <h2 class="text-xl font-semibold text-text-primary mb-4">Request History</h2>
-                    <button id="new-request-btn" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors">
-                        New Request
-                    </button>
-                        ${
-                            requests.length > 0
-                                ? renderTable(requests)
-                                : renderEmpty()
-                        }
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 animate-fadeInUp">
+                            <h2 class="text-xl font-semibold text-text-primary mb-4">Request History</h2>
+                            <button id="new-request-btn" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-hover transition-colors">
+                            New Request
+                            </button>
+                        </div>
+                            ${
+                                requests.length > 0
+                                        ? renderTable(requests)
+                                        : renderEmpty()
+                                }
                     </div>
                 </main>
             `;
@@ -74,10 +76,10 @@ export function showMyRequestsPage() {
             .join('');
 
         return `
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto bg-background-primary rounded-lg border border-border-color animate-fadeInUp animate-stagger-2">
                 <table class="w-full text-left">
                     <thead>
-                        <tr class="border-b border-border-color">
+                        <tr class="border-b border-border-color bg-background-secondary">
                             <th class="py-2 px-4 font-semibold text-text-secondary text-sm">Date</th>
                             <th class="py-2 px-4 font-semibold text-text-secondary text-sm">Type</th>
                             <th class="py-2 px-4 font-semibold text-text-secondary text-sm">Status</th>

@@ -138,12 +138,6 @@ input[type="date"]:focus {
 }
 
 /* Loading button states */
-.btn-loading {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .btn-loading .spinner {
     width: 1rem;
     height: 1rem;
@@ -151,6 +145,10 @@ input[type="date"]:focus {
     border-top: 2px solid currentColor;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+button.btn-loading .btn-loading {
+  display: inline-block;
 }
 
 @keyframes spin {
