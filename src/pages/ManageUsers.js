@@ -1,5 +1,5 @@
 import { auth } from '../services/auth.service.js';
-import { apiRequest } from '../services/api.service.js';
+import { apiRequest, deleteEmployee } from '../services/api.service.js';
 import { router } from '../router/router.js';
 import { getUserAccessLevel } from '../utils/helpers.js';
 
@@ -129,25 +129,47 @@ export async function showManageUsersPage() {
                 );
             });
             
-
-            // container.querySelectorAll('.btn-delete').forEach(btn => {
-            //   btn.addEventListener('click', async e => {
-            //     const button = e.currentTarget;
-            //     if (confirm(`Are you sure you want to delete ${button.dataset.name}?`)) {
-            //       try {
-            //         button.disabled = true; 
-            //         button.innerHTML = 'Deleting...';
-            //         await apiRequest(`/employees/${button.dataset.id}`, 'DELETE');
-            //         button.closest('tr').remove();
-            //         container.querySelector('#total-count').textContent = `Total: ${container.querySelectorAll('#users-tbody tr').length} users`;
-            //       } catch (error) { 
-            //         alert(`Error: ${error.message}`); 
-            //         button.disabled = false; 
-            //         button.innerHTML = 'Delete'; 
-            //       }
-            //     }
-            //   });
-            // });
+            container.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', async e => {
+                    const button = e.currentTarget;
+                    const employeeName = button.dataset.name;
+                    const employeeId = button.dataset.id;
+                    
+                    if (confirm(`Are you sure you want to delete ${employeeName}?`)) {
+                        try {
+                            // Disable button and show loading state
+                            button.disabled = true;
+                            const originalText = button.innerHTML;
+                            button.innerHTML = '<span class="text-xs">Deleting...</span>';
+                            button.classList.add('opacity-50', 'cursor-not-allowed');
+                            
+                            // Call soft delete API
+                            await deleteEmployee(employeeId);
+                            
+                            // Remove row from table
+                            button.closest('tr').remove();
+                            
+                            // Update total count
+                            const currentRows = container.querySelectorAll('#users-tbody tr').length;
+                            container.querySelector('#total-count').textContent = `Total: ${currentRows} users`;
+                            
+                            // Show success message (simple alert for now)
+                            alert(`${employeeName} has been successfully deleted.`);
+                            
+                        } catch (error) {
+                            console.error('Error deleting employee:', error);
+                            
+                            // Reset button state
+                            button.disabled = false;
+                            button.innerHTML = originalText;
+                            button.classList.remove('opacity-50', 'cursor-not-allowed');
+                            
+                            // Show error message
+                            alert(`Error deleting ${employeeName}`);
+                        }
+                    }
+                });
+            });
         }
 
         container

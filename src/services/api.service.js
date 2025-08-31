@@ -91,7 +91,7 @@ export const deleteEmployee = (id) => {
     if (!id) {
         throw new Error('Employee ID is required');
     }
-    return apiRequest(`/employees/${id}`, 'DELETE');
+    return apiRequest(`/employees/${id}`, 'PATCH');
 };
 
 // Form Population Endpoints
