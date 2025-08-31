@@ -436,7 +436,9 @@ export async function showEditEmployeePage(params = {}) {
 
         backBtn?.addEventListener('click', (e) => {
             e.preventDefault();
-            router.navigate('/manage-users');
+            if (confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
+                router.navigate('/manage-users');
+            }
         });
 
         cancelBtn?.addEventListener('click', (e) => {
