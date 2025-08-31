@@ -1,5 +1,14 @@
 /**
- * @file NotificationBell.js  
+ * export function NotificationBell() {
+    const bellContainer = document.createElement('div');
+    bellContainer.className = 'relative';
+    bellContainer.style.overflow = 'visible';
+    
+    bellContainer.innerHTML = `
+        <button type="button" id="notification-bell" class="relative p-2 text-text-secondary hover:text-text-primary transition-colors rounded-lg hover:bg-background-secondary" style="overflow: visible;">
+            <i class="fa-solid fa-bell text-lg"></i>
+        </button>
+        <span id="notification-badge" class="absolute bg-red-500 text-white text-xs rounded-full min-w-5 h-5 flex items-center justify-center font-semibold px-1 z-50 border-2 border-white shadow-md" style="display: none; top: -2px; right: -2px; min-width: 20px; height: 20px;"></span>`;ificationBell.js  
  * @description Notification bell component for the header
  */
 import { notify } from '../services/notification.service.js';

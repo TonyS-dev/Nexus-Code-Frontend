@@ -24,7 +24,6 @@ export async function showEditEmployeePage(params = {}) {
     // Authorization check
     try {
         const user = auth.isAuthenticated() ? await auth.getUser() : null;
-        console.log('Authenticated user:', user);
 
         if (!user) {
             setTimeout(() => router.navigate('/login'), 100);
