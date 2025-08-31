@@ -2,6 +2,8 @@
 import './assets/css/main.css';
 import './assets/css/login.css';
 import './assets/css/forms.css';
+import './assets/css/animations.css';
+import './assets/css/global-animations.css';
 
 import { setupRouter } from './router/router.js';
 import { initializeTheme } from './services/theme.service.js';
