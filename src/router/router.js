@@ -10,6 +10,8 @@ import { getUserAccessLevel } from '../utils/helpers.js';
 
 // Import all page components
 import { showLoginPage } from '../pages/Login.js';
+import { showForgotPasswordPage } from '../pages/ForgotPassword.js';
+import { showResetPasswordPage } from '../pages/ResetPassword.js';
 import { showDashboardPage } from '../pages/Dashboard.js';
 import { showMyRequestsPage } from '../pages/MyRequests.js';
 import { showNewRequestPage } from '../pages/NewRequest.js';
@@ -145,6 +147,21 @@ export function setupRouter() {
         '/forbidden': () => {
             appContainer.innerHTML = '';
             appContainer.append(renderForbiddenPage());
+        },
+
+        // Password reset routes (public)
+        '/forgot-password': async () => {
+            const page = showForgotPasswordPage();
+            appContainer.innerHTML = '';
+            appContainer.appendChild(page);
+            initializeTheme();
+        },
+
+        '/reset-password': async () => {
+            const page = await showResetPasswordPage();
+            appContainer.innerHTML = '';
+            appContainer.appendChild(page);
+            initializeTheme();
         },
     };
 

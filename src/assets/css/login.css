@@ -191,19 +191,58 @@ body {
 
 /* Forgot password link */
 .forgot-password {
-    display: block;
-    color: rgb(176, 176, 224);
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin: 1.2rem auto 1.8rem;
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 500;
     text-decoration: none;
-    transition: color 0.3s ease;
-    width: fit-content;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
 }
 
-.forgot-password:hover {
+/* Light Theme */
+.theme-light .forgot-password {
+    color: var(--primary);
+    background-color: rgba(1, 5, 233, 0.19);
+}
+
+.theme-light .forgot-password:hover {
+    color: var(--primary-dark);
+    background-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
+.theme-light .admin-contact-text {
     color: var(--text-light);
-    text-decoration: underline;
+}
+
+/* Dark Theme */
+.theme-dark .forgot-password {
+    color: var(--text-light);
+    background-color: rgba(165, 180, 252, 0.15);
+}
+
+.theme-dark .forgot-password:hover {
+    color: var(--text-light);
+    background-color: rgba(165, 180, 252, 0.25);
+    transform: translateY(-1px);
+}
+
+.theme-dark .admin-contact-text {
+    color: var(--text-light);
+}
+
+/* Forgot Password Link Contrast Improvements */
+.forgot-password-section {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.admin-contact-text {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
 }
 
 /* Login button with enhanced effects */
