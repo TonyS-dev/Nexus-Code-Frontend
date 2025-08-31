@@ -61,8 +61,8 @@ export async function showManageUsersPage() {
                         </td>
                         <td class="py-3 px-4 text-sm text-text-secondary">${emp.headquarters_name || ''}</td>
                         <td class="py-3 px-4 text-right space-x-2">
-                            <button class="text-primary hover:text-primary-hover font-semibold text-sm btn-edit" data-id="${emp.id}" title="Edit user">Edit</button>
-                            <button class="text-danger hover:text-danger font-semibold text-sm btn-delete" data-id="${emp.id}" data-name="${fullName}" title="Delete user">Delete</button>
+                            <button class="bg-primary text-white px-3 py-1 rounded-md hover:bg-primary-hover transition-colors text-sm font-medium btn-edit" data-id="${emp.id}" title="Edit user">Edit</button>
+                            <button class="bg-danger text-white px-3 py-1 rounded-md hover:bg-danger transition-colors text-sm font-medium btn-delete" data-id="${emp.id}" data-name="${fullName}" title="Delete user">Delete</button>
                         </td>
                     </tr>`;
             })
@@ -128,19 +128,26 @@ export async function showManageUsersPage() {
                     )
                 );
             });
-            //container.querySelectorAll('.btn-delete').forEach(btn => {
-            //  btn.addEventListener('click', async e => {
-            //    const button = e.currentTarget;
-            //    if (confirm(`Are you sure you want to delete ${button.dataset.name}?`)) {
-            //      try {
-            //        button.disabled = true; button.innerHTML = '<span>Deleting...</span>';
-            //        await apiRequest(`/employees/${button.dataset.id}`, 'DELETE');
-            //        button.closest('tr').remove();
-            //        container.querySelector('#total-count').textContent = `Total: ${container.querySelectorAll('#users-tbody tr').length} users`;
-            //      } catch (error) { alert(`Error: ${error.message}`); button.disabled = false; button.innerHTML = '<i class="icon-delete">🗑️</i> Delete'; }
-            //    }
-            //  });
-            //});
+            
+
+            // container.querySelectorAll('.btn-delete').forEach(btn => {
+            //   btn.addEventListener('click', async e => {
+            //     const button = e.currentTarget;
+            //     if (confirm(`Are you sure you want to delete ${button.dataset.name}?`)) {
+            //       try {
+            //         button.disabled = true; 
+            //         button.innerHTML = 'Deleting...';
+            //         await apiRequest(`/employees/${button.dataset.id}`, 'DELETE');
+            //         button.closest('tr').remove();
+            //         container.querySelector('#total-count').textContent = `Total: ${container.querySelectorAll('#users-tbody tr').length} users`;
+            //       } catch (error) { 
+            //         alert(`Error: ${error.message}`); 
+            //         button.disabled = false; 
+            //         button.innerHTML = 'Delete'; 
+            //       }
+            //     }
+            //   });
+            // });
         }
 
         container
@@ -165,9 +172,8 @@ export async function showManageUsersPage() {
 
                 const name = cells[0]?.textContent.toLowerCase().trim() || '';
                 const email = cells[1]?.textContent.toLowerCase().trim() || '';
-                const roleElement = cells[2]?.querySelector('.role-badge');
-                const role =
-                    roleElement?.textContent.toLowerCase().trim() || '';
+                const roleElement = cells[2]?.querySelector('span');
+                const role = roleElement?.textContent.toLowerCase().trim() || '';
 
                 const matchesRole =
                     !roleValue ||

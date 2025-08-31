@@ -368,16 +368,15 @@ export async function showEditEmployeePage(params = {}) {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-text-secondary mb-2">Current Status:</label>
-                                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                                    <span class="inline-block px-2 py-1 text-xs font-medium text-white rounded-full ${
                                         employee.employee_status === 'Active'
-                                            ? 'bg-success/10 text-success'
-                                            : employee.employee_status ===
-                                              'Suspended'
-                                            ? 'bg-warning/10 text-warning'
-                                            : 'bg-gray-100 text-gray-600'
-                                    }">${
-            employee.employee_status || 'No status'
-        }</span>
+                                            ? 'bg-green-500'
+                                            : employee.employee_status === 'Suspended'
+                                            ? 'bg-yellow-500'
+                                            : employee.employee_status === 'Inactive'
+                                            ? 'bg-red-500'
+                                            : 'bg-gray-500'
+                                    }">${employee.employee_status || 'No status'}</span>
                                 </div>
                             </div>
                         </div>
