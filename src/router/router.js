@@ -30,8 +30,6 @@ export const router = new Navigo('/');
  * @param {Object} [params={}] - Parameters extracted from the URL.
  */
 async function renderPage(pageComponent, options = {}, params = {}) {
-    appContainer.innerHTML = '';
-    
     if (!auth.isAuthenticated()) {
         router.navigate('/login');
         return;
@@ -43,27 +41,48 @@ async function renderPage(pageComponent, options = {}, params = {}) {
     if (options.accessLevels) {
         const userAccessLevel = getUserAccessLevel(user);
         if (!options.accessLevels.some(level => level.toLowerCase() === userAccessLevel.toLowerCase())) {
+            appContainer.innerHTML = '';
             appContainer.append(renderForbiddenPage());
             return;
         }
     }
 
     try {
-        const layout = AppLayout();
+        // Check if layout already exists (SPA navigation)
+        let layout = appContainer.querySelector('.app-layout');
+        let appContent;
+        
+        if (layout) {
+            // Layout exists, just update the content
+            appContent = layout.querySelector('#app-content');
+        } else {
+            // First load or full re-render needed
+            appContainer.innerHTML = '';
+            layout = AppLayout();
+            appContent = layout.querySelector('#app-content');
+            layout.classList.add('app-layout'); // Add identifier class
+            appContainer.append(layout);
+        }
+        
+        // Clear and update only the content area
+        appContent.innerHTML = '';
         
         // Page function now receives parameters directly
         const pageElement = await pageComponent(params);
-        
-        const appContent = layout.querySelector('#app-content');
-        appContent.innerHTML = '';
         appContent.append(pageElement);
         
         layout.setTitle(options.title || 'Dashboard');
-        appContainer.append(layout);
+        
+        // Update sidebar active link after navigation
+        const sidebar = layout.querySelector('aside');
+        if (sidebar && sidebar.updateActiveLink) {
+            sidebar.updateActiveLink();
+        }
         
         initializeTheme();
         router.updatePageLinks();
     } catch (error) {
+        console.error('Error rendering page:', error);
         appContainer.innerHTML = `<div class="alert error"><h3>Error Loading Page</h3><p>${error.message}</p></div>`;
     }
 }
