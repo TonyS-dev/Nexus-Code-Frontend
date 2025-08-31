@@ -75,6 +75,12 @@ export function showLoginPage() {
             <button type="submit" class="btn-login">Login</button>
           </form>
           <p id="login-error" class="error-message" style="display: none;"></p>
+          <div class="mt-6 text-center text-sm text-text-secondary animate-fadeInUp animate-stagger-4">
+            <p>Don't have an account? Contact your administrator.</p>
+            <a href="/forgot-password" class="text-primary hover:text-primary-hover transition-colors font-medium block mt-2">
+                <i class="fa-solid fa-key mr-1"></i>Forgot your password?
+            </a>
+          </div>
         </div>
       </div>
       <div class="right-panel">
