@@ -5,14 +5,111 @@
     font-weight: bold;
 }
 
-/* Highlight empty required fields on focus */
-input:required:invalid, select:required:invalid {
-    border-color: #fca5a5;
-    box-shadow: 0 0 0 1px #fca5a5;
+/* Clean focus styles for inputs and selects - Elegant purple focus */
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    transition: all 0.2s ease-in-out;
 }
 
-input:required:valid, select:required:valid {
-    border-color: #10b981;
+/* Specific focus styles for different input states */
+input:required:focus:invalid, select:required:focus:invalid {
+    border-color: #f87171 !important;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
+}
+
+input:required:focus:valid, select:required:focus:valid {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Remove default browser focus styles */
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: none !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* Hover states */
+input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus) {
+    border-color: #c4b5fd;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Default border styles */
+input, select, textarea {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Dark mode focus styles (if you have dark mode) */
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Override Tailwind focus styles with clean purple focus */
+.focus\:ring-2:focus,
+.focus\:ring-primary:focus,
+.focus\:border-primary:focus,
+input[class*="focus:ring"]:focus,
+select[class*="focus:ring"]:focus,
+textarea[class*="focus:ring"]:focus {
+    --tw-ring-color: rgba(139, 92, 246, 0.2) !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-width: 3px !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+}
+
+/* Specific overrides for form inputs with Tailwind classes */
+input.w-full:focus,
+select.w-full:focus,
+textarea.w-full:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+    --tw-ring-shadow: none !important;
+}
+
+/* Clean focus for inputs in forms */
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
+}
+
+/* Ensure no conflicting styles */
+*:focus {
+    outline: none !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+}
+
+/* For buttons, use a different focus style */
+button:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
+    outline: none !important;
+}
+
+/* Clean focus for specific input types */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none !important;
 }
 
 /* Improved form styling */
