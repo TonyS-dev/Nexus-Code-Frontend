@@ -32,3 +32,26 @@ export function formatDateForInput(dateString) {
         return '';
     }
 };
+
+/**
+ * Cleans form data by removing empty strings and trimming values
+ * Keeps required fields even if empty for proper validation
+ * @param {FormData} formData - The form data to clean
+ * @param {string[]} requiredFields - Array of field names that should be kept even if empty
+ * @returns {Object} Cleaned data object
+ */
+export function cleanFormData(formData, requiredFields = []) {
+    const cleanData = {};
+    
+    for (let [key, value] of formData.entries()) {
+        const cleanValue = value?.trim();
+        
+        if (cleanValue && cleanValue !== '') {
+            cleanData[key] = cleanValue;
+        } else if (requiredFields.includes(key)) {
+            cleanData[key] = ''; // Keep required fields even if empty for validation
+        }
+    }
+    
+    return cleanData;
+}

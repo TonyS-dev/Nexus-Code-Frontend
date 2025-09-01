@@ -94,7 +94,7 @@ export function showManagerRequestsPage() {
                 </main>
 
                 <!-- Approval/rejection modal - Optimized for mobile -->
-                <div id="approval-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden p-2 sm:p-4">
+                <div id="approval-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden p-2 sm:p-4">
                     <div class="bg-background-primary p-4 sm:p-6 rounded-xl shadow-special border border-border-color w-full max-w-sm sm:max-w-md mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto">
                         <!-- Modal header -->
                         <div class="flex justify-between items-center mb-4">
@@ -482,13 +482,14 @@ export function showManagerRequestsPage() {
         [closeBtn, cancelBtn].forEach((btn) => {
             btn?.addEventListener("click", () => {
                 modal.classList.add("hidden");
+                modal.classList.remove("flex");
             });
         });
 
-        // Close modal when clicking on the background
         modal?.addEventListener("click", (e) => {
             if (e.target === modal) {
                 modal.classList.add("hidden");
+                modal.classList.remove("flex");
             }
         });
     }
@@ -762,8 +763,9 @@ export function showManagerRequestsPage() {
         // Set up comments field
         commentRequirement.textContent = "*"; // Mark as mandatory
         commentsTextarea.placeholder = `Enter the reason for ${isApprove ? "approving" : "rejecting"} this request...`;
-        commentsTextarea.value = ""; // Clear previous comments
-
+        // Show the modal
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
         // Show the modal
         modal.classList.remove("hidden");
 

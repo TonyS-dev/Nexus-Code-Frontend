@@ -46,7 +46,7 @@ export function Sidebar() {
         .map(
             (item) => `
         <li data-path="${item.href}">
-            <a href="${item.href}" data-navigo class="flex items-center gap-3 p-3 rounded-lg text-text-secondary hover:bg-primary-light hover:text-primary transition-colors font-medium">
+            <a href="${item.href}" data-navigo class="nav-link flex items-center gap-3 p-3 rounded-lg text-text-secondary hover:bg-primary-light hover:text-primary transition-colors font-medium">
                 <i class="fa-solid ${item.icon} w-5 text-center text-base"></i>
                 <span>${item.label}</span>
             </a>
@@ -76,19 +76,38 @@ export function Sidebar() {
             </ul>
         </nav>`;
 
-    const currentPath = `/${router.lastResolved()?.url || ''}`;
-    const activeLink = sidebarElement.querySelector(
-        `li[data-path='${currentPath}'] a`
-    );
-
-    if (activeLink) {
-        activeLink.classList.add(
-            'bg-primary-light',
-            'text-primary',
-            'font-semibold'
-        );
-        activeLink.classList.remove('text-text-secondary');
+    // Function to update active link
+    function updateActiveLink() {
+        const currentPath = window.location.pathname;
+        
+        // Remove active states from all links
+        const allLinks = sidebarElement.querySelectorAll('.nav-link');
+        allLinks.forEach(link => {
+            link.classList.remove('bg-primary-light', 'text-primary', 'font-semibold');
+            link.classList.add('text-text-secondary');
+        });
+        
+        // Add active state to current link
+        const activeLink = sidebarElement.querySelector(`li[data-path='${currentPath}'] a`);
+        if (activeLink) {
+            activeLink.classList.add('bg-primary-light', 'text-primary', 'font-semibold');
+            activeLink.classList.remove('text-text-secondary');
+        }
     }
+
+    // Set initial active state
+    updateActiveLink();
+
+    // Listen for navigation changes to update active state
+    window.addEventListener('popstate', updateActiveLink);
+    
+    // Listen for programmatic navigation (when router.navigate() is called)
+    const observer = new MutationObserver(() => {
+        updateActiveLink();
+    });
+    
+    // Store the update function on the element for external access
+    sidebarElement.updateActiveLink = updateActiveLink;
 
     return sidebarElement;
 }

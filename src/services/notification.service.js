@@ -106,7 +106,7 @@ export const notify = {
     success: (message, options) => showNotification(message, 'success', 5000, options),
     error: (message, options) => showNotification(message, 'error', 7000, options),
     warning: (message, options) => showNotification(message, 'warning', 6000, options),
-    info: (message, options) => showNotification(message, 'info', 5000, options),
+    info: (message, options) => showNotification(message, 'info', 900000, options),
     
     // Special methods
     loading: (message) => showNotification(message, 'info', 0, { description: 'Please wait...' }),

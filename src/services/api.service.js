@@ -133,3 +133,18 @@ export const markNotificationAsRead = (notificationId) =>
     apiRequest(`/notifications/${notificationId}/read`, 'PATCH');
 export const markAllNotificationsAsRead = () =>
     apiRequest('/notifications/mark-all-read', 'PATCH');
+
+/**
+ * Password Reset API endpoints
+ */
+export async function requestPasswordReset(email) {
+    return apiRequest('/auth/forgot-password', 'POST', { email });
+}
+
+export async function validateResetToken(token) {
+    return apiRequest('/auth/validate-reset-token', 'POST', { token });
+}
+
+export async function resetPassword(token, password, confirmPassword) {
+    return apiRequest('/auth/reset-password', 'POST', { token, password, confirmPassword });
+}
