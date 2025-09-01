@@ -22,9 +22,9 @@ export async function showResetPasswordPage() {
                     </div>
                     <h1 class="text-2xl font-bold text-text-primary mb-2">Invalid Reset Link</h1>
                     <p class="text-text-secondary mb-6">The password reset link is missing or invalid.</p>
-                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
+                    <button onclick="goToForgotPassword()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
                         Request New Link
-                    </a>
+                    </button>
                 </div>
             </div>
         `;
@@ -273,13 +273,18 @@ export async function showResetPasswordPage() {
                     </div>
                     <h1 class="text-2xl font-bold text-text-primary mb-2">Invalid or Expired Link</h1>
                     <p class="text-text-secondary mb-6">${error.message || 'The password reset link is invalid or has expired.'}</p>
-                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
+                    <button onclick="goToForgotPassword()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
                         Request New Link
-                    </a>
+                    </button>
                 </div>
             </div>
         `;
     }
+
+    // Add global function for navigation
+    window.goToForgotPassword = () => {
+        router.navigate('/forgot-password');
+    };
 
     return container;
 }
