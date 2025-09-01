@@ -114,7 +114,14 @@ export const getAllPendingRequests = () => apiRequest('/requests');
 export const createVacationRequest = (data) => apiRequest('/requests/vacation', 'POST', data);
 export const createLeaveRequest = (data) => apiRequest('/requests/leave', 'POST', data);
 export const createCertificateRequest = (data) => apiRequest('/requests/certificate', 'POST', data);
-export const approveRequest = (requestId, approvalData) => apiRequest(`/requests/${requestId}/approve`, 'POST', approvalData);
+
+// Function to approve requests
+export const approveRequest = (requestId, approvalData) => {
+    if (!requestId) {
+        throw new Error('Request ID is required');
+    }
+    return apiRequest(`/approvals/requests/${requestId}/approve`, 'POST', approvalData);
+};
 
 // Employee Benefits
 export const getVacationBalance = (employeeId) => apiRequest(`/vacation-balances/employee/${employeeId}`);
