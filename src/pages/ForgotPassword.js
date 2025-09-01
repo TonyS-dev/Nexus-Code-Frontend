@@ -3,20 +3,20 @@
  * @description Forgot password page component
  */
 import { requestPasswordReset } from '../services/api.service.js';
-import { router } from '../router/router.js';
+import { SkeletonLoaders } from '../components/SkeletonLoader.js';
 
-export async function showForgotPasswordPage() {
+export function showForgotPasswordPage() {
     const container = document.createElement('div');
-    container.className = 'reset-password-container min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-background-primary to-primary/5 animate-fadeIn p-4';
+    container.className = 'forgot-password-page';
 
     container.innerHTML = `
-        <div class="reset-card bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn">
-            <div class="text-center mb-8 animate-fadeInUp">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4 mx-auto">
-                    <i class="fa-solid fa-envelope text-2xl text-blue-600"></i>
+        <div class="forgot-password-card animate-scaleIn hover-glow transition-all duration-500">
+            <div class="text-center mb-8 animate-fadeInUp" style="margin-top: 2rem;">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4 animate-bounce">
+                    <i class="fa-solid fa-key text-2xl text-primary"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-text-primary">Forgot Password?</h1>
-                <p class="text-text-secondary mt-2">Enter your email address and we'll send you a reset link</p>
+                <p class="text-text-secondary mt-2">Enter your email to reset your password</p>
             </div>
 
             <form id="forgot-password-form" class="space-y-6">
@@ -24,7 +24,7 @@ export async function showForgotPasswordPage() {
                     <label for="email" class="block text-sm font-medium text-text-secondary mb-2">
                         <i class="fa-solid fa-envelope mr-2"></i>Email Address
                     </label>
-                    <input type="email" id="email" name="email" required
+                    <input type="email" id="email" name="email" required 
                            class="w-full px-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary transition-all duration-300 hover:border-primary/50" 
                            placeholder="Enter your email address">
                 </div>
@@ -40,24 +40,24 @@ export async function showForgotPasswordPage() {
                 </button>
             </form>
 
-            <div class="mt-6 text-center animate-fadeInUp animate-stagger-3">
-                <a href="/login" class="text-primary hover:text-primary-hover transition-colors text-sm">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>Back to Login
+            <div class="text-center" style="margin-top: 1.5rem;">
+                <a href="/login" class="forgot-password-back-link">
+                    <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Login
                 </a>
             </div>
 
-            <!-- Success Message -->
+            <!-- Success Message (initially hidden) -->
             <div id="success-message" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-fadeIn">
                 <div class="flex items-center">
                     <i class="fa-solid fa-check-circle text-green-500 mr-3"></i>
                     <div>
-                        <h3 class="text-sm font-medium text-green-800">Reset Link Sent!</h3>
-                        <p class="text-sm text-green-600 mt-1">Check your email for the password reset link.</p>
+                        <h3 class="text-sm font-medium text-green-800">Reset link sent!</h3>
+                        <p class="text-sm text-green-600 mt-1">Check your email for password reset instructions.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Error Message -->
+            <!-- Error Message (initially hidden) -->
             <div id="error-message" class="hidden mt-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-fadeIn">
                 <div class="flex items-center">
                     <i class="fa-solid fa-exclamation-triangle text-red-500 mr-3"></i>
@@ -70,9 +70,8 @@ export async function showForgotPasswordPage() {
         </div>
     `;
 
-    // Form elements
+    // Form submission handler
     const form = container.querySelector('#forgot-password-form');
-    const emailInput = container.querySelector('#email');
     const submitBtn = form.querySelector('button[type="submit"]');
     const btnText = submitBtn.querySelector('.btn-text');
     const btnLoading = submitBtn.querySelector('.btn-loading');
@@ -80,18 +79,25 @@ export async function showForgotPasswordPage() {
     const errorMessage = container.querySelector('#error-message');
     const errorText = container.querySelector('#error-text');
 
-    // Form submission
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const formData = new FormData(form);
         const email = formData.get('email')?.trim();
 
+        // Validation
         if (!email) {
             showError('Please enter your email address');
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('Please enter a valid email address');
+            return;
+        }
+
+        // Hide previous messages
         hideMessages();
 
         try {
@@ -102,9 +108,21 @@ export async function showForgotPasswordPage() {
 
             const response = await requestPasswordReset(email);
 
-            if (response.success !== false) {
+            if (response.success) {
                 showSuccess();
-                emailInput.value = '';
+                
+                // In development, show the reset token in console
+                if (response.reset_token) {
+                    console.log('Reset token (dev only):', response.reset_token);
+                    console.log('Reset URL (dev only):', `${window.location.origin}/reset-password?token=${response.reset_token}`);
+                    
+                    // For development: automatically redirect after showing success
+                    setTimeout(() => {
+                        window.location.href = `/reset-password?token=${response.reset_token}`;
+                    }, 2000);
+                }
+                
+                form.reset();
             } else {
                 showError(response.message || 'Failed to send reset link');
             }
