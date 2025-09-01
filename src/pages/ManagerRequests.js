@@ -28,6 +28,7 @@ export function showManagerRequestsPage() {
 
     // Variable to store available request statuses (approved, rejected, etc.)
     let requestStatuses = [];
+    let currentRequests = []; // Store current requests for filtering
 
     /**
      * Asynchronous function that loads data and renders the complete interface
@@ -55,6 +56,8 @@ export function showManagerRequestsPage() {
                 );
             });
 
+            currentRequests = pendingRequests; // Store for filtering
+
             // Render main interface with loaded data
             container.innerHTML = `
                 <main class="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto">
@@ -63,7 +66,7 @@ export function showManagerRequestsPage() {
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
                             <h2 class="text-lg sm:text-xl font-semibold text-text-primary">All Pending Approvals</h2>
                             <div class="text-xs sm:text-sm text-text-secondary bg-background-secondary px-2 sm:px-3 py-1 sm:py-2 rounded-lg">
-                                ${pendingRequests.length} pending request${pendingRequests.length !== 1 ? "s" : ""}
+                                <span id="request-counter">${pendingRequests.length} pending request${pendingRequests.length !== 1 ? "s" : ""}</span>
                             </div>
                         </div>
                         
@@ -86,10 +89,12 @@ export function showManagerRequestsPage() {
                             </div>
                         </div>
                         
-                        ${pendingRequests.length > 0
-                    ? renderRequestsTable(pendingRequests) // Show table/cards if there are requests
-                    : renderEmpty()                        // Show empty message if there are no requests
-                }
+                        <div id="requests-container">
+                            ${pendingRequests.length > 0
+                                ? renderRequestsTable(pendingRequests) // Show table/cards if there are requests
+                                : renderEmpty()                        // Show empty message if there are no requests
+                            }
+                        </div>
                     </div>
                 </main>
 
@@ -353,9 +358,9 @@ export function showManagerRequestsPage() {
         // Get DOM elements for filters and search
         const typeFilter = container.querySelector("#type-filter");
         const searchInput = container.querySelector("#search-input");
-        const tbody = container.querySelector("#requests-tbody");
-        const mobileContainer = container.querySelector("#mobile-cards-container");
-        const totalCount = container.querySelector("#total-count");
+        const modal = container.querySelector("#approval-modal");
+        const closeBtn = container.querySelector("#close-modal");
+        const cancelBtn = container.querySelector("#cancel-approval");
 
         /**
          * Function that filters and searches requests based on selected criteria
@@ -366,65 +371,54 @@ export function showManagerRequestsPage() {
             const searchValue = searchInput.value.toLowerCase().trim();
 
             let visibleCount = 0;
-            let totalCount = 0;
-            let tableRows = [];
+            const totalCount = currentRequests.length;
 
             // Filter desktop table rows
-            if (tbody) {
-                tableRows = tbody.querySelectorAll(".table-row");
-                totalCount = tableRows.length;
+            const tableRows = container.querySelectorAll("#requests-tbody .table-row");
+            tableRows.forEach((row) => {
+                // Get filter data from data attributes
+                const employeeName = row.dataset.employee || "";
+                const requestType = row.dataset.type || "";
 
-                tableRows.forEach((row) => {
-                    // Get filter data from data attributes
-                    const employeeName = row.dataset.employee || "";
-                    const requestType = row.dataset.type || "";
+                // Check if it matches the filters
+                const matchesType = !typeValue || requestType === typeValue;
+                const matchesSearch = !searchValue || employeeName.includes(searchValue);
 
-                    // Check if it matches the filters
-                    const matchesType = !typeValue || requestType === typeValue;
-                    const matchesSearch = !searchValue || employeeName.includes(searchValue);
-
-                    // Show/hide row based on filters
-                    if (matchesType && matchesSearch) {
-                        row.style.display = "";
-                        visibleCount++;
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            }
+                // Show/hide row based on filters
+                if (matchesType && matchesSearch) {
+                    row.style.display = "";
+                    visibleCount++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
 
             // Filter mobile cards with the same logic
-            if (mobileContainer) {
-                const mobileCards = mobileContainer.querySelectorAll(".mobile-card");
-                // If there is no table, use cards for counting
-                if (!tbody || tableRows.length === 0) {
-                    totalCount = mobileCards.length;
-                    visibleCount = 0;
+            const mobileCards = container.querySelectorAll("#mobile-cards-container .mobile-card");
+            mobileCards.forEach((card) => {
+                const employeeName = card.dataset.employee || "";
+                const requestType = card.dataset.type || "";
+
+                const matchesType = !typeValue || requestType === typeValue;
+                const matchesSearch = !searchValue || employeeName.includes(searchValue);
+
+                if (matchesType && matchesSearch) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
                 }
-
-                mobileCards.forEach((card) => {
-                    const employeeName = card.dataset.employee || "";
-                    const requestType = card.dataset.type || "";
-
-                    const matchesType = !typeValue || requestType === typeValue;
-                    const matchesSearch = !searchValue || employeeName.includes(searchValue);
-
-                    if (matchesType && matchesSearch) {
-                        card.style.display = "";
-                        // Only count cards if we are not counting table rows
-                        if (!tbody || tableRows.length === 0) {
-                            visibleCount++;
-                        }
-                    } else {
-                        card.style.display = "none";
-                    }
-                });
-            }
+            });
 
             // Update results counter
             const totalCountElement = container.querySelector("#total-count");
             if (totalCountElement) {
                 totalCountElement.textContent = `Total: ${visibleCount} of ${totalCount} pending requests`;
+            }
+
+            // Update header counter
+            const requestCounter = container.querySelector("#request-counter");
+            if (requestCounter) {
+                requestCounter.textContent = `${visibleCount} pending request${visibleCount !== 1 ? "s" : ""}`;
             }
         }
 
@@ -472,12 +466,6 @@ export function showManagerRequestsPage() {
             }
         });
 
-        // Event listeners for approval modal
-        const modal = container.querySelector("#approval-modal");
-        const closeBtn = container.querySelector("#close-modal");
-        const cancelBtn = container.querySelector("#cancel-approval");
-        const confirmBtn = container.querySelector("#confirm-approval");
-
         // Close modal with close and cancel buttons
         [closeBtn, cancelBtn].forEach((btn) => {
             btn?.addEventListener("click", () => {
@@ -486,6 +474,7 @@ export function showManagerRequestsPage() {
             });
         });
 
+        // Close modal when clicking on background
         modal?.addEventListener("click", (e) => {
             if (e.target === modal) {
                 modal.classList.add("hidden");
@@ -708,6 +697,9 @@ export function showManagerRequestsPage() {
                 : "bg-danger hover:bg-red-600"
         }`;
 
+        // Clear previous comments
+        commentsTextarea.value = "";
+
         // Extract specific information based on request type
         let startDate = "N/A";
         let endDate = "N/A";
@@ -763,13 +755,18 @@ export function showManagerRequestsPage() {
         // Set up comments field
         commentRequirement.textContent = "*"; // Mark as mandatory
         commentsTextarea.placeholder = `Enter the reason for ${isApprove ? "approving" : "rejecting"} this request...`;
+        
         // Show the modal
         modal.classList.remove("hidden");
         modal.classList.add("flex");
-        // Show the modal
-        modal.classList.remove("hidden");
 
-        // Create new confirm button to avoid duplicate listeners
+        // Store current action data for the confirm button
+        confirmBtn.dataset.requestId = requestId;
+        confirmBtn.dataset.action = action;
+        confirmBtn.dataset.employeeName = employeeName;
+        confirmBtn.dataset.requestType = requestType;
+
+        // Remove any existing event listeners and add new one
         const newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
@@ -787,6 +784,7 @@ export function showManagerRequestsPage() {
             // Process the approval/rejection action
             await handleApprovalAction(requestId, action, comments, employeeName, requestType);
             modal.classList.add("hidden");
+            modal.classList.remove("flex");
         });
     }
 
@@ -802,6 +800,9 @@ export function showManagerRequestsPage() {
         try {
             // Get current user (manager who is approving)
             const user = auth.getUser();
+            if (!user || !user.id) {
+                throw new Error("User not authenticated");
+            }
             
             // Find the ID of the status corresponding to the action
             const statusId = findStatusId(action);
@@ -834,7 +835,7 @@ export function showManagerRequestsPage() {
 
             // Show success notification
             showNotification(
-                `${requestType} request for ${employeeName} has been ${action}d successfully.`,
+                `${requestType.charAt(0).toUpperCase() + requestType.slice(1)} request for ${employeeName} has been ${action}d successfully.`,
                 "success"
             );
 
@@ -842,13 +843,14 @@ export function showManagerRequestsPage() {
             await loadAndRender();
         } catch (error) {
             // Remove any loading indicator in case of error
-            const loadingDivs = document.querySelectorAll(".fixed.inset-0");
+            const loadingDivs = document.querySelectorAll('.fixed.inset-0');
             loadingDivs.forEach((div) => {
-                if (div.innerHTML.includes("Processing") && div.parentNode) {
+                if (div.innerHTML.includes("Processing") && document.body.contains(div)) {
                     document.body.removeChild(div);
                 }
             });
 
+            console.error('Error in handleApprovalAction:', error);
             // Show error notification
             showNotification(`Failed to ${action} request: ${error.message}`, "error");
         }
@@ -862,15 +864,17 @@ export function showManagerRequestsPage() {
     function findStatusId(action) {
         // Mapping of actions to possible status names
         const statusNames = {
-            approve: ["Approved", "approved"],
-            reject: ["Rejected", "rejected", "Denied", "denied"],
+            approve: ["approved", "Approved"],
+            reject: ["rejected", "Rejected", "denied", "Denied"],
         };
 
         const possibleNames = statusNames[action] || [];
         
         // Find status that matches any of the possible names
         const status = requestStatuses.find((s) =>
-            possibleNames.some((name) => s.name.toLowerCase() === name.toLowerCase())
+            possibleNames.some((name) => 
+                s.name && s.name.toLowerCase() === name.toLowerCase()
+            )
         );
 
         return status?.id;
@@ -882,14 +886,22 @@ export function showManagerRequestsPage() {
      * @param {string} type - Type of notification: "success", "error", or "info"
      */
     function showNotification(message, type = "info") {
+        // Remove any existing notifications first
+        const existingNotifications = document.querySelectorAll('.notification-toast');
+        existingNotifications.forEach(notif => {
+            if (document.body.contains(notif)) {
+                document.body.removeChild(notif);
+            }
+        });
+
         // Create notification element
         const notification = document.createElement("div");
-        notification.className = `fixed top-4 right-2 sm:right-4 z-50 p-3 sm:p-4 rounded-lg shadow-lg max-w-72 sm:max-w-md transition-all duration-300 ${
+        notification.className = `notification-toast fixed top-4 right-2 sm:right-4 z-50 p-3 sm:p-4 rounded-lg shadow-lg max-w-72 sm:max-w-md transition-all duration-300 ${
             type === "success"
-                ? "bg-success/10 text-green-600 border border-green-200"    // Green for success
+                ? "bg-green-50 text-green-700 border border-green-200"    // Green for success
                 : type === "error"
-                    ? "bg-danger/10 text-red-600 border border-red-200"     // Red for error
-                    : "bg-primary/10 text-blue-600 border border-blue-200"  // Blue for info
+                    ? "bg-red-50 text-red-700 border border-red-200"     // Red for error
+                    : "bg-blue-50 text-blue-700 border border-blue-200"  // Blue for info
         }`;
 
         // HTML of the notification with icon and close button
@@ -906,7 +918,7 @@ export function showManagerRequestsPage() {
                 <!-- Notification message -->
                 <span class="text-xs sm:text-sm font-medium flex-1 leading-relaxed">${message}</span>
                 <!-- Button to close manually -->
-                <button class="text-current hover:opacity-70 flex-shrink-0 p-1">
+                <button class="notification-close text-current hover:opacity-70 flex-shrink-0 p-1">
                     <i class="fa-solid fa-times text-xs"></i>
                 </button>
             </div>
@@ -916,11 +928,11 @@ export function showManagerRequestsPage() {
         document.body.appendChild(notification);
 
         // Auto-remove the notification after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
+        const autoRemoveTimeout = setTimeout(() => {
+            if (document.body.contains(notification)) {
                 notification.style.transform = "translateX(100%)"; // Exit animation
                 setTimeout(() => {
-                    if (notification.parentNode) {
+                    if (document.body.contains(notification)) {
                         document.body.removeChild(notification);
                     }
                 }, 300); // Time to complete the animation
@@ -928,8 +940,10 @@ export function showManagerRequestsPage() {
         }, 5000);
 
         // Event listener to manually close the notification
-        notification.querySelector("button").addEventListener("click", () => {
-            if (notification.parentNode) {
+        const closeBtn = notification.querySelector(".notification-close");
+        closeBtn.addEventListener("click", () => {
+            clearTimeout(autoRemoveTimeout);
+            if (document.body.contains(notification)) {
                 document.body.removeChild(notification);
             }
         });
