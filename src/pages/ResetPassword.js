@@ -7,7 +7,7 @@ import { router } from '../router/router.js';
 
 export async function showResetPasswordPage() {
     const container = document.createElement('div');
-    container.className = 'min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background-primary to-primary/5 animate-fadeIn';
+    container.className = 'reset-password-container min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-background-primary to-primary/5 animate-fadeIn p-4';
 
     // Get token from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -15,14 +15,14 @@ export async function showResetPasswordPage() {
 
     if (!token) {
         container.innerHTML = `
-            <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn">
+            <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md mx-auto animate-scaleIn">
                 <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 mx-auto">
                         <i class="fa-solid fa-exclamation-triangle text-2xl text-red-500"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-text-primary mb-2">Invalid Reset Link</h1>
                     <p class="text-text-secondary mb-6">The password reset link is missing or invalid.</p>
-                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated">
+                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
                         Request New Link
                     </a>
                 </div>
@@ -33,7 +33,7 @@ export async function showResetPasswordPage() {
 
     // Show loading while validating token
     container.innerHTML = `
-        <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn">
+        <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md mx-auto animate-scaleIn">
             <div class="text-center">
                 <div class="loading-spinner-lg animate-spin mx-auto mb-4"></div>
                 <p class="text-text-secondary">Validating reset link...</p>
@@ -51,9 +51,9 @@ export async function showResetPasswordPage() {
 
         // Render the reset form
         container.innerHTML = `
-            <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn hover-glow transition-all duration-500">
+            <div class="reset-card bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn hover-glow transition-all duration-500">
                 <div class="text-center mb-8 animate-fadeInUp">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4 animate-bounce">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4 animate-bounce mx-auto">
                         <i class="fa-solid fa-shield-halved text-2xl text-green-600"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-text-primary">Reset Password</h1>
@@ -66,7 +66,7 @@ export async function showResetPasswordPage() {
                             <i class="fa-solid fa-lock mr-2"></i>New Password
                         </label>
                         <input type="password" id="password" name="password" required minlength="6"
-                               class="w-full px-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary transition-all duration-300 hover:border-primary/50" 
+                               class="password-input w-full px-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary transition-all duration-300 hover:border-primary/50" 
                                placeholder="Enter new password">
                         <p class="text-xs text-text-muted mt-1">Minimum 6 characters required</p>
                     </div>
@@ -76,7 +76,7 @@ export async function showResetPasswordPage() {
                             <i class="fa-solid fa-lock mr-2"></i>Confirm Password
                         </label>
                         <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"
-                               class="w-full px-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary transition-all duration-300 hover:border-primary/50" 
+                               class="password-input w-full px-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-background-primary text-text-primary transition-all duration-300 hover:border-primary/50" 
                                placeholder="Confirm new password">
                     </div>
 
@@ -266,14 +266,14 @@ export async function showResetPasswordPage() {
         console.error('Token validation error:', error);
         
         container.innerHTML = `
-            <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md animate-scaleIn">
+            <div class="bg-background-primary p-8 rounded-xl shadow-special border border-border-color w-full max-w-md mx-auto animate-scaleIn">
                 <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 mx-auto">
                         <i class="fa-solid fa-times-circle text-2xl text-red-500"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-text-primary mb-2">Invalid or Expired Link</h1>
                     <p class="text-text-secondary mb-6">${error.message || 'The password reset link is invalid or has expired.'}</p>
-                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated">
+                    <a href="/forgot-password" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover transition-all duration-300 btn-animated inline-block">
                         Request New Link
                     </a>
                 </div>
