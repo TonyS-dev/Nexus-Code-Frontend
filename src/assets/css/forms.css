@@ -321,6 +321,80 @@ th.table-actions {
     transform: translateY(-1px);
 }
 
+/* Reset Password Page Enhancements */
+.reset-password-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+.reset-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.reset-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Enhanced animations for reset password */
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-slideUp {
+    animation: slideUp 0.6s ease-out forwards;
+}
+
+/* Better focus states for password inputs */
+.password-input:focus {
+    transform: scale(1.02);
+    box-shadow: 
+        0 0 0 3px rgba(var(--primary-color-rgb), 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Password strength bar animations */
+.strength-bar {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: left;
+}
+
+.strength-bar.growing {
+    animation: growBar 0.5s ease-out;
+}
+
+@keyframes growBar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
 /* Responsive action buttons */
 @media (max-width: 768px) {
     .action-buttons {
