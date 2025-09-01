@@ -14,6 +14,16 @@ The application features a **Vanilla JavaScript ES6+ architecture** with **Tailw
 
 ---
 
+## 🖥️ Live Demo
+
+Live URL here:
+
+```
+https://www.riwi-nexus.app
+```
+
+---
+
 ## 🎯 Core Features
 
 - ✅ **Single Page Application (SPA):** Fast navigation with Navigo router for seamless user experience
@@ -238,4 +248,5 @@ Nexus-Code-Frontend/
 ## 📋 Team
 
 **Team:** Nexus-code  
+
 **Repository:** Frontend Application
