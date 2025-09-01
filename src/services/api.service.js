@@ -102,10 +102,15 @@ export const getEmployeeStatuses = () => apiRequest('/employee-statuses');
 export const getIdentificationTypes = () => apiRequest('/identification-types');
 export const getAccessLevels = () => apiRequest('/access-levels');
 export const getManagers = () => apiRequest('/employees?role=Manager');
+export const getRequests = () => apiRequest('/requests');
 
 // Requests and Approvals
 export const getRequestsByEmployeeId = (employeeId) => apiRequest(`/requests/employee/${employeeId}`);
-export const getPendingManagerRequests = (approverId) => apiRequest(`/approvals/approver/${approverId}`);;
+export const getPendingManagerRequests = (approverId) => apiRequest(`/approvals/approver/${approverId}`);
+
+// NEW: Get ALL pending requests from all employees (for admin/manager approval view)
+export const getAllPendingRequests = () => apiRequest('/requests');
+
 export const createVacationRequest = (data) => apiRequest('/requests/vacation', 'POST', data);
 export const createLeaveRequest = (data) => apiRequest('/requests/leave', 'POST', data);
 export const createCertificateRequest = (data) => apiRequest('/requests/certificate', 'POST', data);
